@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmTowerMachineParamMapper">
+    <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmTowerMachineParam">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <id column="tower_machine_model" jdbcType="VARCHAR" property="towerMachineModel" />
+        <result column="tower_machine_name" jdbcType="VARCHAR" property="towerMachineName" />
+        <result column="tower_machine_type" jdbcType="VARCHAR" property="towerMachineType" />
+        <result column="vender" jdbcType="VARCHAR" property="vender" />
+        <result column="rated_lifting_distance" jdbcType="BIGINT" property="ratedLiftingDistance" />
+        <result column="maximum_lifting_weight" jdbcType="DOUBLE" property="maximumLiftingWeight" />
+        <result column="maximum_rated_weight" jdbcType="DOUBLE" property="maximumRatedWeight" />
+        <result column="maximum_starting_weight_working_range" jdbcType="INTEGER" property="maximumStartingWeightWorkingRange" />
+        <result column="maximum_range_work" jdbcType="INTEGER" property="maximumRangeWork" />
+        <result column="maximum_height_lift" jdbcType="INTEGER" property="maximumHeightLift" />
+        <result column="up_down_speed" jdbcType="INTEGER" property="upDownSpeed" />
+        <result column="variable_amplitude_speed" jdbcType="INTEGER" property="variableAmplitudeSpeed" />
+        <result column="swivelling_speed" jdbcType="INTEGER" property="swivellingSpeed" />
+        <result column="up_speed" jdbcType="INTEGER" property="upSpeed" />
+        <result column="tower_machine_weight" jdbcType="DOUBLE" property="towerMachineWeight" />
+        <result column="balance_weight" jdbcType="DOUBLE" property="balanceWeight" />
+        <result column="working_voltage" jdbcType="INTEGER" property="workingVoltage" />
+        <result column="total_installed_capacity" jdbcType="INTEGER" property="totalInstalledCapacity" />
+        <result column="motor_ power" jdbcType="INTEGER" property="motorPower" />
+        <result column="frequency_converter_power" jdbcType="INTEGER" property="frequencyConverterPower" />
+        <result column="standard_section_specifications" jdbcType="VARCHAR" property="standardSectionSpecifications" />
+        <result column="attached_wall_frame_specifications" jdbcType="VARCHAR" property="attachedWallFrameSpecifications" />
+        <result column="specification_classification" jdbcType="VARCHAR" property="specificationClassification" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="insert_person" jdbcType="VARCHAR" property="insertPerson" />
+        <result column="insert_person_depart_id" jdbcType="BIGINT" property="insertPersonDepartId" />
+        <result column="update_person" jdbcType="VARCHAR" property="updatePerson" />
+        <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
+        <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+        <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+        <collection property="amTowerMachineParamkits" ofType="com.ConstructionManagement.system.domain.AmTowerMachineParamKit">
+            <id column="id" jdbcType="BIGINT" property="id" />
+            <result column="pid" jdbcType="BIGINT" property="pid" />
+            <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
+            <result column="unit" jdbcType="VARCHAR" property="unit" />
+            <result column="kit_count" jdbcType="INTEGER" property="kitCount" />
+        </collection>
+        <collection property="amTowerMachineParamParts" ofType="com.ConstructionManagement.system.domain.AmTowerMachineParamPart">
+            <id column="id" jdbcType="BIGINT" property="id" />
+            <result column="pid" jdbcType="BIGINT" property="pid" />
+            <result column="part_type" jdbcType="VARCHAR" property="partType" />
+            <result column="part_name" jdbcType="VARCHAR" property="partName" />
+            <result column="part_model" jdbcType="VARCHAR" property="partModel" />
+            <result column="part_count" jdbcType="INTEGER" property="partCount" />
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+       id, tower_machine_model, tower_machine_name, tower_machine_type, vender,
+    rated_lifting_distance,maximum_lifting_weight, maximum_rated_weight, maximum_starting_weight_working_range,
+    maximum_range_work, maximum_height_lift, up_down_speed, variable_amplitude_speed,
+    swivelling_speed, up_speed, tower_machine_weight, balance_weight, working_voltage,
+    total_installed_capacity, `motor_ power`, frequency_converter_power, standard_section_specifications,
+    attached_wall_frame_specifications, specification_classification, remark, insert_person,
+    insert_person_depart_id, update_person, update_person_depart_id, insert_date, update_date
+    </sql>
+
+    <select id="selectBySelective" parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParam" resultMap="BaseResultMap">
+        select A.*,B.kit_name,B.unit,B.kit_count,C.part_name,C.part_type,C.part_model,C.part_count
+        from am_tower_machine_param as A left join am_tower_machine_param_kit as B on A.id = B.pid left join am_tower_machine_param_part as C on A.id = C.pid
+        <where>
+            <if test="towerMachineModel != null">
+                and   A.tower_machine_model=#{towerMachineModel}
+            </if>
+            <if test="towerMachineName != null">
+                and   A.tower_machine_name like concat('%', #{towerMachineName}, '%')
+            </if>
+            <if test="towerMachineType != null">
+                and   A.tower_machine_type like concat('%', #{towerMachineType}, '%')
+            </if>
+            <if test="vender != null">
+                and   A.vender like concat('%', #{vender}, '%')
+            </if>
+            <if test="insertDate != null">
+                and   date_format(A.insert_date,'%y%m%d') &gt;= date_format(#{insertDate},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    <select id="selectByParam" resultType="com.ConstructionManagement.system.domain.AmTowerMachineParam">
+        select <include refid="Base_Column_List"/> from am_tower_machine_param where
+        tower_machine_model=#{towerMachineModel} and tower_machine_name=#{towerMachineName} and vender=#{vender}
+    </select>
+
+
+    <delete id="deleteById" parameterType="Long">
+        delete
+        from am_tower_machine_param
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="Long">
+        delete from am_tower_machine_param where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+        parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParam" useGeneratedKeys="true">
+        insert into am_tower_machine_param
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="towerMachineModel != null">
+                tower_machine_model,
+            </if>
+            <if test="towerMachineName != null">
+                tower_machine_name,
+            </if>
+            <if test="towerMachineType != null">
+                tower_machine_type,
+            </if>
+            <if test="vender != null">
+                vender,
+            </if>
+            <if test="
+ratedLiftingDistance != null">
+                rated_lifting_distance,
+            </if>
+            <if test="maximumLiftingWeight != null">
+                maximum_lifting_weight,
+            </if>
+            <if test="maximumRatedWeight != null">
+                maximum_rated_weight,
+            </if>
+            <if test="maximumStartingWeightWorkingRange != null">
+                maximum_starting_weight_working_range,
+            </if>
+            <if test="maximumRangeWork != null">
+                maximum_range_work,
+            </if>
+            <if test="maximumHeightLift != null">
+                maximum_height_lift,
+            </if>
+            <if test="upDownSpeed != null">
+                up_down_speed,
+            </if>
+            <if test="variableAmplitudeSpeed != null">
+                variable_amplitude_speed,
+            </if>
+            <if test="swivellingSpeed != null">
+                swivelling_speed,
+            </if>
+            <if test="upSpeed != null">
+                up_speed,
+            </if>
+            <if test="towerMachineWeight != null">
+                tower_machine_weight,
+            </if>
+            <if test="balanceWeight != null">
+                balance_weight,
+            </if>
+            <if test="workingVoltage != null">
+                working_voltage,
+            </if>
+            <if test="totalInstalledCapacity != null">
+                total_installed_capacity,
+            </if>
+            <if test="motorPower != null">
+                `motor_ power`,
+            </if>
+            <if test="frequencyConverterPower != null">
+                frequency_converter_power,
+            </if>
+            <if test="standardSectionSpecifications != null">
+                standard_section_specifications,
+            </if>
+            <if test="attachedWallFrameSpecifications != null">
+                attached_wall_frame_specifications,
+            </if>
+            <if test="specificationClassification != null">
+                specification_classification,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="insertPerson != null">
+                insert_person,
+            </if>
+            <if test="insertPersonDepartId != null">
+                insert_person_depart_id,
+            </if>
+            <if test="updatePerson != null">
+                update_person,
+            </if>
+            <if test="updatePersonDepartId != null">
+                update_person_depart_id,
+            </if>
+            <if test="insertDate != null">
+                insert_date,
+            </if>
+            <if test="updateDate != null">
+                update_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="towerMachineModel != null">
+                #{towerMachineModel,jdbcType=VARCHAR},
+            </if>
+            <if test="towerMachineName != null">
+                #{towerMachineName,jdbcType=VARCHAR},
+            </if>
+            <if test="towerMachineType != null">
+                #{towerMachineType,jdbcType=VARCHAR},
+            </if>
+            <if test="vender != null">
+                #{vender,jdbcType=VARCHAR},
+            </if>
+            <if test="
+ratedLiftingDistance != null">
+                #{
+        ratedLiftingDistance,jdbcType=BIGINT},
+            </if>
+            <if test="maximumLiftingWeight != null">
+                #{maximumLiftingWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="maximumRatedWeight != null">
+                #{maximumRatedWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="maximumStartingWeightWorkingRange != null">
+                #{maximumStartingWeightWorkingRange,jdbcType=INTEGER},
+            </if>
+            <if test="maximumRangeWork != null">
+                #{maximumRangeWork,jdbcType=INTEGER},
+            </if>
+            <if test="maximumHeightLift != null">
+                #{maximumHeightLift,jdbcType=INTEGER},
+            </if>
+            <if test="upDownSpeed != null">
+                #{upDownSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="variableAmplitudeSpeed != null">
+                #{variableAmplitudeSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="swivellingSpeed != null">
+                #{swivellingSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="upSpeed != null">
+                #{upSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="towerMachineWeight != null">
+                #{towerMachineWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="balanceWeight != null">
+                #{balanceWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="workingVoltage != null">
+                #{workingVoltage,jdbcType=INTEGER},
+            </if>
+            <if test="totalInstalledCapacity != null">
+                #{totalInstalledCapacity,jdbcType=INTEGER},
+            </if>
+            <if test="motorPower != null">
+                #{motorPower,jdbcType=INTEGER},
+            </if>
+            <if test="frequencyConverterPower != null">
+                #{frequencyConverterPower,jdbcType=INTEGER},
+            </if>
+            <if test="standardSectionSpecifications != null">
+                #{standardSectionSpecifications,jdbcType=VARCHAR},
+            </if>
+            <if test="attachedWallFrameSpecifications != null">
+                #{attachedWallFrameSpecifications,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationClassification != null">
+                #{specificationClassification,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="insertPerson != null">
+                #{insertPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="insertPersonDepartId != null">
+                #{insertPersonDepartId,jdbcType=INTEGER},
+            </if>
+            <if test="updatePerson != null">
+                #{updatePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="updatePersonDepartId != null">
+                #{updatePersonDepartId,jdbcType=INTEGER},
+            </if>
+            <if test="insertDate != null">
+                #{insertDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective"
+        parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParam">
+        update am_tower_machine_param
+        <set>
+            <if test="towerMachineName != null">
+                tower_machine_name = #{towerMachineName,jdbcType=VARCHAR},
+            </if>
+            <if test="towerMachineType != null">
+                tower_machine_type = #{towerMachineType,jdbcType=VARCHAR},
+            </if>
+            <if test="vender != null">
+                vender = #{vender,jdbcType=VARCHAR},
+            </if>
+            <if test="
+ratedLiftingDistance != null">
+                rated_lifting_distance = #{
+ratedLiftingDistance,jdbcType=BIGINT},
+            </if>
+            <if test="maximumLiftingWeight != null">
+                maximum_lifting_weight = #{maximumLiftingWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="maximumRatedWeight != null">
+                maximum_rated_weight = #{maximumRatedWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="maximumStartingWeightWorkingRange != null">
+                maximum_starting_weight_working_range = #{maximumStartingWeightWorkingRange,jdbcType=INTEGER},
+            </if>
+            <if test="maximumRangeWork != null">
+                maximum_range_work = #{maximumRangeWork,jdbcType=INTEGER},
+            </if>
+            <if test="maximumHeightLift != null">
+                maximum_height_lift = #{maximumHeightLift,jdbcType=INTEGER},
+            </if>
+            <if test="upDownSpeed != null">
+                up_down_speed = #{upDownSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="variableAmplitudeSpeed != null">
+                variable_amplitude_speed = #{variableAmplitudeSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="swivellingSpeed != null">
+                swivelling_speed = #{swivellingSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="upSpeed != null">
+                up_speed = #{upSpeed,jdbcType=INTEGER},
+            </if>
+            <if test="towerMachineWeight != null">
+                tower_machine_weight = #{towerMachineWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="balanceWeight != null">
+                balance_weight = #{balanceWeight,jdbcType=DOUBLE},
+            </if>
+            <if test="workingVoltage != null">
+                working_voltage = #{workingVoltage,jdbcType=INTEGER},
+            </if>
+            <if test="totalInstalledCapacity != null">
+                total_installed_capacity = #{totalInstalledCapacity,jdbcType=INTEGER},
+            </if>
+            <if test="motorPower != null">
+                `motor_ power` = #{motorPower,jdbcType=INTEGER},
+            </if>
+            <if test="frequencyConverterPower != null">
+                frequency_converter_power = #{frequencyConverterPower,jdbcType=INTEGER},
+            </if>
+            <if test="standardSectionSpecifications != null">
+                standard_section_specifications = #{standardSectionSpecifications,jdbcType=VARCHAR},
+            </if>
+            <if test="attachedWallFrameSpecifications != null">
+                attached_wall_frame_specifications = #{attachedWallFrameSpecifications,jdbcType=VARCHAR},
+            </if>
+            <if test="specificationClassification != null">
+                specification_classification = #{specificationClassification,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="insertPerson != null">
+                insert_person = #{insertPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="insertPersonDepartId != null">
+                insert_person_depart_id = #{insertPersonDepartId,jdbcType=INTEGER},
+            </if>
+            <if test="updatePerson != null">
+                update_person = #{updatePerson,jdbcType=VARCHAR},
+            </if>
+            <if test="updatePersonDepartId != null">
+                update_person_depart_id = #{updatePersonDepartId,jdbcType=INTEGER},
+            </if>
+            <if test="insertDate != null">
+                insert_date = #{insertDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateDate != null">
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+</mapper>

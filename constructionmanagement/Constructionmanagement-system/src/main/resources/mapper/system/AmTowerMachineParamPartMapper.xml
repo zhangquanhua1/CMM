@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmTowerMachineParamPartMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmTowerMachineParamPart">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="part_type" jdbcType="VARCHAR" property="partType" />
+    <result column="part_name" jdbcType="VARCHAR" property="partName" />
+    <result column="part_model" jdbcType="VARCHAR" property="partModel" />
+    <result column="part_count" jdbcType="INTEGER" property="partCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,pid, part_type, part_name, part_model,
+    part_count
+  </sql>
+
+  <delete id="deleteByPid" parameterType="java.lang.Long">
+    delete from am_tower_machine_param_part
+    where pid = #{pid,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParamPart" useGeneratedKeys="true">
+    insert into am_tower_machine_param_part
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="partType != null">
+        part_type,
+      </if>
+      <if test="partName != null">
+        part_name,
+      </if>
+      <if test="partModel != null">
+        part_model,
+      </if>
+      <if test="partCount != null">
+        part_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="partType != null">
+        #{partType,jdbcType=VARCHAR},
+      </if>
+      <if test="partName != null">
+        #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partModel != null">
+        #{partModel,jdbcType=VARCHAR},
+      </if>
+      <if test="partCount != null">
+        #{partCount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

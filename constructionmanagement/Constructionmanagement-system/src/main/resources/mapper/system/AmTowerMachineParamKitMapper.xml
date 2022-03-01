@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmTowerMachineParamKitMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmTowerMachineParamKit">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="pid" jdbcType="BIGINT" property="pid" />
+    <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="kit_count" jdbcType="INTEGER" property="kitCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,pid, kit_name, unit, kit_count
+  </sql>
+
+  <delete id="deleteByPid" parameterType="java.lang.Long">
+    delete from am_tower_machine_param_kit
+    where pid = #{pid,jdbcType=BIGINT}
+  </delete>
+
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParamKit" useGeneratedKeys="true">
+    insert into am_tower_machine_param_kit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        pid,
+      </if>
+      <if test="kitName != null">
+        kit_name,
+      </if>
+      <if test="unit != null">
+        unit,
+      </if>
+      <if test="kitCount != null">
+        kit_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pid != null">
+        #{pid,jdbcType=BIGINT},
+      </if>
+      <if test="kitName != null">
+        #{kitName,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
+      </if>
+      <if test="kitCount != null">
+        #{kitCount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>
