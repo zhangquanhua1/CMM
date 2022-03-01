@@ -33,21 +33,6 @@
         <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
         <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
         <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
-        <collection property="amTowerMachineParamkits" ofType="com.ConstructionManagement.system.domain.AmTowerMachineParamKit">
-            <id column="id" jdbcType="BIGINT" property="id" />
-            <result column="pid" jdbcType="BIGINT" property="pid" />
-            <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
-            <result column="unit" jdbcType="VARCHAR" property="unit" />
-            <result column="kit_count" jdbcType="INTEGER" property="kitCount" />
-        </collection>
-        <collection property="amTowerMachineParamParts" ofType="com.ConstructionManagement.system.domain.AmTowerMachineParamPart">
-            <id column="id" jdbcType="BIGINT" property="id" />
-            <result column="pid" jdbcType="BIGINT" property="pid" />
-            <result column="part_type" jdbcType="VARCHAR" property="partType" />
-            <result column="part_name" jdbcType="VARCHAR" property="partName" />
-            <result column="part_model" jdbcType="VARCHAR" property="partModel" />
-            <result column="part_count" jdbcType="INTEGER" property="partCount" />
-        </collection>
     </resultMap>
 
     <sql id="Base_Column_List">
@@ -61,8 +46,8 @@
     </sql>
 
     <select id="selectBySelective" parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParam" resultMap="BaseResultMap">
-        select A.*,B.kit_name,B.unit,B.kit_count,C.part_name,C.part_type,C.part_model,C.part_count
-        from am_tower_machine_param as A left join am_tower_machine_param_kit as B on A.id = B.pid left join am_tower_machine_param_part as C on A.id = C.pid
+        select <include refid="Base_Column_List"/>
+        from am_tower_machine_param as A
         <where>
             <if test="towerMachineModel != null">
                 and   A.tower_machine_model=#{towerMachineModel}
@@ -100,7 +85,7 @@
         </foreach>
     </delete>
 
-    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+    <insert id="insertSelective" keyColumn="id"  keyProperty="id"
         parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParam" useGeneratedKeys="true">
         insert into am_tower_machine_param
         <trim prefix="(" suffix=")" suffixOverrides=",">

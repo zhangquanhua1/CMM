@@ -4,10 +4,23 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * am_tower_machine_param_kit
+ * am_part_param_kit
  * @author
  */
-public class AmTowerMachineParamKit implements Serializable {
+@Data
+public class AmPartParamKit implements Serializable {
+    private Long id;
+
+    private Long pid;
+
+    private String kitName;
+
+    private String unit;
+
+    private Integer kitCount;
+
+    private static final long serialVersionUID = 1L;
+
     public Long getId() {
         return id;
     }
@@ -48,26 +61,7 @@ public class AmTowerMachineParamKit implements Serializable {
         this.kitCount = kitCount;
     }
 
-    @Override
-    public String toString() {
-        return "AmTowerMachineParamKit{" +
-                "id=" + id +
-                ", pid=" + pid +
-                ", kitName='" + kitName + '\'' +
-                ", unit='" + unit + '\'' +
-                ", kitCount=" + kitCount +
-                '}';
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
-
-    private Long id;
-    private Long pid;
-
-    private String kitName;
-
-    private String unit;
-
-    private Integer kitCount;
-
-    private static final long serialVersionUID = 1L;
-
 }

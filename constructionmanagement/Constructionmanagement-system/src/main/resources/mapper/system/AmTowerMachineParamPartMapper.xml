@@ -18,6 +18,9 @@
     delete from am_tower_machine_param_part
     where pid = #{pid,jdbcType=BIGINT}
   </delete>
+  <select id="selectByPid" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from am_tower_machine_param_part where pid=#{pid}
+  </select>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParamPart" useGeneratedKeys="true">
     insert into am_tower_machine_param_part
     <trim prefix="(" suffix=")" suffixOverrides=",">

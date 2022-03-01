@@ -6,6 +6,8 @@ import com.ConstructionManagement.system.service.IAmTowerMachineParamKitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AmTowerMachineParamKitServiceImpl implements IAmTowerMachineParamKitService {
     @Autowired
@@ -20,6 +22,11 @@ public class AmTowerMachineParamKitServiceImpl implements IAmTowerMachineParamKi
     @Override
     public int insertSelective(AmTowerMachineParamKit record) {
         return amTowerMachineParamKitMapper.insertSelective(record);
+    }
+
+    @Override
+    public List<AmTowerMachineParamKit> selectByPid(Long pid) {
+        return amTowerMachineParamKitMapper.selectByPid(pid);
     }
 
 }

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmPartParamMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmPartParam">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="part_name" jdbcType="VARCHAR" property="partName" />
+    <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+    <result column="part_model" jdbcType="VARCHAR" property="partModel" />
+    <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
+    <result column="applicable_device_type" jdbcType="VARCHAR" property="applicableDeviceType" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, part_name, part_code, part_model, measurement_unit, applicable_device_type, remark
+  </sql>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from am_part_param
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByIds">
+    delete from am_part_param where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+  <select id="selectBySelective" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from am_part_param
+<where>
+  <if test="applicableDeviceType != null">
+    and applicable_device_type like concat('%', #{applicableDeviceType}, '%')
+  </if>
+  <if test="partName != null">
+    and part_name like concat('%', #{partName}, '%')
+  </if>
+  <if test="partModel != null">
+    and part_model = #{partModel,jdbcType=VARCHAR}
+  </if>
+</where>
+
+  </select>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmPartParam" useGeneratedKeys="true">
+    insert into am_part_param
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="partName != null">
+        part_name,
+      </if>
+      <if test="partCode != null">
+        part_code,
+      </if>
+      <if test="partModel != null">
+        part_model,
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit,
+      </if>
+      <if test="applicableDeviceType != null">
+        applicable_device_type,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="partName != null">
+        #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partCode != null">
+        #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partModel != null">
+        #{partModel,jdbcType=VARCHAR},
+      </if>
+      <if test="measurementUnit != null">
+        #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="applicableDeviceType != null">
+        #{applicableDeviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.AmPartParam">
+    update am_part_param
+    <set>
+      <if test="partName != null">
+        part_name = #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partCode != null">
+        part_code = #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partModel != null">
+        part_model = #{partModel,jdbcType=VARCHAR},
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit = #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="applicableDeviceType != null">
+        applicable_device_type = #{applicableDeviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

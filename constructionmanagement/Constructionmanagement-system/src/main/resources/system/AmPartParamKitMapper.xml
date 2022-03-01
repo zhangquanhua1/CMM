@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ConstructionManagement.system.mapper.AmTowerMachineParamKitMapper">
-  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmTowerMachineParamKit">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmPartParamKitMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmPartParamKit">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="pid" jdbcType="BIGINT" property="pid" />
     <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
@@ -9,20 +9,19 @@
     <result column="kit_count" jdbcType="INTEGER" property="kitCount" />
   </resultMap>
   <sql id="Base_Column_List">
-    id,pid,kit_name,unit,kit_count
+    id, pid, kit_name, unit, kit_count
   </sql>
-
   <delete id="deleteByPid" parameterType="java.lang.Long">
-    delete from am_tower_machine_param_kit
+    delete from am_part_param_kit
     where pid = #{pid,jdbcType=BIGINT}
   </delete>
   <select id="selectByPid" resultMap="BaseResultMap">
-    select id,pid,kit_name,unit,kit_count from am_tower_machine_param_kit  where pid=#{pid}
+    select <include refid="Base_Column_List"/> from am_part_param_kit where pid =#{pid}
+
   </select>
 
-
-  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParamKit" useGeneratedKeys="true">
-    insert into am_tower_machine_param_kit
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmPartParamKit" useGeneratedKeys="true">
+    insert into am_part_param_kit
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="pid != null">
         pid,
@@ -52,4 +51,5 @@
       </if>
     </trim>
   </insert>
+
 </mapper>

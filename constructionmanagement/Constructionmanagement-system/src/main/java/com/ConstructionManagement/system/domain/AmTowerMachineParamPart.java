@@ -7,7 +7,6 @@ import lombok.Data;
  * am_tower_machine_param_part
  * @author
  */
-@Data
 public class AmTowerMachineParamPart implements Serializable {
     private Long id;
     private Long pid;
@@ -68,9 +67,5 @@ public class AmTowerMachineParamPart implements Serializable {
 
     public void setPartCount(Integer partCount) {
         this.partCount = partCount;
-    }
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
     }
 }

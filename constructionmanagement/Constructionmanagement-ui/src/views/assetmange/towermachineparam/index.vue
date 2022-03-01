@@ -127,7 +127,6 @@
         </template>
       </el-table-column>
     </el-table>
-
     <pagination
       v-show="total>0"
       :total="total"
@@ -135,8 +134,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-
-    <!-- 添加或修改岗位对话框 -->
+    <!-- 添加或修改对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 
@@ -216,16 +214,337 @@
         <el-form-item label="规格归类" prop="specificationClassification">
           <el-input v-model="form.specificationClassification" placeholder="请输入规格归类"/>
         </el-form-item>
+
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注"/>
         </el-form-item>
+
+        <div
+          v-for="(item, index) in paramsKit"
+          :key="index">
+          <el-form-item label="配件名称">
+          <el-input v-model="item.kitName" placeholder="请输入配件名称"/>
+          </el-form-item>
+          <el-form-item label="配件单位">
+          <el-input v-model="item.unit" placeholder="请输入配件单位"/>
+          </el-form-item>
+          <el-form-item label="配件数量">
+          <el-input v-model="item.kitCount" placeholder="请输入配件数量"/>
+          </el-form-item>
+          <el-button size="medium" @click.prevent="removeKit(index)">删除该配件</el-button>
+          <br/>
+          <br/>
+          <br/>
+        </div>
+        <el-form-item>
+          <el-button @click="addKit">新增配件信息</el-button>
+        </el-form-item>
+
+        <div
+          v-for="(item, index) in paramsPart"
+          :key="index">
+          <el-form-item label="部件名称">
+          <el-input v-model="item.partName" placeholder="请输入部件名称"/>
+          </el-form-item>
+          <el-form-item label="部件型号">
+          <el-input v-model="item.partModel" placeholder="请输入部件型号"/>
+          </el-form-item>
+          <el-form-item label="部件类型">
+          <el-input v-model="item.partType" placeholder="请输入部件类型"/>
+          </el-form-item>
+          <el-form-item label="部件数量">
+          <el-input v-model="item.partCount" placeholder="请输入部件数量"/>
+          </el-form-item>
+          <el-button @click.prevent="removePart(index)" >删除该部件</el-button>
+          <br/>
+          <br/>
+          <br/>
+        </div>
+        <el-form-item>
+          <el-button @click="addPart">新增部件件信息</el-button>
+        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+<!--    详情弹窗-->
+    <el-dialog :title="title" :visible.sync="openDetail" width="40%"  class="spec-dialog" append-to-body>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              塔机型号: {{ towerMachineParamDetail.towerMachineModel }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              塔机名称: {{ towerMachineParamDetail.towerMachineName }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              设备类别: {{ towerMachineParamDetail.towerMachineType }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              厂家: {{ towerMachineParamDetail.vender }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              额定起重力距: {{ towerMachineParamDetail.ratedLiftingDistance }} KN/m
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              最大起重量: {{ towerMachineParamDetail.maximumLiftingWeight }} T
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              最大幅度额定起重量: {{ towerMachineParamDetail.maximumRatedWeight }} T
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              最大起重量工作幅度: {{ towerMachineParamDetail.maximumStartingWeightWorkingRange }} M
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              最大工作幅度: {{ towerMachineParamDetail.maximumRangeWork }} M
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              最大起升高度: {{ towerMachineParamDetail.maximumHeightLift }} M
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              最大幅度额定起重量: {{ towerMachineParamDetail.maximumRatedWeight }} T
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              起升速度: {{ towerMachineParamDetail.upDownSpeed }} m/min
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              变幅速度: {{ towerMachineParamDetail.variableAmplitudeSpeed }} m/min
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              回转速度: {{ towerMachineParamDetail.swivellingSpeed }} r/min
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              顶升速度: {{ towerMachineParamDetail.upSpeed }} m/min
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              塔机自重: {{ towerMachineParamDetail.towerMachineWeight }} t
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              平衡重量: {{ towerMachineParamDetail.balanceWeight }} t
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              工作电压: {{ towerMachineParamDetail.workingVoltage }} v
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              装机总容量: {{ towerMachineParamDetail.totalInstalledCapacity }} KW
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              电机功率: {{ towerMachineParamDetail.motorPower }} KW
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              变频器功率: {{ towerMachineParamDetail.frequencyConverterPower }} KW
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              标准节规格: {{ towerMachineParamDetail.standardSectionSpecifications }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              附墙框规格: {{ towerMachineParamDetail.attachedWallFrameSpecifications }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              规格归类: {{ towerMachineParamDetail.specificationClassification }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+          <ul class="list-group">
+            <li class="list-group-item">
+              备注: {{ towerMachineParamDetail.remark }}
+            </li>
+          </ul>
+      </el-row>
 
+      <el-row v-if="kits==undefined||kits.length==0">
+        <ul class="list-group">
+          <li class="list-group-item">
+            配件 ：暂时无配件信息
+          </li>
+        </ul>
+      </el-row>
+      <el-row v-else v-for="kit in this.kits">
+        <el-col :span="8" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              配件名称: {{ kit.kitName }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="8" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              单位: {{ kit.unit}}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="8" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              数量: {{ kit.kitCount}}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="Parts==undefined||Parts.length==0">
+        <ul class="list-group">
+          <li class="list-group-item">
+            配件 ：暂时无部件信息
+          </li>
+        </ul>
+      </el-row>
+      <el-row v-else v-for="part in this.Parts">
+        <el-col :span="6" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              部件名称: {{ part.partName }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="6" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              部件型号: {{ part.partModel}}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="6" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              部件类别: {{ part.partType}}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="6" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              数量: {{ part.partCount}}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -236,10 +555,10 @@
 }
 </style>
 <script>
-import { listTowerMachineParam, delTowerMachineParam, addTowerMachineParam, updateTowerMachineParam } from '@/api/towerparam/towermachineparam'
+import { listTowerMachineParam,getKitAndPart, delTowerMachineParam, addTowerMachineParam, updateTowerMachineParam } from '@/api/towerparam/towermachineparam'
 export default {
-  name: 'Post',
-  dicts: ['sys_normal_disable'],
+  name: 'towerMachineParam',
+  // dicts: ['sys_normal_disable'],
   data() {
     return {
       // 遮罩层
@@ -270,8 +589,17 @@ export default {
         towerMachineType: undefined,
         insertDate: undefined
       },
+      openDetail: false,
+      towerMachineParamDetail:{},
+      kits:[],
+      Parts:[],
       // 表单参数
-      form: {},
+      paramsKit:[{kitName:'',unit:'',kitCount:''}],
+      paramsPart:[{partName:'',partModel:'',partType:'',partCount:''}],
+      form: {
+        amTowerMachineParamkits:[],
+        amTowerMachineParamParts:[]
+      },
       // 表单校验
       rules: {
         towerMachineModel: [
@@ -379,7 +707,7 @@ export default {
           message: '变频器功率范围在0-1000',
           trigger: 'blur'
         }],
-      }
+      },
     }
   },
   created() {
@@ -398,6 +726,7 @@ export default {
     // 取消按钮
     cancel() {
       this.open = false
+      this.openDetail= false
       this.reset()
     },
     // 表单重置
@@ -427,7 +756,9 @@ export default {
         attachedWallFrameSpecifications:undefined ,
         specificationClassification:undefined ,
         remark:undefined ,
-      }
+      },
+        this.paramsKit=[];
+        this.paramsPart=[];
       this.resetForm('form')
     },
     /** 搜索按钮操作 */
@@ -456,11 +787,18 @@ export default {
     handleUpdate(row) {
        this.reset()
         this.form = row
+        getKitAndPart(row.id).then((res) => {
+        this.paramsKit=res.data.amTowerMachineParamkits;
+        this.paramsPart=res.data.amTowerMachineParamParts;
+      })
+        this.form.amTowerMachineParamkits=this.paramsKit;
+        this.form.amTowerMachineParamParts=this.paramsPart;
         this.open = true
         this.title = '修改'
     },
     /** 提交按钮 */
     submitForm: function() {
+
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
@@ -470,9 +808,13 @@ export default {
               this.getList()
             })
           } else {
+            this.form.amTowerMachineParamkits=this.paramsKit;
+            this.form.amTowerMachineParamParts=this.paramsPart;
             addTowerMachineParam(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
+              this.paramsKit=[];
+              this.paramsPart=[];
               this.getList()
             })
           }
@@ -492,14 +834,31 @@ export default {
       })
     },
     handleDetail(row){
-
+      const pid= row.id || 0
+      getKitAndPart(pid).then((res) => {
+         this.kits=res.data.amTowerMachineParamkits;
+         this.Parts=res.data.amTowerMachineParamParts;
+      })
+      this.towerMachineParamDetail = row
+      this.openDetail = true
+      this.title = '详情'
+    },
+    removeKit(index) {
+        this.paramsKit.splice(index, 1)
+    },
+    addKit() {
+      this.paramsKit.push({ kitName: '', unit: '',kitCount: ''})
+    },
+    removePart(index) {
+      this.paramsPart.splice(index, 1)
+    },
+    addPart() {
+      this.paramsPart.push({partName:'',partModel:'',partType:'',partCount:''})
     },
 
     /** 导出按钮操作 */
     handleExport() {
-      this.download('system/post/export', {
-        ...this.queryParams
-      }, `post_${new Date().getTime()}.xlsx`)
+      this.download()
     }
   }
 }

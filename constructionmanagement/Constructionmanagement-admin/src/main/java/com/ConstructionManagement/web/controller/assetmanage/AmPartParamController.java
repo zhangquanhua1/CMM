@@ -1,25 +1,12 @@
 package com.ConstructionManagement.web.controller.assetmanage;
 
 import com.ConstructionManagement.common.annotation.Log;
-import com.ConstructionManagement.common.constant.UserConstants;
 import com.ConstructionManagement.common.core.controller.BaseController;
 import com.ConstructionManagement.common.core.domain.AjaxResult;
-import com.ConstructionManagement.common.core.domain.entity.SysMenu;
-import com.ConstructionManagement.common.core.domain.entity.SysRole;
-import com.ConstructionManagement.common.core.domain.model.LoginUser;
 import com.ConstructionManagement.common.core.page.TableDataInfo;
 import com.ConstructionManagement.common.enums.BusinessType;
-import com.ConstructionManagement.common.utils.StringUtils;
-import com.ConstructionManagement.system.domain.AmTowerMachineParam;
-import com.ConstructionManagement.system.domain.AmTowerMachineParamKit;
-import com.ConstructionManagement.system.domain.AmTowerMachineParamPart;
-import com.ConstructionManagement.system.domain.KitAndPart;
-import com.ConstructionManagement.system.mapper.AmTowerMachineParamMapper;
-import com.ConstructionManagement.system.service.IAmTowerMachineParamKitService;
-import com.ConstructionManagement.system.service.IAmTowerMachineParamPartService;
-import com.ConstructionManagement.system.service.IAmTowerMachineParamService;
-import com.ConstructionManagement.system.service.ISysRoleService;
-import org.apache.ibatis.annotations.Param;
+import com.ConstructionManagement.system.domain.*;
+import com.ConstructionManagement.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -29,62 +16,56 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/asset/manage")
-public class AmTowerMachineParamController extends BaseController {
+@RequestMapping("/asset/partparam")
+public class AmPartParamController extends BaseController {
     @Autowired
-    private IAmTowerMachineParamService amTowerMachineParamService;
+    private IAmPartParamService iAmPartParamService;
     @Autowired
-    private IAmTowerMachineParamKitService amTowerMachineParamKitService;
-    @Autowired
-    private IAmTowerMachineParamPartService amTowerMachineParamPartService;
+    private IAmPartParamKitService iamPartParamKitService;
 
     /**
      * 获取列表
      */
-    @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:list')")
-    @GetMapping("/towermachine/list")
-    public TableDataInfo list(AmTowerMachineParam amTowerMachineParam) {
+    @PreAuthorize("@ss.hasPermi('asset:manage:partparam:list')")
+    @GetMapping("/list")
+    public TableDataInfo list(AmPartParam amPartParam) {
         //System.out.println("TowerMachineModel"+amTowerMachineParam.getTowerMachineModel());
         startPage();
-        List<AmTowerMachineParam> amTowerMachineParams = amTowerMachineParamService.selectBySelective(amTowerMachineParam);
-        return getDataTable(amTowerMachineParams);
+        List<AmPartParam> amPartParams = iAmPartParamService.selectBySelective(amPartParam);
+        return getDataTable(amPartParams);
     }
     /**
-     * 获取部件 配件
+     * 获取 配件
      */
-    @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:list')")
-    @GetMapping("/kitandpart/{pid}")
+    @PreAuthorize("@ss.hasPermi('asset:manage:partparam:list')")
+    @GetMapping("/kit/{pid}")
     public AjaxResult getlist(@PathVariable Long pid) {
-        //System.out.println("pid==="+pid);
-        if(pid<=0||pid==null) return AjaxResult.error("该塔机不存在配件、部件");
-        List<AmTowerMachineParamKit> listKits=amTowerMachineParamKitService.selectByPid(pid);
-        KitAndPart kp=new KitAndPart();
-        kp.setAmTowerMachineParamkits(listKits);
-        kp.setAmTowerMachineParamParts(amTowerMachineParamPartService.selectByPid(pid));
-        return AjaxResult.success(kp);
+        if(pid<=0||pid==null) return AjaxResult.error("该部件不存在配件");
+        List<AmPartParamKit> listKits=iamPartParamKitService.selectByPid(pid);;
+        return AjaxResult.success(listKits);
     }
 
     /**
      * 删除
      */
-    @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:remove')")
-    @Log(title = "塔机参数", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{towermachineIds}")
-    public AjaxResult remove(@PathVariable Long[] towermachineIds)
+    @PreAuthorize("@ss.hasPermi('asset:manage:partparam:remove')")
+    @Log(title = "配件参数", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{Ids}")
+    public AjaxResult remove(@PathVariable Long[] Ids)
     {
         //System.out.println("删除");
-        return toAjax(amTowerMachineParamService.deleteByIds(towermachineIds));
+        return toAjax(iAmPartParamService.deleteByIds(Ids));
     }
 
     /**
      * 新增
      */
-    @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:add')")
+    @PreAuthorize("@ss.hasPermi('asset:manage:partparam:add')")
     @Log(title = "塔机参数", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody  AmTowerMachineParam amTowerMachineParam)
+    public AjaxResult add(@Validated @RequestBody AmKitParam amKitParam)
     {
-        if(amTowerMachineParam==null) return AjaxResult.error("全空塔机参数禁止插入");
+        if(amKitParam==null) return AjaxResult.error("全空部件参数禁止插入");
         String towerMachineModel=amTowerMachineParam.getTowerMachineModel();
         String towerMachineName=amTowerMachineParam.getTowerMachineName();
         String vender=amTowerMachineParam.getVender();
@@ -122,10 +103,10 @@ public class AmTowerMachineParamController extends BaseController {
     /**
      * 修改保存角色
      */
-    @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:edit')")
+    @PreAuthorize("@ss.hasPermi('asset:manage:partparam:edit')")
     @Log(title = "塔机参数", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody  AmTowerMachineParam amTowerMachineParam)
+    public AjaxResult edit(@Validated @RequestBody AmTowerMachineParam amTowerMachineParam)
     {
         Long pid= amTowerMachineParam.getId();
         List<AmTowerMachineParamKit> kits=amTowerMachineParam.getAmTowerMachineParamkits();
@@ -147,5 +128,4 @@ public class AmTowerMachineParamController extends BaseController {
         }
         return toAjax(result);
     }
-
 }
