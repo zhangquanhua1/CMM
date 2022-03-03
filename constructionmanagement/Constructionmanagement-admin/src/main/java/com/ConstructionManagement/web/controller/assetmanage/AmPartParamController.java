@@ -9,6 +9,7 @@ import com.ConstructionManagement.system.domain.*;
 import com.ConstructionManagement.system.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,6 @@ public class AmPartParamController extends BaseController {
     @PreAuthorize("@ss.hasPermi('asset:manage:partparam:list')")
     @GetMapping("/list")
     public TableDataInfo list(AmPartParam amPartParam) {
-        //System.out.println("TowerMachineModel"+amTowerMachineParam.getTowerMachineModel());
         startPage();
         List<AmPartParam> amPartParams = iAmPartParamService.selectBySelective(amPartParam);
         return getDataTable(amPartParams);
@@ -49,7 +49,7 @@ public class AmPartParamController extends BaseController {
      * 删除
      */
     @PreAuthorize("@ss.hasPermi('asset:manage:partparam:remove')")
-    @Log(title = "配件参数", businessType = BusinessType.DELETE)
+    @Log(title = "部件参数", businessType = BusinessType.DELETE)
     @DeleteMapping("/{Ids}")
     public AjaxResult remove(@PathVariable Long[] Ids)
     {
@@ -60,71 +60,55 @@ public class AmPartParamController extends BaseController {
     /**
      * 新增
      */
+    //@Transactional()
     @PreAuthorize("@ss.hasPermi('asset:manage:partparam:add')")
-    @Log(title = "塔机参数", businessType = BusinessType.INSERT)
+    @Log(title = "部件参数", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@Validated @RequestBody AmKitParam amKitParam)
+    public AjaxResult add(@Validated @RequestBody AmPartParam amPartParam)
     {
-        if(amKitParam==null) return AjaxResult.error("全空部件参数禁止插入");
-        String towerMachineModel=amTowerMachineParam.getTowerMachineModel();
-        String towerMachineName=amTowerMachineParam.getTowerMachineName();
-        String vender=amTowerMachineParam.getVender();
+        if(amPartParam==null)
+            return AjaxResult.error("全空部件参数禁止插入");
+        String partCode=amPartParam.getPartCode();
+        String partModel=amPartParam.getPartModel();
+        String partName=amPartParam.getPartName();
         Long pid;
-        if (towerMachineModel!=null&&towerMachineName!=null&&null!=vender&&amTowerMachineParamService.selectByParam(towerMachineModel,towerMachineName, vender)!=null) {
-            return AjaxResult.error("该塔机参数已存在");
+        if (partCode!=null&&partModel!=null&&null!=partName&&iAmPartParamService.selectByParam
+                (partCode,partModel, partName)!=null) {
+            return AjaxResult.error("该部件参数已存在");
         }
-        amTowerMachineParam.setInsertPerson(getUsername());
-        amTowerMachineParam.setInsertPersonDepartId(getDeptId());
-        amTowerMachineParam.setInsertDate(new Date());
-        int result=amTowerMachineParamService.insertSelective(amTowerMachineParam);
-        //System.out.println("result:"+amTowerMachineParam.getId());
+
+        int result=iAmPartParamService.insertSelective(amPartParam);
         if(result<0)
-            return AjaxResult.error("添加失败");
-        pid= amTowerMachineParam.getId();
-        List<AmTowerMachineParamKit> kits=amTowerMachineParam.getAmTowerMachineParamkits();
-        List<AmTowerMachineParamPart> parts=amTowerMachineParam.getAmTowerMachineParamParts();
+            return AjaxResult.error("添加部件参数失败");
+        pid= amPartParam.getId();
+        List<AmPartParamKit> kits=amPartParam.getAmPartParamKits();
 
         if(kits!=null&&kits.size()>0&&!kits.isEmpty()) {
-            for (AmTowerMachineParamKit kit : kits) {
+            for (AmPartParamKit kit : kits) {
                 kit.setPid(pid);
-                result *= amTowerMachineParamKitService.insertSelective(kit);
+                result *= iamPartParamKitService.insertSelective(kit);
 
-            }
-        }
-        if(parts!=null&&parts.size()>0&&!parts.isEmpty()) {
-            for (AmTowerMachineParamPart part : parts) {
-                part.setPid(pid);
-                result *= amTowerMachineParamPartService.insertSelective(part);
             }
         }
         return toAjax(result);
     }
 
     /**
-     * 修改保存角色
+     * 修改保存
      */
     @PreAuthorize("@ss.hasPermi('asset:manage:partparam:edit')")
-    @Log(title = "塔机参数", businessType = BusinessType.UPDATE)
+    @Log(title = "部件参数", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@Validated @RequestBody AmTowerMachineParam amTowerMachineParam)
+    public AjaxResult edit(@Validated @RequestBody AmPartParam amPartParam)
     {
-        Long pid= amTowerMachineParam.getId();
-        List<AmTowerMachineParamKit> kits=amTowerMachineParam.getAmTowerMachineParamkits();
-        List<AmTowerMachineParamPart> parts=amTowerMachineParam.getAmTowerMachineParamParts();
-        amTowerMachineParam.setUpdatePerson(getUsername());
-        amTowerMachineParam.setUpdatePersonDepartId(getDeptId());
-        amTowerMachineParam.setUpdateDate(new Date());
-        int result=amTowerMachineParamService.updateByPrimaryKeySelective(amTowerMachineParam);
-        result*=amTowerMachineParamKitService.deleteByPid(pid);
-        result*=amTowerMachineParamPartService.deleteByPid(pid);
-        for (AmTowerMachineParamKit kit: kits) {
+        Long pid= amPartParam.getId();
+        List<AmPartParamKit> kits=amPartParam.getAmPartParamKits();
+        int result=iAmPartParamService.updateByPrimaryKeySelective(amPartParam);
+        result*=iamPartParamKitService.deleteByPid(pid);
+        for (AmPartParamKit kit: kits) {
             kit.setPid(pid);
-            result*=amTowerMachineParamKitService.insertSelective(kit);
+            result*=iamPartParamKitService.insertSelective(kit);
 
-        }
-        for (AmTowerMachineParamPart part:parts){
-            part.setPid(pid);
-            result*=amTowerMachineParamPartService.insertSelective(part);
         }
         return toAjax(result);
     }

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmElevatorParamMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmElevatorParam">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="vender" jdbcType="VARCHAR" property="vender" />
+    <result column="bottom_cage_size" jdbcType="VARCHAR" property="bottomCageSize" />
+    <result column="cage_size" jdbcType="VARCHAR" property="cageSize" />
+    <result column="cage_weight" jdbcType="DOUBLE" property="cageWeight" />
+    <result column="standard_knot" jdbcType="VARCHAR" property="standardKnot" />
+    <result column="standard__section_weight" jdbcType="DOUBLE" property="standardSectionWeight" />
+    <result column="max_height" jdbcType="DOUBLE" property="maxHeight" />
+    <result column="specified_load" jdbcType="DOUBLE" property="specifiedLoad" />
+    <result column="rated_occupant" jdbcType="INTEGER" property="ratedOccupant" />
+    <result column="up_down_speed" jdbcType="DOUBLE" property="upDownSpeed" />
+    <result column="total_power" jdbcType="DOUBLE" property="totalPower" />
+    <result column="rated_voltage" jdbcType="INTEGER" property="ratedVoltage" />
+    <result column="rated_current" jdbcType="INTEGER" property="ratedCurrent" />
+    <result column="reduce_speed_ratio" jdbcType="VARCHAR" property="reduceSpeedRatio" />
+    <result column="speed_limiter_brake_torque" jdbcType="DOUBLE" property="speedLimiterBrakeTorque" />
+    <result column="retro_speed" jdbcType="DOUBLE" property="retroSpeed" />
+    <result column="protector_id" jdbcType="BIGINT" property="protectorId" />
+    <result column="attachment_requirements" jdbcType="VARCHAR" property="attachmentRequirements" />
+    <result column="basic_requirements" jdbcType="VARCHAR" property="basicRequirements" />
+    <result column="supply_power_requirements" jdbcType="VARCHAR" property="supplyPowerRequirements" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="insert_person" jdbcType="VARCHAR" property="insertPerson" />
+    <result column="insert_person_depart_id" jdbcType="BIGINT" property="insertPersonDepartId" />
+    <result column="update_person" jdbcType="VARCHAR" property="updatePerson" />
+    <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vender, bottom_cage_size, cage_size, cage_weight, standard_knot, standard__section_weight,
+    max_height, specified_load, rated_occupant, up_down_speed, total_power, rated_voltage,
+    rated_current, reduce_speed_ratio, speed_limiter_brake_torque, retro_speed, protector_id,
+    attachment_requirements, basic_requirements, supply_power_requirements, remark, insert_person,
+    insert_person_depart_id, update_person, update_person_depart_id, insert_date, update_date
+  </sql>
+  <select id="selectBySelective" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from am_elevator_param
+    <where>
+      <if test="vender != null">
+        and   vender like concat('%', #{vender}, '%')
+      </if>
+      <if test="insertDate != null">
+        and   date_format(insert_date,'%y%m%d') &gt;= date_format(#{insertDate},'%y%m%d')
+      </if>
+    </where>
+
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Long">
+    delete from am_elevator_param
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByIds">
+    delete from am_elevator_param
+    where id in
+     <foreach collection="array" item="id" open="(" separator="," close=")">
+    #{id}
+  </foreach>
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmElevatorParam" useGeneratedKeys="true">
+    insert into am_elevator_param
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="vender != null">
+        vender,
+      </if>
+      <if test="bottomCageSize != null">
+        bottom_cage_size,
+      </if>
+      <if test="cageSize != null">
+        cage_size,
+      </if>
+      <if test="cageWeight != null">
+        cage_weight,
+      </if>
+      <if test="standardKnot != null">
+        standard_knot,
+      </if>
+      <if test="standardSectionWeight != null">
+        standard__section_weight,
+      </if>
+      <if test="maxHeight != null">
+        max_height,
+      </if>
+      <if test="specifiedLoad != null">
+        specified_load,
+      </if>
+      <if test="ratedOccupant != null">
+        rated_occupant,
+      </if>
+      <if test="upDownSpeed != null">
+        up_down_speed,
+      </if>
+      <if test="totalPower != null">
+        total_power,
+      </if>
+      <if test="ratedVoltage != null">
+        rated_voltage,
+      </if>
+      <if test="ratedCurrent != null">
+        rated_current,
+      </if>
+      <if test="reduceSpeedRatio != null">
+        reduce_speed_ratio,
+      </if>
+      <if test="speedLimiterBrakeTorque != null">
+        speed_limiter_brake_torque,
+      </if>
+      <if test="retroSpeed != null">
+        retro_speed,
+      </if>
+      <if test="protectorId != null">
+        protector_id,
+      </if>
+      <if test="attachmentRequirements != null">
+        attachment_requirements,
+      </if>
+      <if test="basicRequirements != null">
+        basic_requirements,
+      </if>
+      <if test="supplyPowerRequirements != null">
+        supply_power_requirements,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="insertPerson != null">
+        insert_person,
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id,
+      </if>
+      <if test="updatePerson != null">
+        update_person,
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id,
+      </if>
+      <if test="insertDate != null">
+        insert_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="vender != null">
+        #{vender,jdbcType=VARCHAR},
+      </if>
+      <if test="bottomCageSize != null">
+        #{bottomCageSize,jdbcType=VARCHAR},
+      </if>
+      <if test="cageSize != null">
+        #{cageSize,jdbcType=VARCHAR},
+      </if>
+      <if test="cageWeight != null">
+        #{cageWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="standardKnot != null">
+        #{standardKnot,jdbcType=VARCHAR},
+      </if>
+      <if test="standardSectionWeight != null">
+        #{standardSectionWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="maxHeight != null">
+        #{maxHeight,jdbcType=DOUBLE},
+      </if>
+      <if test="specifiedLoad != null">
+        #{specifiedLoad,jdbcType=DOUBLE},
+      </if>
+      <if test="ratedOccupant != null">
+        #{ratedOccupant,jdbcType=INTEGER},
+      </if>
+      <if test="upDownSpeed != null">
+        #{upDownSpeed,jdbcType=DOUBLE},
+      </if>
+      <if test="totalPower != null">
+        #{totalPower,jdbcType=DOUBLE},
+      </if>
+      <if test="ratedVoltage != null">
+        #{ratedVoltage,jdbcType=INTEGER},
+      </if>
+      <if test="ratedCurrent != null">
+        #{ratedCurrent,jdbcType=INTEGER},
+      </if>
+      <if test="reduceSpeedRatio != null">
+        #{reduceSpeedRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="speedLimiterBrakeTorque != null">
+        #{speedLimiterBrakeTorque,jdbcType=DOUBLE},
+      </if>
+      <if test="retroSpeed != null">
+        #{retroSpeed,jdbcType=DOUBLE},
+      </if>
+      <if test="protectorId != null">
+        #{protectorId,jdbcType=BIGINT},
+      </if>
+      <if test="attachmentRequirements != null">
+        #{attachmentRequirements,jdbcType=VARCHAR},
+      </if>
+      <if test="basicRequirements != null">
+        #{basicRequirements,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyPowerRequirements != null">
+        #{supplyPowerRequirements,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPerson != null">
+        #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.AmElevatorParam">
+    update am_elevator_param
+    <set>
+      <if test="vender != null">
+        vender = #{vender,jdbcType=VARCHAR},
+      </if>
+      <if test="bottomCageSize != null">
+        bottom_cage_size = #{bottomCageSize,jdbcType=VARCHAR},
+      </if>
+      <if test="cageSize != null">
+        cage_size = #{cageSize,jdbcType=VARCHAR},
+      </if>
+      <if test="cageWeight != null">
+        cage_weight = #{cageWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="standardKnot != null">
+        standard_knot = #{standardKnot,jdbcType=VARCHAR},
+      </if>
+      <if test="standardSectionWeight != null">
+        standard__section_weight = #{standardSectionWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="maxHeight != null">
+        max_height = #{maxHeight,jdbcType=DOUBLE},
+      </if>
+      <if test="specifiedLoad != null">
+        specified_load = #{specifiedLoad,jdbcType=DOUBLE},
+      </if>
+      <if test="ratedOccupant != null">
+        rated_occupant = #{ratedOccupant,jdbcType=INTEGER},
+      </if>
+      <if test="upDownSpeed != null">
+        up_down_speed = #{upDownSpeed,jdbcType=DOUBLE},
+      </if>
+      <if test="totalPower != null">
+        total_power = #{totalPower,jdbcType=DOUBLE},
+      </if>
+      <if test="ratedVoltage != null">
+        rated_voltage = #{ratedVoltage,jdbcType=INTEGER},
+      </if>
+      <if test="ratedCurrent != null">
+        rated_current = #{ratedCurrent,jdbcType=INTEGER},
+      </if>
+      <if test="reduceSpeedRatio != null">
+        reduce_speed_ratio = #{reduceSpeedRatio,jdbcType=VARCHAR},
+      </if>
+      <if test="speedLimiterBrakeTorque != null">
+        speed_limiter_brake_torque = #{speedLimiterBrakeTorque,jdbcType=DOUBLE},
+      </if>
+      <if test="retroSpeed != null">
+        retro_speed = #{retroSpeed,jdbcType=DOUBLE},
+      </if>
+      <if test="protectorId != null">
+        protector_id = #{protectorId,jdbcType=BIGINT},
+      </if>
+      <if test="attachmentRequirements != null">
+        attachment_requirements = #{attachmentRequirements,jdbcType=VARCHAR},
+      </if>
+      <if test="basicRequirements != null">
+        basic_requirements = #{basicRequirements,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyPowerRequirements != null">
+        supply_power_requirements = #{supplyPowerRequirements,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPerson != null">
+        insert_person = #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id = #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        update_person = #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id = #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        insert_date = #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmElevatorParamKitMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmElevatorParamKit">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="elevator_id" jdbcType="BIGINT" property="elevatorId" />
+    <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
+    <result column="kit_unit" jdbcType="VARCHAR" property="kitUnit" />
+    <result column="kit_count" jdbcType="INTEGER" property="kitCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, elevator_id, kit_name, kit_unit, kit_count
+  </sql>
+  <select id="selectByPid" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from am_elevator_param_kit
+    where elevator_id = #{elevatorId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPid" parameterType="java.lang.Long">
+    delete from am_elevator_param_kit
+    where elevator_id = #{elevatorId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmElevatorParamKit" useGeneratedKeys="true">
+    insert into am_elevator_param_kit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="elevatorId != null">
+        elevator_id,
+      </if>
+      <if test="kitName != null">
+        kit_name,
+      </if>
+      <if test="kitUnit != null">
+        kit_unit,
+      </if>
+      <if test="kitCount != null">
+        kit_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="elevatorId != null">
+        #{elevatorId,jdbcType=BIGINT},
+      </if>
+      <if test="kitName != null">
+        #{kitName,jdbcType=VARCHAR},
+      </if>
+      <if test="kitUnit != null">
+        #{kitUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="kitCount != null">
+        #{kitCount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

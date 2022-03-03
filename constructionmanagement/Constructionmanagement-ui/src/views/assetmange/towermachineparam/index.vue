@@ -472,6 +472,55 @@
           </ul>
       </el-row>
 
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              录入人: {{ towerMachineParamDetail.insertPerson }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              录入时间: {{ parseTime(towerMachineParamDetail.insertDate) }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              录入人部门id: {{ towerMachineParamDetail.insertPersonDepartId }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              更新人部门id: {{ towerMachineParamDetail.updatePersonDepartId }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              更新人: {{ towerMachineParamDetail.updatePerson }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              录入时间: {{ parseTime(towerMachineParamDetail.updateDate) }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+
       <el-row v-if="kits==undefined||kits.length==0">
         <ul class="list-group">
           <li class="list-group-item">
@@ -479,68 +528,96 @@
           </li>
         </ul>
       </el-row>
-      <el-row v-else v-for="kit in this.kits">
+      <div v-else>
+        <br/> <br/>
+        <el-col :span="8" :xs="100">
+          配件名称
+        </el-col>
+        <el-col :span="8" :xs="100">
+          单位
+        </el-col>
+        <el-col :span="8" :xs="100">
+          数量
+        </el-col>
+      <el-row v-for="kit in this.kits">
         <el-col :span="8" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              配件名称: {{ kit.kitName }}
+             {{ kit.kitName }}.
             </li>
           </ul>
         </el-col>
         <el-col :span="8" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              单位: {{ kit.unit}}
+             {{ kit.unit}}.
             </li>
           </ul>
         </el-col>
         <el-col :span="8" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              数量: {{ kit.kitCount}}
+             {{ kit.kitCount}}.
             </li>
           </ul>
         </el-col>
       </el-row>
-
+      </div>
       <el-row v-if="Parts==undefined||Parts.length==0">
         <ul class="list-group">
           <li class="list-group-item">
-            配件 ：暂时无部件信息
+            部件 ：暂时无部件信息
           </li>
         </ul>
       </el-row>
-      <el-row v-else v-for="part in this.Parts">
+      <div v-else>
+        <br/><br/>
+        <el-row >
+          <el-col :span="6" :xs="100">
+                部件名称
+          </el-col>
+          <el-col :span="6" :xs="100">
+                部件型号
+          </el-col>
+          <el-col :span="6" :xs="100">
+                部件类别
+          </el-col>
+          <el-col :span="6" :xs="100">
+                数量:
+          </el-col>
+        </el-row>
+
+      <el-row  v-for="part in this.Parts">
         <el-col :span="6" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              部件名称: {{ part.partName }}
+             {{ part.partName }}.
             </li>
           </ul>
         </el-col>
         <el-col :span="6" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              部件型号: {{ part.partModel}}
+              {{ part.partModel}}.
             </li>
           </ul>
         </el-col>
         <el-col :span="6" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              部件类别: {{ part.partType}}
+              {{ part.partType}}.
             </li>
           </ul>
         </el-col>
         <el-col :span="6" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              数量: {{ part.partCount}}
+              {{ part.partCount}}.
             </li>
           </ul>
         </el-col>
       </el-row>
-
+      </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
       </div>
@@ -769,6 +846,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm')
+      this.queryParams.insertDate=''
       this.handleQuery()
     },
     // 多选框选中数据
@@ -785,7 +863,7 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-       this.reset()
+        this.reset()
         this.form = row
         getKitAndPart(row.id).then((res) => {
         this.paramsKit=res.data.amTowerMachineParamkits;
@@ -798,10 +876,11 @@ export default {
     },
     /** 提交按钮 */
     submitForm: function() {
-
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
+            this.form.amTowerMachineParamkits=this.paramsKit;
+            this.form.amTowerMachineParamParts=this.paramsPart;
             updateTowerMachineParam(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
@@ -813,12 +892,12 @@ export default {
             addTowerMachineParam(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
-              this.paramsKit=[];
-              this.paramsPart=[];
               this.getList()
             })
           }
         }
+        this.paramsKit=[];
+        this.paramsPart=[];
       })
     },
 

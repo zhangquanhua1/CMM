@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmProtectorMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmProtector">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="standard" jdbcType="VARCHAR" property="standard" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="product_date" jdbcType="TIMESTAMP" property="productDate" />
+    <result column="check_date" jdbcType="TIMESTAMP" property="checkDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `standard`, model, product_date, check_date
+  </sql>
+  <select id="selectBySelective" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from am_protector
+    <where>
+
+      <if test="model!= null">
+        and model like concat('%', #{model}, '%')
+      </if>
+      <if test="productDate != null">
+        and date_format(product_date,'%y%m%d') &gt;= date_format(#{productDate},'%y%m%d')
+
+      </if>
+      <if test="checkDate != null">
+        and date_format(check_date,'%y%m%d') &gt;= date_format(#{checkDate},'%y%m%d')
+      </if>
+
+    </where>
+  </select>
+  <delete id="deleteByIds" parameterType="java.lang.Long">
+    delete from am_protector
+    where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmProtector" useGeneratedKeys="true">
+    insert into am_protector
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="standard != null">
+        `standard`,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="productDate != null">
+        product_date,
+      </if>
+      <if test="checkDate != null">
+        check_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="standard != null">
+        #{standard,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        #{productDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkDate != null">
+        #{checkDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.AmProtector">
+    update am_protector
+    <set>
+      <if test="standard != null">
+        `standard` = #{standard,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkDate != null">
+        check_date = #{checkDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

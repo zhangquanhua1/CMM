@@ -40,6 +40,10 @@
 </where>
 
   </select>
+    <select id="selectByParam" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List" />
+      from am_part_param  where part_model =#{partModel} and part_Code =#{partCode} and part_Name =#{partName}
+    </select>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmPartParam" useGeneratedKeys="true">
     insert into am_part_param
     <trim prefix="(" suffix=")" suffixOverrides=",">

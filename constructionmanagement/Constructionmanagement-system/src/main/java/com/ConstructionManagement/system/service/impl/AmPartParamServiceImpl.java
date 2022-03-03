@@ -36,4 +36,9 @@ public class AmPartParamServiceImpl implements IAmPartParamService {
     public int updateByPrimaryKeySelective(AmPartParam record) {
         return amPartParamMapper.updateByPrimaryKeySelective(record);
     }
+
+    @Override
+    public AmPartParam selectByParam(String partCode, String partModel, String partName) {
+        return amPartParamMapper.selectByParam(partCode, partModel, partName);
+    }
 }

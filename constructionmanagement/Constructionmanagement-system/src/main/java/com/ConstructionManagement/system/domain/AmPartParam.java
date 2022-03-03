@@ -42,6 +42,7 @@ public class AmPartParam implements Serializable {
      * 备注
      */
     private String remark;
+    private List<AmPartParamKit> amPartParamKits;
 
     public List<AmPartParamKit> getAmPartParamKits() {
         return amPartParamKits;
@@ -50,8 +51,6 @@ public class AmPartParam implements Serializable {
     public void setAmPartParamKits(List<AmPartParamKit> amPartParamKits) {
         this.amPartParamKits = amPartParamKits;
     }
-
-    private List<AmPartParamKit> amPartParamKits;
 
     private static final long serialVersionUID = 1L;
 

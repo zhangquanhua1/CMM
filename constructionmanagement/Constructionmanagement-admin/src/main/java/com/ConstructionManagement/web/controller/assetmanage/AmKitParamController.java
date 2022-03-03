@@ -59,7 +59,7 @@ public class AmKitParamController extends BaseController {
      * 修改保存角色
      */
     @PreAuthorize("@ss.hasPermi('asset:manage:kitparam:edit')")
-    @Log(title = "配件参数", businessType = BusinessType.UPDATE)
+    @Log(title = "零件参数", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody AmKitParam amKitParam)
     {
