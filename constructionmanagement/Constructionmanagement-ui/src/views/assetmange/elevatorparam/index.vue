@@ -65,6 +65,10 @@
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="吊笼重量(kg)" align="center" prop="cageWeight"/>
       <el-table-column label="标准节重量(kg)" align="center" prop="standardSectionWeight"/>
@@ -92,7 +96,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
+            icon="el-icon-more"
             @click="handleDetail(scope.row)"
           >设备详情
           </el-button>

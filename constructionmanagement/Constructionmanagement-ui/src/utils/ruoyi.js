@@ -258,3 +258,21 @@ export async function blobValidate(data) {
       return true;
     }
 }
+
+/**
+ * 判断对象的值是不是全为空
+ */
+export  function objectValueAllEmpty1(object){
+  var isEmpty = true;
+  Object.keys(object).forEach(function(x) {
+    console.log("x="+x+" "+object[x])
+    if(x=="pageNum"||x=="pageSize"||x=="objectValueAllEmpty") return;
+    if(object[x] != null && object[x] != ""){
+      isEmpty = false;
+    }
+  });
+  if(isEmpty){//值全为空
+    return true;
+  }
+  return false;
+}

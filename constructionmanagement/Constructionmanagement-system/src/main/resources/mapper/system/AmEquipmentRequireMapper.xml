@@ -63,9 +63,6 @@
       <if test="initDate != null">
         and   date_format(init_date,'%y%m%d') &gt;= date_format(#{initDate},'%y%m%d')
       </if>
-      <if test="state != null">
-        and  state
-      </if>
     </where>
   </select>
   <delete id="deleteByIds" parameterType="java.lang.Long">

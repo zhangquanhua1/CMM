@@ -74,6 +74,10 @@
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column label="部件名称" align="center" prop="partName"/>
       <el-table-column label="代码" align="center" prop="partCode"/>
       <el-table-column label="型号" align="center" prop="partModel"/>
@@ -101,7 +105,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
+            icon="el-icon-more"
             @click="handleDetail(scope.row)"
           >部件详情
           </el-button>

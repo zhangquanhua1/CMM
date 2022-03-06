@@ -19,6 +19,26 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
+      <el-form-item label="设备自编号" label-width="auto" prop="equipmentSelfNumber">
+        <el-input
+          v-model="queryParams.equipmentSelfNumber"
+          placeholder="请输入设备自编号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="规格型号" prop="standardModel">
+        <el-input
+          v-model="queryParams.standardModel"
+          placeholder="请输入规格型号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
       <el-form-item label="生产厂家" prop="vender">
         <el-input
           v-model="queryParams.vender"
@@ -28,7 +48,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
       <el-form-item label="设备类型" prop="equipmentType">
         <el-input
           v-model="queryParams.equipmentType"
@@ -65,32 +84,58 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="项目日期">
+
+      <el-form-item label="备案编号" prop="recordNumber">
+        <el-input
+          v-model="queryParams.recordNumber"
+          placeholder="请输入备案编号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+
+      <el-form-item label="采购日期">
         <el-date-picker
-          v-model="queryParams.projectDate"
+          v-model="queryParams.purchaseDate"
           size="small"
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="date"
-          placeholder="选择项目日期"
+          placeholder="选择采购日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="发起日期">
+      <el-form-item label="报废日期">
         <el-date-picker
-          v-model="queryParams.initDate"
+          v-model="queryParams.retireDate"
           size="small"
           style="width: 240px"
           value-format="yyyy-MM-dd"
           type="date"
-          placeholder="选择发起日期"
+          placeholder="选择报废日期"
         ></el-date-picker>
       </el-form-item>
-<!--      <el-form-item>-->
-<!--        <template>-->
-<!--          <el-radio v-model="queryParams.state" label="1">已审核</el-radio>-->
-<!--          <el-radio v-model="queryParams.state" label="0">待审核</el-radio>-->
-<!--        </template>-->
-<!--      </el-form-item>-->
+      <el-form-item label="融资到期日期" label-width="auto">
+        <el-date-picker
+          v-model="queryParams.financingMaturityDate"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="date"
+          placeholder="选择融资到期日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="录入日期">
+        <el-date-picker
+          v-model="queryParams.insertDate"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="date"
+          placeholder="选择录入日期"
+        ></el-date-picker>
+      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -105,7 +150,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['asset:manage:equipmentrequire:add']"
+          v-hasPermi="['inventory:manage:equipmententry:add']"
         >新增
         </el-button>
       </el-col>
@@ -117,7 +162,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['asset:manage:equipmentrequire:remove']"
+          v-hasPermi="['inventory:manage:equipmententry:remove']"
         >删除
         </el-button>
       </el-col>
@@ -141,66 +186,44 @@
         type="index"
         width="50">
       </el-table-column>
-
       <el-table-column label="设备名称" align="center" prop="equipmentName"/>
       <el-table-column label="设备编号" align="center" prop="equipmentNumber"/>
+      <el-table-column label="设备自编号" align="center" prop="equipmentSelfNumber"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="规格型号" align="center" prop="standardModel"/>
       <el-table-column label="设备类型" align="center" prop="equipmentType"/>
-      <el-table-column label="设备数量" align="center" prop="equipmentCount"/>
       <el-table-column label="产权单位" align="center" prop="rightsUnit"/>
       <el-table-column label="归属仓库" align="center" prop="belongWarehouse"/>
       <el-table-column label="项目地址" align="center" prop="projectAddress"/>
-      <el-table-column label="需求发起人" align="center" prop="demandSponsors"/>
-      <el-table-column label="采购原因" align="center" prop="procurementCauses"/>
-      <el-table-column label="审核状态" align="center" prop="state" :filters="[{ text: '待审核', value: 0 },
-      { text: '通过', value: 1 },{ text: '拒绝', value: 2 }]"
-                       :filter-method="filterState">
+      <el-table-column label="录入日期" align="center" prop="insertDate">
         <template slot-scope="scope">
-        <el-tag :type="'primary'" v-if="scope.row.state==0" >待审核</el-tag>
-          <el-tag :type="'success'" v-else-if="scope.row.state==1">通过</el-tag>
-          <el-tag :type="'danger'"v-else>拒绝</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核意见" align="center" prop="auditAdvice">
-        <template slot-scope="scope">
-          <span v-if="scope.row.state==0" >待审核中</span>
-          <span v-else>{{scope.row.auditAdvice}}</span>
+          <span>{{ parseTime2(scope.row.insertDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.state!=1"
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['asset:manage:equipmentrequire:edit']"
+            v-hasPermi="['inventory:manage:equipmententry:edit']"
           >修改
           </el-button>
-          <el-button v-if="scope.row.state!=1"
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['asset:manage:equipmentrequire:remove']"
+            v-hasPermi="['inventory:manage:equipmententry:remove']"
           >删除
           </el-button>
-          <el-button
-                     size="mini"
-                     type="text"
-                     icon="el-icon-view"
-                     @click="handleAudit(scope.row)"
-                     v-hasPermi="['asset:manage:equipmentrequire:audit']"
-          >审核
-          </el-button>
-
           <el-button
             size="mini"
             type="text"
             icon="el-icon-more"
             @click="handleDetail(scope.row)"
-          >设备详情
+          >详情
           </el-button>
         </template>
       </el-table-column>
@@ -212,71 +235,6 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="设备名称" prop="equipmentName">
-          <el-input v-model="form.equipmentName" placeholder="请输入设备名称"/>
-        </el-form-item>
-        <el-form-item label="设备编号" prop="equipmentNumber">
-          <el-input v-model.number="form.equipmentNumber" placeholder="请输入设备编号"/>
-        </el-form-item>
-        <el-form-item label="生产厂家" prop="vender">
-          <el-input v-model="form.vender" placeholder="请输入生产厂家"/>
-        </el-form-item>
-        <el-form-item label="规格型号" prop="standardModel">
-          <el-input v-model="form.standardModel" placeholder="请输入规格型号"/>
-        </el-form-item>
-        <el-form-item label="设备类型" prop="equipmentType">
-          <el-input v-model="form.equipmentType" placeholder="请输入设备类型"/>
-        </el-form-item>
-        <el-form-item label="设备数量" prop="equipmentCount">
-          <el-input v-model.number="form.equipmentCount" placeholder="请输入设备数量"/>
-        </el-form-item>
-        <el-form-item label="产权单位" prop="rightsUnit">
-          <el-input v-model="form.rightsUnit" placeholder="请输入产权单位"/>
-        </el-form-item>
-        <el-form-item label="配件属性" prop="kitProperties">
-          <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>
-        </el-form-item>
-        <el-form-item label="归属仓库" prop="belongWarehouse">
-          <el-input v-model="form.belongWarehouse" placeholder="请输入归属仓库"/>
-        </el-form-item>
-        <el-form-item label="项目地址" prop="projectAddress">
-          <el-input v-model.number="form.projectAddress" placeholder="请输入项目地址"/>
-        </el-form-item>
-        <el-form-item label="项目日期">
-          <el-date-picker
-            v-model="form.projectDate"
-            size="small"
-            style="width: 240px"
-            value-format="yyyy-MM-dd"
-            type="date"
-            placeholder="选择项目日期"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="发起日期">
-          <el-date-picker
-            v-model="form.initDate"
-            size="small"
-            style="width: 240px"
-            value-format="yyyy-MM-dd"
-            type="date"
-            placeholder="选择发起日期"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="需求发起人" prop="demandSponsors">
-          <el-input v-model="form.demandSponsors" placeholder="请输入需求发起人"/>
-        </el-form-item>
-        <el-form-item label="采购原因" prop="procurementCauses">
-          <el-input v-model="form.procurementCauses" placeholder="请输入采购原因"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
     <!--    详情弹窗-->
     <el-dialog :title="title" :visible.sync="openDetail" width="40%"  class="spec-dialog" append-to-body>
       <el-row >
@@ -322,7 +280,7 @@
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              设备数量: {{ Detail.equipmentCount }}
+              设备自编号: {{ Detail.equipmentSelfNumber }}
             </li>
           </ul>
         </el-col>
@@ -353,8 +311,9 @@
         </el-col>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
-            <li class="list-group-item">
-              项目日期: {{ parseTime2(Detail.projectDate) }}
+            <li class="list-group-item">是否融资:
+              <span v-if="Detail.financeLease==0">否</span>
+              <span v-else>是</span>
             </li>
           </ul>
         </el-col>
@@ -363,14 +322,14 @@
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              发起日期: {{ parseTime2(Detail.initDate) }}
+              发票号: {{ Detail.invoiceNumber}}
             </li>
           </ul>
         </el-col>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              需求发起人: {{ Detail.demandSponsors }}
+              购买合同: {{ Detail.purchaseContract }}
             </li>
           </ul>
         </el-col>
@@ -379,40 +338,185 @@
         <el-col :span="24" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              采购原因: {{ Detail.procurementCauses }}
+              制造许可证号: {{ Detail.manufacturingLicenseNo }}
             </li>
           </ul>
         </el-col>
       </el-row>
+
       <el-row >
-        <el-col :span="24" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">审核状态：
-              <span v-if="Detail.state==0">待审核</span>
-              <span v-else-if="Detail.state==1" >审核通过</span>
-              <span v-else>审核不通过</span>
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="24" :xs="100">
+        <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              审核意见:
-              <span v-if="Detail.auditAdvice==null">
-                待审核状态中
-              </span>
-              <span v-else> {{Detail.auditAdvice }}</span>
+              出厂日期: {{ parseTime2(Detail.productDate) }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              采购日期: {{ parseTime2(Detail.purchaseDate) }}
             </li>
           </ul>
         </el-col>
       </el-row>
       <el-row >
-        <el-col :span="24" :xs="100">
+        <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              发起日期: {{parseTime2(Detail.initDate) }}
+              报废日期: {{ parseTime2(Detail.retireDate) }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              单位责任人: {{ Detail.unitResponsiblePerson }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              所属部门: {{Detail.department}}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              楼号: {{ Detail.buildingNo }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              设备来源: {{ Detail.equipmentSource }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              登记人: {{ (Detail.registrant) }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              开票时间: {{ parseTime2(Detail.invoiceTime) }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              融资到期日期: {{parseTime2(Detail.financingMaturityDate)  }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              出厂编号: {{ Detail.manufacturingNo }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              合同单价: {{ (Detail.contractUnitPrice) }} 元
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              数量: {{ Detail.amount }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              税率: {{ (Detail.rate) }}%
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              不含税价: {{ Detail.exclusiveTaxPrice }}元
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              税金: {{ (Detail.taxation) }}元
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              折旧率: {{ Detail.depreciationRate }}%
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              联系电话: {{ (Detail.contactNumber) }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              登记时间: {{ parseTime(Detail.registrationTime) }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              确认时间: {{parseTime(Detail.acknowledgingTime)  }}
+            </li>
+          </ul>
+        </el-col>
+      </el-row>
+      <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              融资批次: {{ Detail.financingBatch }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              融资金额: {{ (Detail.financingAmount) }}
             </li>
           </ul>
         </el-col>
@@ -469,25 +573,6 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-<!--    审核弹窗-->
-    <el-dialog :title="title" :visible.sync="openAudit" width="25%" @close="getList"  class="spec-dialog" append-to-body>
-      <el-form ref="form" :model="form"  label-width="80px">
-        <el-form-item label="是否通过" prop="auditAdvice">
-          <el-radio-group v-model="form.state">
-            <el-radio :label="2">否</el-radio>
-            <el-radio :label="1">是</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="审核意见" prop="auditAdvice">
-          <el-input type="textarea" autosize v-model="form.auditAdvice" placeholder="请输入审核意见"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitAudit">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-
   </div>
 </template>
 <style lang="scss">
@@ -496,31 +581,16 @@
   height: 500px;
   overflow: auto;
 }
-.status-icon {
-  width: 8px;
-  height: 8px;
-  border-radius: 1px;
-  margin-right: 5px;
-  position: relative;
-  left: 32px;
-  bottom: -15px;
-}
-.icon1 {
-  background-color: #19be6b;
-}
-.icon0 {
-  background-color: #eb194d;
-}
 </style>
 <script>
 import {
-  addEquipmentRequire,
-  delEquipmentRequire,
-  listEquipmentRequire,
-  updateEquipmentRequire
-} from '@/api/towerparam/equipmentrequire'
+  addEquipmentEntry,
+  delEquipmentEntry,
+  listEquipmentEntry,
+  updateEquipmentEntry
+} from '@/api/towerparam/EquipmentEntry'
 export default {
-  name: 'equipmentTyperequire',
+  name: 'equipmentEntry',
   // dicts: ['sys_normal_disable'],
   data() {
     return {
@@ -547,28 +617,84 @@ export default {
         pageNum: 1,
         pageSize: 10,
         equipmentNumber: undefined,
+        equipmentSelfNumber:undefined,
         equipmentName: undefined,
+        standardModel: undefined,
         vender: undefined,
         equipmentType: undefined,
         rightsUnit: undefined,
         belongWarehouse: undefined,
         projectAddress: undefined,
-        projectDate: undefined,
-        initDate: undefined,
-        state:undefined,
+        recordNumber:undefined,
+        purchaseDate: undefined,
+        retireDate: undefined,
+        financingMaturityDate:undefined,
+        insertDate:undefined,
+        objectValueAllEmpty:false,
       },
       openDetail: false,
-      openAudit: false,
       Detail:{},
       form: {
       },
       // 表单校验
       rules: {
         equipmentNumber: [
-          { required: true, message: '设备编号不能为空', trigger: 'blur' }
+          { required: true, message: '设备编号不能为空', trigger: 'blur' },{
+            type: 'number', message: '设备编号必须为数字值',trigger: 'blur' }
         ],
-        equipmentCount: [{
-          type: 'number', message: '设备数量必须为数字值',trigger: 'blur' }],
+        equipmentSelfNumber: [
+          { type: 'number', message: '设备自编号必须为数字值',trigger: 'blur' }
+        ],
+        invoiceNumber: [
+          { type: 'number', message: '发票号必须为数字值',trigger: 'blur' }
+        ],
+        buildingNo: [
+          { type: 'number', message: '楼号必须为数字值',trigger: 'blur' }
+        ],
+        contractUnitPrice: [
+          { type: 'number', message: '合同单价必须为数字值',trigger: 'blur' }
+        ],
+        amount: [
+          { type: 'number', message: '数量必须为数字值',trigger: 'blur' }
+        ],
+        rate: [
+          { type: 'number', message: '税率必须为数字值',trigger: 'blur' }
+        ],
+        exclusiveTaxPrice: [
+          { type: 'number', message: '不含税价必须为数字值',trigger: 'blur' }
+        ],
+        taxation: [
+          { type: 'number', message: '税金必须为数字值',trigger: 'blur' }
+        ],
+        depreciationRate: [
+          { type: 'number', message: '折旧率必须为数字值',trigger: 'blur' }
+        ],
+        // contactNumber: [
+        //   { type: 'number', message: '联系电话必须为数字值',trigger: 'blur' }
+        // ],
+        contactNumber: [
+          {
+            required: true,
+            message: "请输入联系电话",
+            trigger: "blur"
+          },
+          {
+            validator: function(rule, value, callback) {
+              if (/^1[34578]\d{9}$/.test(value) == false) {
+                callback(new Error("手机号格式错误"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur"
+          }
+        ],
+        financingAmount: [
+          { type: 'number', message: '融资金额必须为数字值',trigger: 'blur' }
+        ],
+
+
+
       },
     }
   },
@@ -576,10 +702,14 @@ export default {
     this.getList()
   },
   methods: {
+
     /** 查询列表 */
     getList() {
+      if(this.objectValueAllEmpty1(this.queryParams))
+        this.queryParams.objectValueAllEmpty=true;
       this.loading = true
-      listEquipmentRequire(this.queryParams).then(response => {
+      listEquipmentEntry(this.queryParams).then(response => {
+        this.queryParams.objectValueAllEmpty=false;
         this.postList = response.rows
         this.total = response.total
         this.loading = false
@@ -589,7 +719,6 @@ export default {
     cancel() {
       this.open = false
       this.openDetail= false
-      this.openAudit=false
       this.reset()
     },
     // 表单重置
@@ -597,20 +726,42 @@ export default {
       this.form = {
         vender: undefined,
         equipmentNumber: undefined,
+        equipmentSelfNumber:undefined,
         equipmentName: undefined,
         standardModel: undefined,
         equipmentType: undefined,
-        equipmentCount: undefined,
+        recordNumber: undefined,
         rightsUnit:undefined,
         belongWarehouse:undefined ,
         projectAddress:undefined ,
-        projectDate:undefined ,
-        initDate:undefined ,
-        demandSponsors:undefined ,
-        procurementCauses:undefined ,
-        state:undefined ,
-        auditAdvice:undefined ,
+        financeLease:undefined,
+        invoiceNumber:undefined,
+        purchaseContract:undefined,
+        manufacturingLicenseNo:undefined,
+        purchaseDate:undefined ,
+        retireDate:undefined ,
+        unitResponsiblePerson:undefined ,
+        department:undefined ,
+        buildingNo:undefined ,
+        equipmentSource:undefined ,
+        registrant:undefined ,
+        confirmPerson:undefined ,
+        invoiceTime:undefined ,
+        financingMaturityDate:undefined ,
+        manufacturingNo:undefined ,
+        contractUnitPrice:undefined ,
+        amount:undefined ,
+        rate:undefined ,
+        exclusiveTaxPrice:undefined ,
+        taxation:undefined ,
+        depreciationRate:undefined ,
+        contactNumber:undefined ,
+        registrationTime:undefined ,
+        acknowledgingTime:undefined ,
+        financingBatch:undefined ,
+        financingAmount:undefined ,
       },
+
         this.resetForm('form')
     },
     /** 搜索按钮操作 */
@@ -622,9 +773,11 @@ export default {
     resetQuery() {
       this.resetForm('queryForm')
       this.queryParams.equipmentName=''
-      this.queryParams.initDate=''
-      this.queryParams.projectDate=''
-      this.handleQuery()
+      this.queryParams.retireDate='',
+        this.queryParams.purchaseDate='',
+        this.queryParams.financingMaturityDate='',
+        this.queryParams.insertDate='',
+        this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -650,13 +803,13 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateEquipmentRequire(this.form).then(response => {
+            updateEquipmentEntry(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
               this.getList()
             })
           } else {
-            addEquipmentRequire(this.form).then(response => {
+            addEquipmentEntry(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
               this.getList()
@@ -670,7 +823,7 @@ export default {
     handleDelete(row) {
       const postIds = row.id || this.ids
       this.$modal.confirm('是否确认删除？').then(function() {
-        return delEquipmentRequire(postIds)
+        return delEquipmentEntry(postIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')
@@ -681,21 +834,6 @@ export default {
       this.Detail = row
       this.openDetail = true
       this.title = '详情'
-    },
-    handleAudit(row){
-      this.form = row
-      this.openAudit = true
-      this.title = '审核'
-    },
-    submitAudit(){
-      updateEquipmentRequire(this.form).then(response => {
-        this.$modal.msgSuccess('修改成功')
-        this.openAudit = false
-        this.getList()
-      })
-    },
-    filterState(value,row){
-      return row.state === value;
     },
     /** 导出按钮操作 */
     handleExport() {

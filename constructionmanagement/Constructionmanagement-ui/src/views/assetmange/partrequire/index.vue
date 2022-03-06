@@ -111,7 +111,12 @@
     </el-row>
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
+
       <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column label="部件名称" align="center" prop="partName"/>
       <el-table-column label="产品编号" align="center" prop="productNum"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
@@ -127,11 +132,13 @@
       <el-table-column label="单价" align="center" prop="singlePrice"/>
       <el-table-column label="需求发起人" align="center" prop="demandSponsors"/>
       <el-table-column label="采购原因" align="center" prop="procurementCauses"/>
-      <el-table-column label="审核状态" align="center" prop="state">
+      <el-table-column label="审核状态" align="center" prop="state" :filters="[{ text: '待审核', value: 0 },
+      { text: '通过', value: 1 },{ text: '拒绝', value: 2 }]"
+                       :filter-method="filterState">
         <template slot-scope="scope">
-          <span v-if="scope.row.state==0" >待审核</span>
-          <span v-else-if="scope.row.state==1">通过</span>
-          <span v-else>拒绝</span>
+          <el-tag :type="'primary'" v-if="scope.row.state==0" >待审核</el-tag>
+          <el-tag :type="'success'" v-else-if="scope.row.state==1">通过</el-tag>
+          <el-tag :type="'danger'"v-else>拒绝</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="审核意见" align="center" prop="auditAdvice">
@@ -162,7 +169,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
+            icon="el-icon-view"
             @click="handleAudit(scope.row)"
             v-hasPermi="['asset:manage:partrequire:audit']"
           >审核
@@ -170,7 +177,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
+            icon="el-icon-more"
             @click="handleDetail(scope.row)"
           >设备详情
           </el-button>
@@ -789,7 +796,9 @@ export default {
         this.getList()
       })
     },
-
+    filterState(value,row){
+      return row.state === value;
+    },
     /** 导出按钮操作 */
     handleExport() {
       this.download()

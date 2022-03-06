@@ -76,6 +76,10 @@
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column label="防坠器规格" align="center" prop="standard"/>
       <el-table-column label="型号" align="center" prop="model"/>
       <el-table-column label="出厂日期" align="center" prop="productDate">
@@ -191,9 +195,9 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        model: '',
-        productDate: '',
-        checkDate: '',
+        model: undefined,
+        productDate: undefined,
+        checkDate: undefined,
       },
       form: {
         standard:'',

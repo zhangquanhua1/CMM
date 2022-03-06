@@ -94,6 +94,10 @@
 <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column label="塔机名称" align="center" prop="towerMachineName"/>
       <el-table-column label="塔机型号" align="center" prop="towerMachineModel"/>
       <el-table-column label="厂家" align="center" prop="vender"/>
@@ -120,7 +124,7 @@
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
+            icon="el-icon-more"
             @click="handleDetail(scope.row)"
           >设备详情
           </el-button>

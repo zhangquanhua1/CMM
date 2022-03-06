@@ -1,15 +1,6 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="零配件名称" prop="kitName">
-        <el-input
-          v-model="queryParams.kitName"
-          placeholder="请输入零配件名称"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
       <el-form-item label="产品编号" prop="productNum">
         <el-input
           v-model="queryParams.productNum"
@@ -28,7 +19,24 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-
+      <el-form-item label="零配件名称"  label-width="auto" prop="kitName">
+        <el-input
+          v-model="queryParams.kitName"
+          placeholder="请输入零配件名称"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="零配件类别" label-width="auto" prop="kitType">
+        <el-input
+          v-model="queryParams.kitType"
+          placeholder="请输入零配件类别"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
       <el-form-item label="所属设备" prop="equipment">
         <el-input
           v-model="queryParams.equipment"
@@ -38,14 +46,44 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="产权单位" prop="rightsUnit">
+      <el-form-item label="配件型号" prop="kitModel">
         <el-input
-          v-model="queryParams.rightsUnit"
-          placeholder="请输入产权单位"
+          v-model="queryParams.kitModel"
+          placeholder="请输入配件型号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
+      </el-form-item>
+      <el-form-item label="配件代码" prop="kitCode">
+        <el-input
+          v-model="queryParams.kitCode"
+          placeholder="请输入配件代码"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+
+      <el-form-item label="采购日期">
+        <el-date-picker
+          v-model="queryParams.purchaseDate"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="date"
+          placeholder="选择采购日期"
+        ></el-date-picker>
+      </el-form-item>
+      <el-form-item label="报废日期">
+        <el-date-picker
+          v-model="queryParams.retireDate"
+          size="small"
+          style="width: 240px"
+          value-format="yyyy-MM-dd"
+          type="date"
+          placeholder="选择报废日期"
+        ></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -60,7 +98,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['asset:manage:partrequire:add']"
+          v-hasPermi="['inventory:manage:kitentry:add']"
         >新增
         </el-button>
       </el-col>
@@ -72,7 +110,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['asset:manage:partrequire:remove']"
+          v-hasPermi="['inventory:manage:kitentry:remove']"
         >删除
         </el-button>
       </el-col>
@@ -100,65 +138,42 @@
       <el-table-column label="产品编号" align="center" prop="productNum"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="零配件类别" align="center" prop="kitType"/>
-      <el-table-column label="所属设备" align="center" prop="equipment"/>
-      <el-table-column label="资产总计" align="center" prop="totalAssets"/>
-      <el-table-column label="产权单位" align="center" prop="rightsUnit"/>
-      <el-table-column label="数量" align="center" prop="amount"/>
-      <el-table-column label="单价" align="center" prop="singlePrice"/>
-      <el-table-column label="需求发起人" align="center" prop="demandSponsors"/>
-      <el-table-column label="发起日期" align="center" prop="initDate">
+      <el-table-column label="配件型号" align="center" prop="kitModel"/>
+      <el-table-column label="配件代码" align="center" prop="kitCode"/>
+      <el-table-column label="采购日期" align="center" prop="purchaseDate">
         <template slot-scope="scope">
-          <span>{{ parseTime2(scope.row.initDate) }}</span>
+          <span>{{ parseTime2(scope.row.purchaseDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="审核状态" align="center" prop="state" :filters="[{ text: '待审核', value: 0 },
-      { text: '通过', value: 1 },{ text: '拒绝', value: 2 }]"
-                       :filter-method="filterState">
+      <el-table-column label="报废日期" align="center" prop="retireDate">
         <template slot-scope="scope">
-          <el-tag :type="'primary'" v-if="scope.row.state==0" >待审核</el-tag>
-          <el-tag :type="'success'" v-else-if="scope.row.state==1">通过</el-tag>
-          <el-tag :type="'danger'"v-else>拒绝</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="审核意见" align="center" prop="auditAdvice">
-        <template slot-scope="scope">
-          <span v-if="scope.row.state==0" >待审核中</span>
-          <span v-else>{{scope.row.auditAdvice}}</span>
+          <span>{{ parseTime2(scope.row.retireDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.state!=1"
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
-            v-hasPermi="['asset:manage:partrequire:edit']"
+            v-hasPermi="['inventory:manage:kitentry:edit']"
           >修改
           </el-button>
-          <el-button v-if="scope.row.state!=1"
+          <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
-            v-hasPermi="['asset:manage:partrequire:remove']"
+            v-hasPermi="['inventory:manage:kitentry:remove']"
           >删除
           </el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-view"
-            @click="handleAudit(scope.row)"
-            v-hasPermi="['asset:manage:partrequire:audit']"
-          >审核
-          </el-button>
-
-          <el-button
-            size="mini"
-            type="text"
             icon="el-icon-more"
             @click="handleDetail(scope.row)"
-          >设备详情
+          >详情
           </el-button>
         </template>
       </el-table-column>
@@ -171,10 +186,10 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" :close-on-click-modal = "false" width="30%"  class="spec-dialog" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="零配件名称" prop="kitName">
-          <el-input v-model.number="form.kitName" placeholder="请输入零配件名称"/>
+          <el-input v-model="form.kitName" placeholder="请输入零配件名称"/>
         </el-form-item>
         <el-form-item label="产品编号" prop="productNum">
           <el-input v-model.number="form.productNum" placeholder="请输入产品编号"/>
@@ -201,7 +216,10 @@
           <el-input v-model="form.kitStandard" placeholder="请输入配件规格"/>
         </el-form-item>
         <el-form-item label="臂长" prop="brachium">
-          <el-input v-model.number="form.brachium" placeholder="请输入臂长(米)"/>
+          <el-input v-model.number="form.brachium" placeholder="请输入臂长,单位为：米"/>
+        </el-form-item>
+        <el-form-item label="折旧率" prop="depreciationRate">
+          <el-input v-model.number="form.depreciationRate" placeholder="请输入折旧率(%)"/>
         </el-form-item>
         <el-form-item label="设备型号" prop="unitType">
           <el-input v-model="form.unitType" placeholder="请输入设备型号"/>
@@ -210,7 +228,7 @@
           <el-input v-model="form.measurementUnit" placeholder="请输入计量单位"/>
         </el-form-item>
         <el-form-item label="标准节高度" prop="standardSectionHeight">
-          <el-input v-model.number="form.standardSectionHeight" placeholder="请输入标准节高度(米)"/>
+          <el-input v-model.number="form.standardSectionHeight" placeholder="请输入标准节高度（米）"/>
         </el-form-item>
         <el-form-item label="配件型号" prop="kitModel">
           <el-input v-model="form.kitModel" placeholder="请输入配件型号"/>
@@ -232,20 +250,36 @@
             </el-radio-group>
           </template>
         </el-form-item>
-        <el-form-item label="需求发起人" prop="demandSponsors">
-          <el-input v-model="form.demandSponsors" placeholder="请输入需求发起人"/>
+        <el-form-item label="防坠器" prop="protectorId">
+          <template>
+            <el-select v-model="form.protectorId" clearable placeholder="请选择">
+              <el-option
+                v-for="item in this.protectors"
+                :key="item.value"
+                :label="item.standard"
+                :value="item.id">
+              </el-option>
+            </el-select>
+          </template>
         </el-form-item>
-        <el-form-item label="采购原因" prop="procurementCauses">
-          <el-input v-model="form.procurementCauses" placeholder="请输入采购原因"/>
-        </el-form-item>
-        <el-form-item label="发起日期">
+        <el-form-item label="采购日期">
           <el-date-picker
-            v-model="form.initDate"
+            v-model="form.purchaseDate"
             size="small"
             style="width: 240px"
             value-format="yyyy-MM-dd"
             type="date"
-            placeholder="选择发起日期"
+            placeholder="选择采购日期"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="报废日期">
+          <el-date-picker
+            v-model="form.retireDate"
+            size="small"
+            style="width: 240px"
+            value-format="yyyy-MM-dd"
+            type="date"
+            placeholder="选择报废日期"
           ></el-date-picker>
         </el-form-item>
 
@@ -261,10 +295,19 @@
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
+              零配件名称: {{ Detail.kitName }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
               产品编号: {{ Detail.productNum }}
             </li>
           </ul>
         </el-col>
+      </el-row>
+      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -272,8 +315,6 @@
             </li>
           </ul>
         </el-col>
-      </el-row>
-      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -281,6 +322,8 @@
             </li>
           </ul>
         </el-col>
+      </el-row>
+      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -288,8 +331,6 @@
             </li>
           </ul>
         </el-col>
-      </el-row>
-      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -297,6 +338,8 @@
             </li>
           </ul>
         </el-col>
+      </el-row>
+      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -304,19 +347,10 @@
             </li>
           </ul>
         </el-col>
-      </el-row>
-      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
               配件属性: {{ Detail.kitProperties }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              零配件名称: {{ Detail.kitName }}
             </li>
           </ul>
         </el-col>
@@ -332,12 +366,19 @@
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              臂长: {{ Detail.brachium }} 米
+              臂长: {{ Detail.brachium}} 米
             </li>
           </ul>
         </el-col>
       </el-row>
       <el-row >
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              折旧率: {{ Detail.depreciationRate}}%
+            </li>
+          </ul>
+        </el-col>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -345,6 +386,8 @@
             </li>
           </ul>
         </el-col>
+      </el-row>
+      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -352,15 +395,15 @@
             </li>
           </ul>
         </el-col>
-      </el-row>
-      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              标准节高度: {{ Detail.standardSectionHeight }} 米
+              标准节高度: {{ Detail.standardSectionHeight }}米
             </li>
           </ul>
         </el-col>
+      </el-row>
+      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -368,8 +411,6 @@
             </li>
           </ul>
         </el-col>
-      </el-row>
-      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -377,10 +418,19 @@
             </li>
           </ul>
         </el-col>
+      </el-row>
+      <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
               数量: {{ Detail.amount }}
+            </li>
+          </ul>
+        </el-col>
+        <el-col :span="12" :xs="100">
+          <ul class="list-group">
+            <li class="list-group-item">
+              单价: {{ Detail.singlePrice }}
             </li>
           </ul>
         </el-col>
@@ -389,7 +439,7 @@
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              单价: {{ Detail.singlePrice }}
+              防坠器: {{ Detail.protectorId }}
             </li>
           </ul>
         </el-col>
@@ -403,27 +453,19 @@
           </ul>
         </el-col>
       </el-row>
+
       <el-row >
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              需求发起人: {{ Detail.demandSponsors }}
+              报废日期: {{ parseTime2(Detail.retireDate) }}
             </li>
           </ul>
         </el-col>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              采购原因: {{ Detail.procurementCauses }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="24" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-             发起日期: {{parseTime2(Detail.initDate) }}
+              采购日期: {{ parseTime2(Detail.purchaseDate) }}
             </li>
           </ul>
         </el-col>
@@ -471,29 +513,12 @@
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              录入时间: {{ parseTime(Detail.updateDate) }}
+              更新时间: {{ parseTime(Detail.updateDate) }}
             </li>
           </ul>
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog :title="title" :visible.sync="openAudit" @close="getList" width="25%"   class="spec-dialog" append-to-body>
-      <el-form ref="form" :model="form"  label-width="80px">
-        <el-form-item label="是否通过" prop="auditAdvice">
-          <el-radio-group v-model="form.state">
-            <el-radio :label="2">否</el-radio>
-            <el-radio :label="1">是</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="审核意见" prop="auditAdvice">
-          <el-input type="textarea" autosize v-model="form.auditAdvice" placeholder="请输入审核意见"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitAudit">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -507,10 +532,14 @@
 }
 </style>
 <script>
-import {listKitRequire,addKitRequire,delKitRequire,updateKitRequire } from '@/api/towerparam/kitrequire'
-import { updateEquipmentRequire } from '@/api/towerparam/equipmentrequire'
+import {
+  addKitEntry,
+  delKitEntry,
+  listKitEntry,
+  updateKitEntry,getProtector
+} from '@/api/towerparam/KitEntry'
 export default {
-  name: 'kitrequire',
+  name: 'kitEntry',
   // dicts: ['sys_normal_disable'],
   data() {
     return {
@@ -532,46 +561,71 @@ export default {
       title: '',
       // 是否显示弹出层
       open: false,
-      openAudit: false,
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        kitName: undefined,
         productNum: undefined,
-        vender: undefined,
+        vender:undefined,
+        kitName:undefined,
+        kitType: undefined,
+        purchaseDate: undefined,
+        retireDate: undefined,
         equipment: undefined,
-        rightsUnit: undefined,
+        kitModel: undefined,
+        kitCode: undefined,
+        objectValueAllEmpty:false,
       },
       openDetail: false,
       Detail:{},
+      protectors:[],
       form: {
       },
       // 表单校验
       rules: {
         productNum: [
           { required: true, message: '产品编号不能为空', trigger: 'blur' },{
-            type: 'number', message: '产品编号必须为数字值',trigger: 'blur'
+            type: 'number', message: '产品编号必须为数字值',trigger: 'blur' }
+        ],
+        totalAssets: [
+          { type: 'number', message: '资产总计必须为数字值',trigger: 'blur' }
+        ],
+        brachium: [
+          { type: 'number', message: '臂长必须为数字值',trigger: 'blur' }, {
+            pattern: /^(0|[1-9]\d?|10000)$/,
+            message: '臂长范围在0-100',
+            trigger: 'blur'
           }
         ],
-        brachium: [{
-          type: 'number', message: '臂长必须为数字值',trigger: 'blur' }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '臂长范围在0-1000 米',
-          trigger: 'blur'
-        }],
-        standardSectionHeight: [{
-          type: 'number', message: '标准节高度必须为数字值',trigger: 'blur' }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '标准节高度范围在0-1000米',
-          trigger: 'blur'
-        }],
-        amount: [{
-          type: 'number', message: '数量必须为数字值',trigger: 'blur' }],
-        singlePrice: [{
-          type: 'number', message: '单价必须为数字值',trigger: 'blur' }],
-        totalAssets: [{
-          type: 'number', message: '资产总计必须为数字值',trigger: 'blur' }],
+        standardSectionHeight: [
+          {type: 'number', message: '标准节高度必须为数字值',trigger: 'blur' }, {
+            pattern: /^(0|[1-9]\d?|100)$/,
+            message: '标准节高度范围在0-10000',
+            trigger: 'blur'
+          }
+        ],
+        depreciationRate: [
+          {type: 'number', message: '折旧率必须为数字值',trigger: 'blur' }, {
+            pattern: /^(0|[1-9]\d?|100)$/,
+            message: '折旧率范围在0-100',
+            trigger: 'blur'
+          }
+        ],
+        amount: [
+          {type: 'number', message: '数量必须为数字值',trigger: 'blur' }, {
+            pattern: /^(0|[1-9]\d?|100)$/,
+            message: '数量范围在0-1000000',
+            trigger: 'blur'
+          }
+        ],
+        singlePrice: [
+          {type: 'number', message: '单价必须为数字值',trigger: 'blur' }, {
+            pattern: /^(0|[1-9]\d?|100)$/,
+            message: '单价范围在0-1000000',
+            trigger: 'blur'
+          }
+        ],
+
       },
     }
   },
@@ -581,8 +635,11 @@ export default {
   methods: {
     /** 查询列表 */
     getList() {
+      if(this.objectValueAllEmpty1(this.queryParams))
+        this.queryParams.objectValueAllEmpty=true;
       this.loading = true
-      listKitRequire(this.queryParams).then(response => {
+      listKitEntry(this.queryParams).then(response => {
+        this.queryParams.objectValueAllEmpty=false;
         this.postList = response.rows
         this.total = response.total
         this.loading = false
@@ -592,35 +649,35 @@ export default {
     cancel() {
       this.open = false
       this.openDetail= false
-      this.openAudit=false
       this.reset()
     },
     // 表单重置
     reset() {
       this.form = {
+        kitName: undefined,
         productNum: undefined,
-        vender: undefined,
+        vender:undefined,
         kitType: undefined,
         equipment: undefined,
         totalAssets: undefined,
         rightsUnit: undefined,
         kitProperties:undefined,
-        kitName:undefined ,
         kitStandard:undefined ,
         brachium:undefined ,
-        unitType:undefined ,
-        standardSectionHeight:undefined ,
+        depreciationRate:undefined,
+        unitType:undefined,
+        measurementUnit:undefined,
+        standardSectionHeight:undefined,
         kitModel:undefined ,
-        measurementUnit:undefined ,
         kitCode:undefined ,
         amount:undefined ,
         singlePrice:undefined ,
         wholeMachineAccessories:undefined ,
-        demandSponsors:undefined ,
-        initDate:undefined,
-        procurementCauses:undefined ,
+        protectorId:undefined ,
+        purchaseDate:undefined ,
+        retireDate:undefined ,
       },
-      this.resetForm('form')
+        this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -630,8 +687,9 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm')
-      this.queryParams.insertDate=''
-      this.handleQuery()
+      this.queryParams.retireDate='',
+        this.queryParams.purchaseDate='',
+        this.handleQuery()
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
@@ -641,12 +699,20 @@ export default {
     },
     /** 新增按钮操作 */
     handleAdd() {
+      getProtector().then((res) => {
+        this.protectors=res.data
+        console.log("this.protectors"+res.data)
+      })
       this.reset()
       this.open = true
       this.title = '添加'
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
+      getProtector().then((res) => {
+        this.protectors=res.data
+        console.log("this.protectors"+res.data)
+      })
       this.reset()
       this.form = row
       this.open = true
@@ -657,20 +723,19 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
-            updateKitRequire(this.form).then(response => {
+            updateKitEntry(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
               this.getList()
             })
           } else {
-            addKitRequire(this.form).then(response => {
+            addKitEntry(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
               this.getList()
             })
           }
         }
-        this.paramsKit=[];
       })
     },
 
@@ -678,7 +743,7 @@ export default {
     handleDelete(row) {
       const postIds = row.id || this.ids
       this.$modal.confirm('是否确认删除？').then(function() {
-        return delKitRequire(postIds)
+        return delKitEntry(postIds)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('删除成功')
@@ -689,21 +754,6 @@ export default {
       this.Detail = row
       this.openDetail = true
       this.title = '详情'
-    },
-    handleAudit(row){
-      this.form = row
-      this.openAudit = true
-      this.title = '审核'
-    },
-    submitAudit(){
-      updateKitRequire(this.form).then(response => {
-        this.$modal.msgSuccess('修改成功')
-        this.openAudit = false
-        this.getList()
-      })
-    },
-    filterState(value,row){
-      return row.state === value;
     },
     /** 导出按钮操作 */
     handleExport() {

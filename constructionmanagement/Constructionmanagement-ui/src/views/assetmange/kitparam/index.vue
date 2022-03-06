@@ -75,6 +75,10 @@
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column label="零配件名称" align="center" prop="kitName"/>
       <el-table-column label="代码" align="center" prop="kitCode"/>
       <el-table-column label="型号" align="center" prop="kitModel"/>

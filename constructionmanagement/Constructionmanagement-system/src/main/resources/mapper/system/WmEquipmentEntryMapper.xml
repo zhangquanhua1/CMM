@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.WmEquipmentEntryMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.WmEquipmentEntry">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="equipment_name" jdbcType="VARCHAR" property="equipmentName" />
+    <result column="equipment_number" jdbcType="BIGINT" property="equipmentNumber" />
+    <result column="equipment_self_number" jdbcType="BIGINT" property="equipmentSelfNumber" />
+    <result column="standard_model" jdbcType="VARCHAR" property="standardModel" />
+    <result column="vender" jdbcType="VARCHAR" property="vender" />
+    <result column="equipment_type" jdbcType="VARCHAR" property="equipmentType" />
+    <result column="rights_unit" jdbcType="VARCHAR" property="rightsUnit" />
+    <result column="Record_number" jdbcType="VARCHAR" property="recordNumber" />
+    <result column="belong_warehouse" jdbcType="VARCHAR" property="belongWarehouse" />
+    <result column="project_address" jdbcType="VARCHAR" property="projectAddress" />
+    <result column="finance_lease" jdbcType="INTEGER" property="financeLease" />
+    <result column="invoice_number" jdbcType="BIGINT" property="invoiceNumber" />
+    <result column="purchase_contract" jdbcType="VARCHAR" property="purchaseContract" />
+    <result column="manufacturing_license_no" jdbcType="VARCHAR" property="manufacturingLicenseNo" />
+    <result column="product_date" jdbcType="TIMESTAMP" property="productDate" />
+    <result column="purchase_date" jdbcType="TIMESTAMP" property="purchaseDate" />
+    <result column="retire_date" jdbcType="TIMESTAMP" property="retireDate" />
+    <result column="unit_responsible_person" jdbcType="VARCHAR" property="unitResponsiblePerson" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="building_no" jdbcType="INTEGER" property="buildingNo" />
+    <result column="equipment_source" jdbcType="VARCHAR" property="equipmentSource" />
+    <result column="registrant" jdbcType="VARCHAR" property="registrant" />
+    <result column="confirm_person" jdbcType="VARCHAR" property="confirmPerson" />
+    <result column="invoice_time" jdbcType="TIMESTAMP" property="invoiceTime" />
+    <result column="financing_maturity_date" jdbcType="TIMESTAMP" property="financingMaturityDate" />
+    <result column="manufacturing_no" jdbcType="VARCHAR" property="manufacturingNo" />
+    <result column="manufacturer" jdbcType="VARCHAR" property="manufacturer" />
+    <result column="contract_unit_price" jdbcType="BIGINT" property="contractUnitPrice" />
+    <result column="amount" jdbcType="BIGINT" property="amount" />
+    <result column="rate" jdbcType="INTEGER" property="rate" />
+    <result column="exclusive_tax_price" jdbcType="BIGINT" property="exclusiveTaxPrice" />
+    <result column="taxation" jdbcType="BIGINT" property="taxation" />
+    <result column="depreciation__rate" jdbcType="INTEGER" property="depreciationRate" />
+    <result column="contact_number" jdbcType="VARCHAR" property="contactNumber" />
+    <result column="registration_time" jdbcType="TIMESTAMP" property="registrationTime" />
+    <result column="acknowledging_time" jdbcType="TIMESTAMP" property="acknowledgingTime" />
+    <result column="financing_batch" jdbcType="VARCHAR" property="financingBatch" />
+    <result column="financing amount" jdbcType="BIGINT" property="financingAmount" />
+    <result column="insert_person" jdbcType="VARCHAR" property="insertPerson" />
+    <result column="insert_person_depart_id" jdbcType="BIGINT" property="insertPersonDepartId" />
+    <result column="update_person" jdbcType="VARCHAR" property="updatePerson" />
+    <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, equipment_name, equipment_number, equipment_self_number, standard_model, vender,
+    equipment_type, rights_unit, Record_number, belong_warehouse, project_address, finance_lease,
+    invoice_number, purchase_contract, manufacturing_license_no, product_date, purchase_date,
+    retire_date, unit_responsible_person, department, building_no, equipment_source,
+    registrant, confirm_person, invoice_time, financing_maturity_date, manufacturing_no,
+    manufacturer, contract_unit_price, amount, rate, exclusive_tax_price, taxation, depreciation__rate,
+    contact_number, registration_time, acknowledging_time, financing_batch, `financing amount`,
+    insert_person, insert_person_depart_id, update_person, update_person_depart_id, insert_date,
+    update_date
+  </sql>
+  <select id="selectBySelective" parameterType="com.ConstructionManagement.system.domain.WmEquipmentEntry" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from wm_equipment_entry
+   <where>
+     <if test="equipmentName != null">
+       and   equipment_name like concat('%', #{equipmentName}, '%')
+     </if>
+     <if test="equipmentNumber != null">
+       and   equipment_number= #{equipmentNumber}
+     </if>
+     <if test="vender != null">
+       and   vender like concat('%', #{vender}, '%')
+     </if>
+
+     <if test="equipmentSelfNumber != null">
+       and   equipment_self_number like concat('%', #{equipmentSelfNumber}, '%')
+     </if>
+     <if test="standardModel != null">
+       and   standard_model like concat('%', #{standardModel}, '%')
+     </if>
+
+     <if test="equipmentType != null">
+       and   equipment_type like concat('%', #{equipmentType}, '%')
+     </if>
+
+     <if test="rightsUnit != null">
+       and   rights_unit like concat('%', #{rightsUnit}, '%')
+     </if>
+     <if test="recordNumber != null">
+       and   Record_number like concat('%', #{recordNumber}, '%')
+     </if>
+
+     <if test="belongWarehouse != null">
+       and   belong_warehouse like concat('%', #{belongWarehouse}, '%')
+     </if>
+     <if test="projectAddress != null">
+       and   project_address like concat('%', #{projectAddress}, '%')
+     </if>
+     <if test="purchaseDate != null">
+       and   date_format(purchase_date,'%y%m%d') &gt;= date_format(#{purchaseDate},'%y%m%d')
+     </if>
+     <if test="retireDate != null">
+       and   date_format(retire_date,'%y%m%d') &gt;= date_format(#{retireDate},'%y%m%d')
+     </if>
+     <if test="financingMaturityDate != null">
+       and   date_format(financing_maturity_date,'%y%m%d') &gt;= date_format(#{financingMaturityDate},'%y%m%d')
+     </if>
+     <if test="insertDate != null">
+       and   date_format(insert_date,'%y%m%d') &gt;= date_format(#{insertDate},'%y%m%d')
+     </if>
+   </where>
+  </select>
+  <delete id="deleteByIds" parameterType="java.lang.Long">
+    delete from wm_equipment_entry
+    where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.WmEquipmentEntry" useGeneratedKeys="true">
+    insert into wm_equipment_entry
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="equipmentName != null">
+        equipment_name,
+      </if>
+      <if test="equipmentNumber != null">
+        equipment_number,
+      </if>
+      <if test="equipmentSelfNumber != null">
+        equipment_self_number,
+      </if>
+      <if test="standardModel != null">
+        standard_model,
+      </if>
+      <if test="vender != null">
+        vender,
+      </if>
+      <if test="equipmentType != null">
+        equipment_type,
+      </if>
+      <if test="rightsUnit != null">
+        rights_unit,
+      </if>
+      <if test="recordNumber != null">
+        Record_number,
+      </if>
+      <if test="belongWarehouse != null">
+        belong_warehouse,
+      </if>
+      <if test="projectAddress != null">
+        project_address,
+      </if>
+      <if test="financeLease != null">
+        finance_lease,
+      </if>
+      <if test="invoiceNumber != null">
+        invoice_number,
+      </if>
+      <if test="purchaseContract != null">
+        purchase_contract,
+      </if>
+      <if test="manufacturingLicenseNo != null">
+        manufacturing_license_no,
+      </if>
+      <if test="productDate != null">
+        product_date,
+      </if>
+      <if test="purchaseDate != null">
+        purchase_date,
+      </if>
+      <if test="retireDate != null">
+        retire_date,
+      </if>
+      <if test="unitResponsiblePerson != null">
+        unit_responsible_person,
+      </if>
+      <if test="department != null">
+        department,
+      </if>
+      <if test="buildingNo != null">
+        building_no,
+      </if>
+      <if test="equipmentSource != null">
+        equipment_source,
+      </if>
+      <if test="registrant != null">
+        registrant,
+      </if>
+      <if test="confirmPerson != null">
+        confirm_person,
+      </if>
+      <if test="invoiceTime != null">
+        invoice_time,
+      </if>
+      <if test="financingMaturityDate != null">
+        financing_maturity_date,
+      </if>
+      <if test="manufacturingNo != null">
+        manufacturing_no,
+      </if>
+      <if test="manufacturer != null">
+        manufacturer,
+      </if>
+      <if test="contractUnitPrice != null">
+        contract_unit_price,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="rate != null">
+        rate,
+      </if>
+      <if test="exclusiveTaxPrice != null">
+        exclusive_tax_price,
+      </if>
+      <if test="taxation != null">
+        taxation,
+      </if>
+      <if test="depreciationRate != null">
+        depreciation__rate,
+      </if>
+      <if test="contactNumber != null">
+        contact_number,
+      </if>
+      <if test="registrationTime != null">
+        registration_time,
+      </if>
+      <if test="acknowledgingTime != null">
+        acknowledging_time,
+      </if>
+      <if test="financingBatch != null">
+        financing_batch,
+      </if>
+      <if test="financingAmount != null">
+        `financing amount`,
+      </if>
+      <if test="insertPerson != null">
+        insert_person,
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id,
+      </if>
+      <if test="updatePerson != null">
+        update_person,
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id,
+      </if>
+      <if test="insertDate != null">
+        insert_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="equipmentName != null">
+        #{equipmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNumber != null">
+        #{equipmentNumber,jdbcType=BIGINT},
+      </if>
+      <if test="equipmentSelfNumber != null">
+        #{equipmentSelfNumber,jdbcType=BIGINT},
+      </if>
+      <if test="standardModel != null">
+        #{standardModel,jdbcType=VARCHAR},
+      </if>
+      <if test="vender != null">
+        #{vender,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentType != null">
+        #{equipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="rightsUnit != null">
+        #{rightsUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="recordNumber != null">
+        #{recordNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="belongWarehouse != null">
+        #{belongWarehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="projectAddress != null">
+        #{projectAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="financeLease != null">
+        #{financeLease,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceNumber != null">
+        #{invoiceNumber,jdbcType=BIGINT},
+      </if>
+      <if test="purchaseContract != null">
+        #{purchaseContract,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturingLicenseNo != null">
+        #{manufacturingLicenseNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        #{productDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseDate != null">
+        #{purchaseDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="retireDate != null">
+        #{retireDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unitResponsiblePerson != null">
+        #{unitResponsiblePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingNo != null">
+        #{buildingNo,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentSource != null">
+        #{equipmentSource,jdbcType=VARCHAR},
+      </if>
+      <if test="registrant != null">
+        #{registrant,jdbcType=VARCHAR},
+      </if>
+      <if test="confirmPerson != null">
+        #{confirmPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceTime != null">
+        #{invoiceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="financingMaturityDate != null">
+        #{financingMaturityDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="manufacturingNo != null">
+        #{manufacturingNo,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="contractUnitPrice != null">
+        #{contractUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="rate != null">
+        #{rate,jdbcType=INTEGER},
+      </if>
+      <if test="exclusiveTaxPrice != null">
+        #{exclusiveTaxPrice,jdbcType=BIGINT},
+      </if>
+      <if test="taxation != null">
+        #{taxation,jdbcType=BIGINT},
+      </if>
+      <if test="depreciationRate != null">
+        #{depreciationRate,jdbcType=INTEGER},
+      </if>
+      <if test="contactNumber != null">
+        #{contactNumber,jdbcType=INTEGER},
+      </if>
+      <if test="registrationTime != null">
+        #{registrationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="acknowledgingTime != null">
+        #{acknowledgingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="financingBatch != null">
+        #{financingBatch,jdbcType=VARCHAR},
+      </if>
+      <if test="financingAmount != null">
+        #{financingAmount,jdbcType=BIGINT},
+      </if>
+      <if test="insertPerson != null">
+        #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.WmEquipmentEntry">
+    update wm_equipment_entry
+    <set>
+      <if test="equipmentName != null">
+        equipment_name = #{equipmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentNumber != null">
+        equipment_number = #{equipmentNumber,jdbcType=BIGINT},
+      </if>
+      <if test="equipmentSelfNumber != null">
+        equipment_self_number = #{equipmentSelfNumber,jdbcType=BIGINT},
+      </if>
+      <if test="standardModel != null">
+        standard_model = #{standardModel,jdbcType=VARCHAR},
+      </if>
+      <if test="vender != null">
+        vender = #{vender,jdbcType=VARCHAR},
+      </if>
+      <if test="equipmentType != null">
+        equipment_type = #{equipmentType,jdbcType=VARCHAR},
+      </if>
+      <if test="rightsUnit != null">
+        rights_unit = #{rightsUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="recordNumber != null">
+        Record_number = #{recordNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="belongWarehouse != null">
+        belong_warehouse = #{belongWarehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="projectAddress != null">
+        project_address = #{projectAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="financeLease != null">
+        finance_lease = #{financeLease,jdbcType=INTEGER},
+      </if>
+      <if test="invoiceNumber != null">
+        invoice_number = #{invoiceNumber,jdbcType=BIGINT},
+      </if>
+      <if test="purchaseContract != null">
+        purchase_contract = #{purchaseContract,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturingLicenseNo != null">
+        manufacturing_license_no = #{manufacturingLicenseNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseDate != null">
+        purchase_date = #{purchaseDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="retireDate != null">
+        retire_date = #{retireDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unitResponsiblePerson != null">
+        unit_responsible_person = #{unitResponsiblePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="buildingNo != null">
+        building_no = #{buildingNo,jdbcType=INTEGER},
+      </if>
+      <if test="equipmentSource != null">
+        equipment_source = #{equipmentSource,jdbcType=VARCHAR},
+      </if>
+      <if test="registrant != null">
+        registrant = #{registrant,jdbcType=VARCHAR},
+      </if>
+      <if test="confirmPerson != null">
+        confirm_person = #{confirmPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceTime != null">
+        invoice_time = #{invoiceTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="financingMaturityDate != null">
+        financing_maturity_date = #{financingMaturityDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="manufacturingNo != null">
+        manufacturing_no = #{manufacturingNo,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null">
+        manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="contractUnitPrice != null">
+        contract_unit_price = #{contractUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="rate != null">
+        rate = #{rate,jdbcType=INTEGER},
+      </if>
+      <if test="exclusiveTaxPrice != null">
+        exclusive_tax_price = #{exclusiveTaxPrice,jdbcType=BIGINT},
+      </if>
+      <if test="taxation != null">
+        taxation = #{taxation,jdbcType=BIGINT},
+      </if>
+      <if test="depreciationRate != null">
+        depreciation__rate = #{depreciationRate,jdbcType=INTEGER},
+      </if>
+      <if test="contactNumber != null">
+        contact_number = #{contactNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="registrationTime != null">
+        registration_time = #{registrationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="acknowledgingTime != null">
+        acknowledging_time = #{acknowledgingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="financingBatch != null">
+        financing_batch = #{financingBatch,jdbcType=VARCHAR},
+      </if>
+      <if test="financingAmount != null">
+        `financing amount` = #{financingAmount,jdbcType=BIGINT},
+      </if>
+      <if test="insertPerson != null">
+        insert_person = #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id = #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        update_person = #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id = #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        insert_date = #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
