@@ -152,6 +152,22 @@ public class WmKitEntry implements Serializable {
      */
     private Date retireDate;
 
+    /**
+     * 确认状态 0 未确认 1 确认 2 反确认
+     */
+    private Integer status;
+
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+
+
     public Date getPurchaseDate() {
         return purchaseDate;
     }

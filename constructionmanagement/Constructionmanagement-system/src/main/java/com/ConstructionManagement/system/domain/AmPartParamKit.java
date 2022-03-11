@@ -10,14 +10,21 @@ import lombok.Data;
 @Data
 public class AmPartParamKit implements Serializable {
     private Long id;
-
+    //部件id
     private Long pid;
-
-    private String kitName;
-
-    private String unit;
-
+    //配件id
+    private Long kid;
+    //配件数量
     private Integer kitCount;
+    AmKitParam amKitParam;
+
+    public AmKitParam getAmKitParam() {
+        return amKitParam;
+    }
+
+    public void setAmKitParam(AmKitParam amKitParam) {
+        this.amKitParam = amKitParam;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -37,20 +44,12 @@ public class AmPartParamKit implements Serializable {
         this.pid = pid;
     }
 
-    public String getKitName() {
-        return kitName;
+    public Long getKid() {
+        return kid;
     }
 
-    public void setKitName(String kitName) {
-        this.kitName = kitName;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setKid(Long kid) {
+        this.kid = kid;
     }
 
     public Integer getKitCount() {

@@ -2,13 +2,14 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="适用设备类型" label-width="auto" prop="applicableDeviceType">
-        <el-input
-          v-model="queryParams.applicableDeviceType"
-          placeholder="请输入适用设备类型"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+        <el-select v-model="queryParams.applicableDeviceType" placeholder="请选择适用设备类型">
+          <el-option
+            v-for="dict in applicableDeviceTypeS"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="名称" prop="partName">
         <el-input
@@ -81,6 +82,7 @@
       <el-table-column label="部件名称" align="center" prop="partName"/>
       <el-table-column label="代码" align="center" prop="partCode"/>
       <el-table-column label="型号" align="center" prop="partModel"/>
+      <el-table-column label="部件类型" align="center" prop="part_type"/>
       <el-table-column label="适用设备类型" align="center" prop="applicableDeviceType"/>
       <el-table-column label="计量单位" align="center" prop="measurementUnit"/>
       <el-table-column label="备注" align="center" prop="remark"/>
@@ -120,53 +122,75 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-dialog :title="title" :visible.sync="open" width="800px"  class="spec-dialog" append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+
+        <el-steps :active="active" finish-status="success">
+          <el-step title="添加部件"></el-step>
+          <el-step title="零件绑定"></el-step>
+        </el-steps>
+
+        <div v-show="steps1">
 
         <el-form-item label="部件名称" prop="partName">
           <el-input v-model="form.partName" placeholder="请输入部件名称"/>
         </el-form-item>
-
+          <el-form-item label="部件类型" prop="part_type">
+            <el-select v-model="form.part_type" placeholder="请选择部件类型">
+              <el-option
+                v-for="dict in applicableKitTypeS"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              ></el-option>
+            </el-select>
+          </el-form-item>
         <el-form-item label="部件代码" prop="partCode">
           <el-input v-model="form.partCode" placeholder="请输入部件代码"/>
         </el-form-item>
-
         <el-form-item label="部件型号" prop="partModel">
           <el-input v-model="form.partModel" placeholder="请输入部件型号"/>
         </el-form-item>
-
         <el-form-item label="计量单位" prop="measurementUnit">
-          <el-input v-model="form.measurementUnit" placeholder="请输入计量单位" />
+          <el-select v-model="form.measurementUnit" placeholder="请选择计量单位">
+            <el-option
+              v-for="dict in measurement_unitS"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
-
         <el-form-item label="适用设备类型"  prop="applicableDeviceType">
-          <el-input v-model.number="form.applicableDeviceType" placeholder="请输入适用设备类型"/>
+          <el-select v-model="form.applicableDeviceType" placeholder="请选择适用设备类型">
+            <el-option
+              v-for="dict in applicableDeviceTypeS"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注"/>
         </el-form-item>
-        <div
-          v-for="(item, index) in paramsKit"
-          :key="index">
-          <el-form-item label="配件名称">
-            <el-input v-model="item.kitName" placeholder="请输入配件名称"/>
-          </el-form-item>
-          <el-form-item label="配件单位">
-            <el-input v-model="item.unit" placeholder="请输入配件单位"/>
-          </el-form-item>
-          <el-form-item label="配件数量">
-            <el-input-number v-model="item.kitCount" />
-          </el-form-item>
-          <el-button size="medium" @click.prevent="removeKit(index)">删除该配件</el-button>
-          <br/>
-          <br/>
-          <br/>
         </div>
-        <el-form-item>
-          <el-button @click="addKit">新增配件信息</el-button>
-        </el-form-item>
+        <div v-show="steps2">
+          <el-transfer v-model="value" :button-texts="['移除', '添加']" :data="kitData" :titles="titles" filterable>
+            <div slot-scope="{ option }">
+             <div style="float: left">
+                {{ option.label }}
+             </div>
+              <div style="float: right">
+                <input class="input" placeholder="数量" style="width:50px;" type="text" value="1" :id="option.key"/>
+              </div>
+            </div>
+          </el-transfer>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <el-button style="margin-top: 12px;" @click="previous" v-if="active>0">上一步</el-button>
+        <el-button style="margin-top: 12px;" @click="next" v-if="active<1">下一步</el-button>
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
@@ -239,21 +263,21 @@
                 数量
           </el-col>
       <el-row  v-for="kit in this.kits">
-        <el-col :span="8" :xs="100">
+        <el-col :span="8" >
           <ul class="list-group">
             <li class="list-group-item">
-             {{ kit.kitName }}
+             {{ kit.amKitParam.kitName }}
             </li>
           </ul>
         </el-col>
-        <el-col :span="8" :xs="100">
+        <el-col :span="8" >
           <ul class="list-group">
             <li class="list-group-item">
-              {{ kit.unit}}
+              {{ kit.amKitParam.measurementUnit}}
             </li>
           </ul>
         </el-col>
-        <el-col :span="8" :xs="100">
+        <el-col :span="8" >
           <ul class="list-group">
             <li class="list-group-item">
              {{ kit.kitCount}}
@@ -277,7 +301,7 @@
 }
 </style>
 <script>
-import {listPartParam,getKit,addPartParam,delPartParam,updatePartParam } from '@/api/towerparam/partparam'
+import {listPartParam,getKit,addPartParam,delPartParam,updatePartParam,getKitS } from '@/api/towerparam/partparam'
 export default {
   name: 'partparam',
   // dicts: ['sys_normal_disable'],
@@ -297,10 +321,15 @@ export default {
       total: 0,
       // 岗位表格数据
       postList: [],
+      title:'',
       // 弹出层标题
-      title: '',
+      titles:['待选择零件','已选择零件'],
       // 是否显示弹出层
       open: false,
+      active: 0,
+      steps1:true,
+      steps2:false,
+      kitData:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -312,10 +341,23 @@ export default {
       openDetail: false,
       partParamDetail:{},
       kits:[],
+      //配件数量
+      amounts:[],
+      //配件id
+      value:[],
+      //计量单位
+      measurement_unitS:[],
+      //适用设备类型
+      applicableDeviceTypeS:[],
+      //适用部件类型
+      applicableKitTypeS:[],
+      //记录已选择的部件名
+      last_partName:'',
       // 新增配件参数数组
-      paramsKit:[{kitName:'',unit:'',kitCount:''}],
+      paramsKit:[{kid:'',kitCount:''}],
       form: {
         partName:'',
+        part_type:'',
         partCode:'',
         partModel:'',
         measurementUnit:'',
@@ -339,6 +381,15 @@ export default {
   },
   created() {
     this.getList()
+    this.getDicts('measurement_unit').then(response => {
+      this.measurement_unitS= response.data
+    })
+    this.getDicts('applicableDeviceType').then(response => {
+      this.applicableDeviceTypeS = response.data
+    })
+    this.getDicts('parts_type').then(response => {
+      this.applicableKitTypeS = response.data})
+
   },
   methods: {
     /** 查询列表 */
@@ -349,6 +400,34 @@ export default {
         this.total = response.total
         this.loading = false
       })
+    },
+    /** 查询零配件参数列表 */
+    getKitSS() {
+      const _this=this
+      getKitS(this.form).then(response => {
+        response.data.forEach(function(item) {
+          _this.kitData.push({ key: item.id, label: item.kitName })
+        })
+      });
+    },
+    //获取配件的数量
+    getAmounts() {
+      //获取输入框数值
+      const _this = this
+      _this.amounts = []
+      this.value.forEach(function(id) {
+        const num = document.getElementById(id).value
+        if (num && num.length > 0) {
+          _this.amounts.push(num)
+        } else {
+          _this.amounts.push(1)
+        }
+      })
+    },
+    //构建ParamsKit对象
+    buildParamsKit(){
+      this.getAmounts();
+    this.paramsKit=this.amounts.map((kitCount,i)=>({kitCount, kid: this.value[i]}))
     },
     // 取消按钮
     cancel() {
@@ -395,15 +474,13 @@ export default {
     handleUpdate(row) {
       this.reset()
       this.form = row
-      getKit(row.id).then((res) => {
-        this.paramsKit=res.data;
-      })
       this.form.amPartParamKits=this.paramsKit;
       this.open = true
       this.title = '修改'
     },
     /** 提交按钮 */
     submitForm: function() {
+      this.buildParamsKit();
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
@@ -423,6 +500,8 @@ export default {
               this.getList()
             })
           }
+          this.value=[]
+          this.amounts=[]
         }
       })
     },
@@ -439,7 +518,7 @@ export default {
       })
     },
     handleDetail(row){
-      const pid= row.id || 0
+      const pid= row.id
       getKit(pid).then((res) => {
         this.kits=res.data;
       })
@@ -447,11 +526,21 @@ export default {
       this.openDetail = true
       this.title = '详情'
     },
-    removeKit(index) {
-      this.paramsKit.splice(index, 1)
+    previous() {
+      this.last_partName=this.form.part_type
+      if (this.active-- > 2) this.active = 0;
+      this.steps1=true;
+      this.steps2=false;
     },
-    addKit() {
-      this.paramsKit.push({ kitName: '', unit: '',kitCount: ''})
+    next() {
+      if(this.last_partName!=this.form.part_type){
+        this.kitData=[]
+        this.getKitSS();
+      }
+
+      if (this.active++ > 2) this.active = 0;
+      this.steps1=false;
+      this.steps2=true;
     },
     /** 导出按钮操作 */
     handleExport() {

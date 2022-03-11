@@ -88,7 +88,8 @@
           plain
           icon="el-icon-check"
           size="mini"
-          @click="handleAdd"
+          :disabled="multiple"
+          @click="handleConfirmS"
           v-hasPermi="['inventory:manage:kitentry:confirm']"
         >确认
         </el-button>
@@ -100,7 +101,7 @@
           icon="el-icon-close"
           size="mini"
           :disabled="multiple"
-          @click="handleDelete"
+          @click="handleAntiConfirmS"
           v-hasPermi="['inventory:manage:kitentry:confirm']"
         >反确认
         </el-button>
@@ -143,13 +144,22 @@
       </el-table-column>
       <el-table-column label="单价" align="center" prop="singlePrice"/>
       <el-table-column label="数量" align="center" prop="amount"/>
+      <el-table-column label="状态" align="center" prop="status" :filters="[{ text: '未确认', value: 0 },
+      { text: '确认', value: 1 },{ text: '反确认', value: 2 }]"
+                       :filter-method="filterState">
+      <template slot-scope="scope">
+        <el-tag :type="'primary'" v-if="scope.row.status==0" >未确认</el-tag>
+        <el-tag :type="'success'" v-else-if="scope.row.status==1">确认</el-tag>
+        <el-tag :type="'danger'"v-else>反确认</el-tag>
+      </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
             icon="el-icon-check"
-            @click="handleUpdate(scope.row)"
+            @click="handleConfirm(scope.row)"
             v-hasPermi="['inventory:manage:kitentry:confirm']"
           >确认
           </el-button>
@@ -157,7 +167,7 @@
             size="mini"
             type="text"
             icon="el-icon-close"
-            @click="handleDelete(scope.row)"
+            @click="handleAntiConfirm(scope.row)"
             v-hasPermi="['inventory:manage:kitentry:confirm']"
           >反确认
           </el-button>
@@ -408,6 +418,7 @@
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
+        <el-button @click="submit" v-if="this.title!='详情'">{{title}}</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -422,13 +433,12 @@
 </style>
 <script>
 import {
-  addKitEntry,
-  delKitEntry,
-  listKitEntry,
-  updateKitEntry,getProtector
-} from '@/api/towerparam/KitEntry'
+  kitInforConfirm,
+  listKitEntry
+  ,kitAntiConfirm
+} from '@/api/inventory/KitEntry'
 export default {
-  name: 'kitEntry',
+  name: 'kitInforConfirm',
   // dicts: ['sys_normal_disable'],
   data() {
     return {
@@ -467,8 +477,6 @@ export default {
       openDetail: false,
       Detail:{},
       protectors:[],
-      form: {
-      },
     }
   },
   created() {
@@ -479,7 +487,7 @@ export default {
     getList() {
       if(this.objectValueAllEmpty1(this.queryParams))
         this.queryParams.objectValueAllEmpty=true;
-      this.loading = true
+        this.loading = true
       listKitEntry(this.queryParams).then(response => {
         this.queryParams.objectValueAllEmpty=false;
         this.postList = response.rows
@@ -491,35 +499,6 @@ export default {
     cancel() {
       this.open = false
       this.openDetail= false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        kitName: undefined,
-        productNum: undefined,
-        vender:undefined,
-        kitType: undefined,
-        equipment: undefined,
-        totalAssets: undefined,
-        rightsUnit: undefined,
-        kitProperties:undefined,
-        kitStandard:undefined ,
-        brachium:undefined ,
-        depreciationRate:undefined,
-        unitType:undefined,
-        measurementUnit:undefined,
-        standardSectionHeight:undefined,
-        kitModel:undefined ,
-        kitCode:undefined ,
-        amount:undefined ,
-        singlePrice:undefined ,
-        wholeMachineAccessories:undefined ,
-        protectorId:undefined ,
-        purchaseDate:undefined ,
-        retireDate:undefined ,
-      },
-        this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -539,63 +518,65 @@ export default {
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
-    handleAdd() {
-      getProtector().then((res) => {
-        this.protectors=res.data
-        console.log("this.protectors"+res.data)
-      })
-      this.reset()
-      this.open = true
-      this.title = '添加'
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      getProtector().then((res) => {
-        this.protectors=res.data
-        console.log("this.protectors"+res.data)
-      })
-      this.reset()
-      this.form = row
-      this.open = true
-      this.title = '修改'
-    },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.id != undefined) {
-            updateKitEntry(this.form).then(response => {
-              this.$modal.msgSuccess('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            addKitEntry(this.form).then(response => {
-              this.$modal.msgSuccess('新增成功')
-              this.open = false
-              this.getList()
-            })
-          }
-        }
-      })
-    },
-
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const postIds = row.id || this.ids
-      this.$modal.confirm('是否确认删除？').then(function() {
-        return delKitEntry(postIds)
+    /** 多选确认按钮操作 */
+    handleConfirmS() {
+      if(this.Detail.id!=null) this.ids.push(this.Detail.id)
+      const postIds=this.ids
+      this.$modal.confirm('是否 确认').then(function() {
+        return kitInforConfirm(postIds)
       }).then(() => {
         this.getList()
-        this.$modal.msgSuccess('删除成功')
+        this.$modal.msgSuccess('确认 成功')
       }).catch(() => {
+        this.$modal.msgError('确认 失败')
       })
+      this.ids=[]
+    },
+    /** 提交按钮 */
+    submit: function() {
+      if(this.title=='信息确认'){
+        this.handleConfirmS(this.Detail.id);
+        this.openDetail  = false
+
+      }else if(this.title=='信息反确认'){
+        this.handleAntiConfirmS(this.Detail.id)
+        this.openDetail  = false
+      }
+    },
+
+    /** 多选反确认按钮操作 */
+    handleAntiConfirmS() {
+      if(this.Detail.id!=null) this.ids.push(this.Detail.id)
+      const Ids =this.ids
+      this.$modal.confirm('是否 反确认').then(function() {
+        return kitAntiConfirm(Ids)
+      }).then(() => {
+        this.getList()
+        this.$modal.msgSuccess('反确认成功')
+      }).catch(() => {
+        this.$modal.msgError('反确认 失败')
+      })
+      this.ids=[]
     },
     handleDetail(row){
       this.Detail = row
       this.openDetail = true
       this.title = '详情'
+    },
+    /**行确认操作*/
+    handleConfirm(row){
+      this.Detail = row
+      this.openDetail = true
+      this.title = '信息确认'
+    },
+    /**行确认操作*/
+    handleAntiConfirm(row){
+      this.Detail = row
+      this.openDetail = true
+      this.title = '信息反确认'
+    },
+    filterState(value,row){
+      return row.status === value;
     },
     /** 导出按钮操作 */
     handleExport() {

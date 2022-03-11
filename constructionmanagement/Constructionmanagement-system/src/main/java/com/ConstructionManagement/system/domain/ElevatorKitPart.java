@@ -3,15 +3,15 @@ package com.ConstructionManagement.system.domain;
 import java.util.List;
 
 public class ElevatorKitPart {
-    private List<AmElevatorParamKit> amElevatorParamKits;
+    private List<AmPartParamKit> amPartParamKits;
     private List<AmElevatorParamPart> amElevatorParamParts;
 
-    public List<AmElevatorParamKit> getAmElevatorParamKits() {
-        return amElevatorParamKits;
+    public List<AmPartParamKit> getAmPartParamKits() {
+        return amPartParamKits;
     }
 
-    public void setAmElevatorParamKits(List<AmElevatorParamKit> amElevatorParamKits) {
-        this.amElevatorParamKits = amElevatorParamKits;
+    public void setAmPartParamKits(List<AmPartParamKit> amPartParamKits) {
+        this.amPartParamKits = amPartParamKits;
     }
 
     public List<AmElevatorParamPart> getAmElevatorParamParts() {

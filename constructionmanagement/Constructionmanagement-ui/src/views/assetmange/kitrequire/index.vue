@@ -60,7 +60,7 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-          v-hasPermi="['asset:manage:partrequire:add']"
+          v-hasPermi="['asset:manage:kitrequire:add']"
         >新增
         </el-button>
       </el-col>
@@ -72,7 +72,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['asset:manage:partrequire:remove']"
+          v-hasPermi="['asset:manage:kitrequire:remove']"
         >删除
         </el-button>
       </el-col>
@@ -94,13 +94,14 @@
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
         type="index"
-        width="50">
+        width="50"
+      >
       </el-table-column>
-      <el-table-column label="零配件名称" align="center" prop="kitName"/>
+      <el-table-column label="配件名称" align="center" prop="kitName"/>
       <el-table-column label="产品编号" align="center" prop="productNum"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
-      <el-table-column label="零配件类别" align="center" prop="kitType"/>
-      <el-table-column label="所属设备" align="center" prop="equipment"/>
+      <el-table-column label="配件类别" align="center" prop="kitType"/>
+      <el-table-column label="所属部件" align="center" prop="equipment"/>
       <el-table-column label="资产总计" align="center" prop="totalAssets"/>
       <el-table-column label="产权单位" align="center" prop="rightsUnit"/>
       <el-table-column label="数量" align="center" prop="amount"/>
@@ -113,35 +114,36 @@
       </el-table-column>
       <el-table-column label="审核状态" align="center" prop="state" :filters="[{ text: '待审核', value: 0 },
       { text: '通过', value: 1 },{ text: '拒绝', value: 2 }]"
-                       :filter-method="filterState">
+                       :filter-method="filterState"
+      >
         <template slot-scope="scope">
-          <el-tag :type="'primary'" v-if="scope.row.state==0" >待审核</el-tag>
+          <el-tag :type="'primary'" v-if="scope.row.state==0">待审核</el-tag>
           <el-tag :type="'success'" v-else-if="scope.row.state==1">通过</el-tag>
-          <el-tag :type="'danger'"v-else>拒绝</el-tag>
+          <el-tag :type="'danger'" v-else>拒绝</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="审核意见" align="center" prop="auditAdvice">
         <template slot-scope="scope">
-          <span v-if="scope.row.state==0" >待审核中</span>
-          <span v-else>{{scope.row.auditAdvice}}</span>
+          <span v-if="scope.row.state==0">待审核中</span>
+          <span v-else>{{ scope.row.auditAdvice }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button v-if="scope.row.state!=1"
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['asset:manage:partrequire:edit']"
+                     size="mini"
+                     type="text"
+                     icon="el-icon-edit"
+                     @click="handleUpdate(scope.row)"
+                     v-hasPermi="['asset:manage:kitrequire:edit']"
           >修改
           </el-button>
           <el-button v-if="scope.row.state!=1"
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['asset:manage:partrequire:remove']"
+                     size="mini"
+                     type="text"
+                     icon="el-icon-delete"
+                     @click="handleDelete(scope.row)"
+                     v-hasPermi="['asset:manage:kitrequire:remove']"
           >删除
           </el-button>
           <el-button
@@ -149,7 +151,7 @@
             type="text"
             icon="el-icon-view"
             @click="handleAudit(scope.row)"
-            v-hasPermi="['asset:manage:partrequire:audit']"
+            v-hasPermi="['asset:manage:kitrequire:audit']"
           >审核
           </el-button>
 
@@ -158,7 +160,7 @@
             type="text"
             icon="el-icon-more"
             @click="handleDetail(scope.row)"
-          >设备详情
+          >需求详情
           </el-button>
         </template>
       </el-table-column>
@@ -171,84 +173,153 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="零配件名称" prop="kitName">
-          <el-input v-model.number="form.kitName" placeholder="请输入零配件名称"/>
-        </el-form-item>
-        <el-form-item label="产品编号" prop="productNum">
-          <el-input v-model.number="form.productNum" placeholder="请输入产品编号"/>
-        </el-form-item>
-        <el-form-item label="生产厂家" prop="vender">
-          <el-input v-model="form.vender" placeholder="请输入生产厂家"/>
-        </el-form-item>
-        <el-form-item label="零配件类别" prop="kitType">
-          <el-input v-model="form.kitType" placeholder="请输入零配件类别"/>
-        </el-form-item>
-        <el-form-item label="所属设备" prop="equipment">
-          <el-input v-model="form.equipment" placeholder="请输入所属设备"/>
-        </el-form-item>
-        <el-form-item label="资产总计" prop="totalAssets">
-          <el-input v-model.number="form.totalAssets" placeholder="请输入资产总计"/>
-        </el-form-item>
-        <el-form-item label="产权单位" prop="rightsUnit">
-          <el-input v-model="form.rightsUnit" placeholder="请输入产权单位"/>
-        </el-form-item>
-        <el-form-item label="配件属性" prop="kitProperties">
-          <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>
-        </el-form-item>
-        <el-form-item label="配件规格" prop="kitStandard">
-          <el-input v-model="form.kitStandard" placeholder="请输入配件规格"/>
-        </el-form-item>
-        <el-form-item label="臂长" prop="brachium">
-          <el-input v-model.number="form.brachium" placeholder="请输入臂长(米)"/>
-        </el-form-item>
-        <el-form-item label="设备型号" prop="unitType">
-          <el-input v-model="form.unitType" placeholder="请输入设备型号"/>
-        </el-form-item>
-        <el-form-item label="计量单位" prop="measurementUnit">
-          <el-input v-model="form.measurementUnit" placeholder="请输入计量单位"/>
-        </el-form-item>
-        <el-form-item label="标准节高度" prop="standardSectionHeight">
-          <el-input v-model.number="form.standardSectionHeight" placeholder="请输入标准节高度(米)"/>
-        </el-form-item>
-        <el-form-item label="配件型号" prop="kitModel">
-          <el-input v-model="form.kitModel" placeholder="请输入配件型号"/>
-        </el-form-item>
-        <el-form-item label="配件代码" prop="kitCode">
-          <el-input v-model="form.kitCode" placeholder="请输入配件代码"/>
-        </el-form-item>
-        <el-form-item label="数量" prop="amount">
-          <el-input v-model.number="form.amount" placeholder="请输入数量"/>
-        </el-form-item>
-        <el-form-item label="单价" prop="singlePrice">
-          <el-input v-model.number="form.singlePrice" placeholder="请输入单价"/>
-        </el-form-item>
-        <el-form-item label="是否整机配件" prop="wholeMachineAccessories">
-          <template>
-            <el-radio-group v-model="form.wholeMachineAccessories">
-              <el-radio :label="0">否</el-radio>
-              <el-radio :label="1">是</el-radio>
-            </el-radio-group>
-          </template>
-        </el-form-item>
-        <el-form-item label="需求发起人" prop="demandSponsors">
-          <el-input v-model="form.demandSponsors" placeholder="请输入需求发起人"/>
-        </el-form-item>
-        <el-form-item label="采购原因" prop="procurementCauses">
-          <el-input v-model="form.procurementCauses" placeholder="请输入采购原因"/>
-        </el-form-item>
-        <el-form-item label="发起日期">
-          <el-date-picker
-            v-model="form.initDate"
-            size="small"
-            style="width: 240px"
-            value-format="yyyy-MM-dd"
-            type="date"
-            placeholder="选择发起日期"
-          ></el-date-picker>
-        </el-form-item>
-
+    <el-dialog :title="title" :visible.sync="open" width="1200px" v-dialog-drag append-to-body>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="零配件名称" prop="kitName">
+              <el-input v-model.number="form.kitName" placeholder="请输入零配件名称"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品编号" prop="productNum">
+              <el-input v-model.number="form.productNum" placeholder="请输入产品编号"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="生产厂家" prop="vender">
+              <el-input v-model="form.vender" placeholder="请输入生产厂家"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="零配件类别" prop="kitType">
+              <el-input v-model="form.kitType" placeholder="请输入零配件类别"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="所属部件" prop="equipment">
+              <el-select v-model="form.equipment" placeholder="请选择所属部件">
+                <el-option
+                  v-for="dict in applicableKitTypeS"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="资产总计" prop="totalAssets">
+              <el-input v-model.number="form.totalAssets" placeholder="请输入资产总计"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="产权单位" prop="rightsUnit">
+              <el-input v-model="form.rightsUnit" placeholder="请输入产权单位"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="配件属性" prop="kitProperties">
+              <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="配件规格" prop="kitStandard">
+              <el-input v-model="form.kitStandard" placeholder="请输入配件规格"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="臂长" prop="brachium">
+              <el-input v-model.number="form.brachium" placeholder="请输入臂长(米)"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="设备型号" prop="unitType">
+              <el-input v-model="form.unitType" placeholder="请输入设备型号"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="计量单位" prop="measurementUnit">
+              <el-select v-model="form.measurementUnit" placeholder="请选择计量单位">
+                <el-option
+                  v-for="dict in measurement_unitS"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="标准节高度" prop="standardSectionHeight">
+              <el-input v-model.number="form.standardSectionHeight" placeholder="请输入标准节高度(米)"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="配件型号" prop="kitModel">
+              <el-input v-model="form.kitModel" placeholder="请输入配件型号"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="配件代码" prop="kitCode">
+              <el-input v-model="form.kitCode" placeholder="请输入配件代码"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="数量" prop="amount">
+              <el-input v-model.number="form.amount" placeholder="请输入数量"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="单价" prop="singlePrice">
+              <el-input v-model.number="form.singlePrice" placeholder="请输入单价"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否整机配件" prop="wholeMachineAccessories">
+              <template>
+                <el-radio-group v-model="form.wholeMachineAccessories">
+                  <el-radio :label="0">否</el-radio>
+                  <el-radio :label="1">是</el-radio>
+                </el-radio-group>
+              </template>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="需求发起人" prop="demandSponsors">
+              <el-input v-model="form.demandSponsors" placeholder="请输入需求发起人"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="采购原因" prop="procurementCauses">
+              <el-input v-model="form.procurementCauses" placeholder="请输入采购原因"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="发起日期">
+              <el-date-picker
+                v-model="form.initDate"
+                size="small"
+                style="width: 240px"
+                value-format="yyyy-MM-dd"
+                type="date"
+                placeholder="选择发起日期"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -256,8 +327,8 @@
       </div>
     </el-dialog>
     <!--    详情弹窗-->
-    <el-dialog :title="title" :visible.sync="openDetail" width="40%"  class="spec-dialog" append-to-body>
-      <el-row >
+    <el-dialog :title="title" :visible.sync="openDetail" width="40%" v-dialog-drag class="spec-dialog" append-to-body>
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -273,23 +344,23 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              零配件类别: {{ Detail.kitType }}
+              配件类别: {{ Detail.kitType }}
             </li>
           </ul>
         </el-col>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              所属设备: {{ Detail.equipment }}
+              所属部件: {{ Detail.equipment }}
             </li>
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -305,7 +376,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -316,12 +387,12 @@
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              零配件名称: {{ Detail.kitName }}
+              配件名称: {{ Detail.kitName }}
             </li>
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -337,7 +408,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -353,7 +424,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -369,7 +440,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -385,7 +456,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -403,7 +474,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -419,16 +490,16 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="24" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-             发起日期: {{parseTime2(Detail.initDate) }}
+              发起日期: {{ parseTime2(Detail.initDate) }}
             </li>
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -444,23 +515,23 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              录入人部门id: {{ Detail.insertPersonDepartId }}
+              录入人部门: {{ getDeptName(Detail.insertPersonDepartId) }}
             </li>
           </ul>
         </el-col>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              更新人部门id: {{ Detail.updatePersonDepartId }}
+              更新人部门: {{ getDeptName(Detail.updatePersonDepartId) }}
             </li>
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -480,8 +551,8 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-    <el-dialog :title="title" :visible.sync="openAudit" @close="getList" width="25%"   class="spec-dialog" append-to-body>
-      <el-form ref="form" :model="form"  label-width="80px">
+    <el-dialog :title="title" :visible.sync="openAudit" @close="getList" width="25%" class="spec-dialog" append-to-body>
+      <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="是否通过" prop="auditAdvice">
           <el-radio-group v-model="form.state">
             <el-radio :label="2">否</el-radio>
@@ -507,8 +578,8 @@
 }
 </style>
 <script>
-import {listKitRequire,addKitRequire,delKitRequire,updateKitRequire } from '@/api/towerparam/kitrequire'
-import { updateEquipmentRequire } from '@/api/towerparam/equipmentrequire'
+import { listKitRequire, addKitRequire, delKitRequire, updateKitRequire } from '@/api/towerparam/kitrequire'
+import { treeselect } from '@/api/system/dept'
 export default {
   name: 'kitrequire',
   // dicts: ['sys_normal_disable'],
@@ -533,6 +604,8 @@ export default {
       // 是否显示弹出层
       open: false,
       openAudit: false,
+      //适用部件类型
+      applicableKitTypeS:[],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -541,41 +614,54 @@ export default {
         productNum: undefined,
         vender: undefined,
         equipment: undefined,
-        rightsUnit: undefined,
+        rightsUnit: undefined
       },
       openDetail: false,
-      Detail:{},
-      form: {
-      },
+      Detail: {},
+      //计量单位
+      measurement_unitS:[],
+      form: {},
+      // 所属部门ID字典
+      depart_idOptions: [],
       // 表单校验
       rules: {
         productNum: [
-          { required: true, message: '产品编号不能为空', trigger: 'blur' },{
-            type: 'number', message: '产品编号必须为数字值',trigger: 'blur'
+          { required: true, message: '产品编号不能为空', trigger: 'blur' }, {
+            type: 'number', message: '产品编号必须为数字值', trigger: 'blur'
           }
         ],
         brachium: [{
-          type: 'number', message: '臂长必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '臂长必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '臂长范围在0-1000 米',
           trigger: 'blur'
         }],
         standardSectionHeight: [{
-          type: 'number', message: '标准节高度必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '标准节高度必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '标准节高度范围在0-1000米',
           trigger: 'blur'
         }],
         amount: [{
-          type: 'number', message: '数量必须为数字值',trigger: 'blur' }],
+          type: 'number', message: '数量必须为数字值', trigger: 'blur'
+        }],
         singlePrice: [{
-          type: 'number', message: '单价必须为数字值',trigger: 'blur' }],
+          type: 'number', message: '单价必须为数字值', trigger: 'blur'
+        }],
         totalAssets: [{
-          type: 'number', message: '资产总计必须为数字值',trigger: 'blur' }],
-      },
+          type: 'number', message: '资产总计必须为数字值', trigger: 'blur'
+        }]
+      }
     }
   },
   created() {
+    this.getDicts('measurement_unit').then(response => {
+      this.measurement_unitS= response.data
+    })
+    this.getDicts('parts_type').then(response => {
+      this.applicableKitTypeS = response.data})
     this.getList()
   },
   methods: {
@@ -588,11 +674,21 @@ export default {
         this.loading = false
       })
     },
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      treeselect().then(response => {
+        this.depart_idOptions = response.data;
+      });
+    },
+    //根据部门id 获取部门名
+    getDeptName(id){
+      return this.getDeptNameByID(this.depart_idOptions,id)
+    },
     // 取消按钮
     cancel() {
       this.open = false
-      this.openDetail= false
-      this.openAudit=false
+      this.openDetail = false
+      this.openAudit = false
       this.reset()
     },
     // 表单重置
@@ -604,23 +700,23 @@ export default {
         equipment: undefined,
         totalAssets: undefined,
         rightsUnit: undefined,
-        kitProperties:undefined,
-        kitName:undefined ,
-        kitStandard:undefined ,
-        brachium:undefined ,
-        unitType:undefined ,
-        standardSectionHeight:undefined ,
-        kitModel:undefined ,
-        measurementUnit:undefined ,
-        kitCode:undefined ,
-        amount:undefined ,
-        singlePrice:undefined ,
-        wholeMachineAccessories:undefined ,
-        demandSponsors:undefined ,
-        initDate:undefined,
-        procurementCauses:undefined ,
+        kitProperties: undefined,
+        kitName: undefined,
+        kitStandard: undefined,
+        brachium: undefined,
+        unitType: undefined,
+        standardSectionHeight: undefined,
+        kitModel: undefined,
+        measurementUnit: undefined,
+        kitCode: undefined,
+        amount: undefined,
+        singlePrice: undefined,
+        wholeMachineAccessories: undefined,
+        demandSponsors: undefined,
+        initDate: undefined,
+        procurementCauses: undefined
       },
-      this.resetForm('form')
+        this.resetForm('form')
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -630,7 +726,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm')
-      this.queryParams.insertDate=''
+      this.queryParams.insertDate = ''
       this.handleQuery()
     },
     // 多选框选中数据
@@ -670,7 +766,7 @@ export default {
             })
           }
         }
-        this.paramsKit=[];
+        this.paramsKit = []
       })
     },
 
@@ -685,25 +781,26 @@ export default {
       }).catch(() => {
       })
     },
-    handleDetail(row){
+    handleDetail(row) {
+      this.getTreeselect()
       this.Detail = row
       this.openDetail = true
       this.title = '详情'
     },
-    handleAudit(row){
+    handleAudit(row) {
       this.form = row
       this.openAudit = true
       this.title = '审核'
     },
-    submitAudit(){
+    submitAudit() {
       updateKitRequire(this.form).then(response => {
         this.$modal.msgSuccess('修改成功')
         this.openAudit = false
         this.getList()
       })
     },
-    filterState(value,row){
-      return row.state === value;
+    filterState(value, row) {
+      return row.state === value
     },
     /** 导出按钮操作 */
     handleExport() {

@@ -31,4 +31,14 @@ public class WmKitEntryServiceImpl implements IWmKitEntryService {
     public int updateByPrimaryKeySelective(WmKitEntry record) {
         return wke.updateByPrimaryKeySelective(record);
     }
+
+    @Override
+    public int confirmByIds(Long[] ids) {
+        return wke.confirmByIds(ids);
+    }
+
+    @Override
+    public int AntiConfirmByIds(Long[] ids) {
+        return wke.AntiConfirmByIds(ids);
+    }
 }

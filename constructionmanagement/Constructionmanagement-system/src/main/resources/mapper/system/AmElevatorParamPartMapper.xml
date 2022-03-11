@@ -4,39 +4,38 @@
   <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmElevatorParamPart">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="elevator_id" jdbcType="BIGINT" property="elevatorId" />
-    <result column="part_type" jdbcType="VARCHAR" property="partType" />
-    <result column="part_name" jdbcType="VARCHAR" property="partName" />
-    <result column="part_model" jdbcType="VARCHAR" property="partModel" />
+    <result column="part_id" jdbcType="BIGINT" property="part_id" />
     <result column="part_count" jdbcType="INTEGER" property="partCount" />
+    <association property="amPartParam" javaType="com.ConstructionManagement.system.domain.AmPartParam">
+      <id column="id" jdbcType="BIGINT" property="id" />
+      <result column="part_name" jdbcType="VARCHAR" property="partName" />
+      <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+      <result column="part_model" jdbcType="VARCHAR" property="partModel" />
+      <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
+      <result column="applicable_device_type" jdbcType="VARCHAR" property="applicableDeviceType" />
+      <result column="remark" jdbcType="VARCHAR" property="remark" />
+    </association>
   </resultMap>
   <sql id="Base_Column_List">
-    id, elevator_id, part_type, part_name, part_model, part_count
+    id, elevator_id, part_id, part_count
   </sql>
   <select id="selectByPid" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from am_elevator_param_part
-    where elevator_id = #{elevatorId,jdbcType=BIGINT}
+    select aep.*,app.*
+    from am_elevator_param_part aep,am_part_param app
+    where aep.part_id = app.id and elevator_id = #{elevatorId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPid" parameterType="java.lang.Long">
     delete from am_elevator_param_part
     where elevator_id = #{elevatorId,jdbcType=BIGINT}
   </delete>
-
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmElevatorParamPart" useGeneratedKeys="true">
     insert into am_elevator_param_part
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="elevatorId != null">
         elevator_id,
       </if>
-      <if test="partType != null">
-        part_type,
-      </if>
-      <if test="partName != null">
-        part_name,
-      </if>
-      <if test="partModel != null">
-        part_model,
+      <if test="part_id != null">
+        part_id,
       </if>
       <if test="partCount != null">
         part_count,
@@ -46,14 +45,8 @@
       <if test="elevatorId != null">
         #{elevatorId,jdbcType=BIGINT},
       </if>
-      <if test="partType != null">
-        #{partType,jdbcType=VARCHAR},
-      </if>
-      <if test="partName != null">
-        #{partName,jdbcType=VARCHAR},
-      </if>
-      <if test="partModel != null">
-        #{partModel,jdbcType=VARCHAR},
+      <if test="part_id != null">
+        #{part_id,jdbcType=BIGINT},
       </if>
       <if test="partCount != null">
         #{partCount,jdbcType=INTEGER},

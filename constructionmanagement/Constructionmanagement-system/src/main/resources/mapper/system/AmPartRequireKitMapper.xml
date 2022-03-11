@@ -4,18 +4,26 @@
   <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmPartRequireKit">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="part_require_id" jdbcType="BIGINT" property="partRequireId" />
-    <result column="kit_model" jdbcType="VARCHAR" property="kitModel" />
-    <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
+    <result column="kit_id" jdbcType="BIGINT" property="kit_id" />
     <result column="kit_count" jdbcType="INTEGER" property="kitCount" />
+    <association property="amKitParam" javaType="com.ConstructionManagement.system.domain.AmKitParam">
+      <id column="id" jdbcType="BIGINT" property="id" />
+      <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
+      <result column="kit_code" jdbcType="VARCHAR" property="kitCode" />
+      <result column="kit_model" jdbcType="VARCHAR" property="kitModel" />
+      <result column="technical_param" jdbcType="VARCHAR" property="technicalParam" />
+      <result column="applicable_kit_type" jdbcType="VARCHAR" property="applicableKitType" />
+      <result column="remark" jdbcType="VARCHAR" property="remark" />
+      <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
+    </association>
   </resultMap>
   <sql id="Base_Column_List">
-    id, part_require_id, kit_model, kit_name, kit_count
+    id, part_require_id, kit_id, kit_count
   </sql>
   <select id="selectByPid" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from am_part_require_kit
-    where part_require_id = #{partRequireId,jdbcType=BIGINT}
+    select apr.*,akp.*
+    from am_part_require_kit apr,am_kit_param akp
+    where apr.kit_id = akp.id  and part_require_id = #{partRequireId,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteByPid" parameterType="java.lang.Long">
@@ -28,11 +36,8 @@
       <if test="partRequireId != null">
         part_require_id,
       </if>
-      <if test="kitModel != null">
-        kit_model,
-      </if>
-      <if test="kitName != null">
-        kit_name,
+      <if test="kit_id != null">
+        kit_id,
       </if>
       <if test="kitCount != null">
         kit_count,
@@ -42,11 +47,8 @@
       <if test="partRequireId != null">
         #{partRequireId,jdbcType=BIGINT},
       </if>
-      <if test="kitModel != null">
-        #{kitModel,jdbcType=VARCHAR},
-      </if>
-      <if test="kitName != null">
-        #{kitName,jdbcType=VARCHAR},
+      <if test="kit_id != null">
+        #{kit_id,jdbcType=BIGINT},
       </if>
       <if test="kitCount != null">
         #{kitCount,jdbcType=INTEGER},

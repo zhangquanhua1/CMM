@@ -8,7 +8,25 @@ export function listEquipmentRequire(query) {
     params: query
   })
 }
-
+//获取所有可用的仓库
+export function getAllUseWH() {
+  return request({
+    url: '/asset/warehouse/listAll',
+    method: 'get',
+    params: null
+  })
+}
+//获取设备参数
+export function getEquipmentParam(model, type) {
+  return request({
+    url: '/asset/manage/equipmentParam',
+    method: 'get',
+    params: {
+      model: model,
+      type: type
+    }
+  })
+}
 // 新增
 export function addEquipmentRequire(data) {
   return request({

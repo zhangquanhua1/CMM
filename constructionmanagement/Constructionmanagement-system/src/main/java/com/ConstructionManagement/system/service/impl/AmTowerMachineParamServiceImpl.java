@@ -35,8 +35,8 @@ public class AmTowerMachineParamServiceImpl implements IAmTowerMachineParamServi
     }
 
     @Override
-    public AmTowerMachineParam selectByParam(@Param("towerMachineModel")String towerMachineModel,@Param("towerMachineName") String towerMachineName,@Param("vender") String vender) {
-        return amTowerMachineParamMapper.selectByParam(towerMachineModel, towerMachineName, vender);
+    public AmTowerMachineParam selectByParam(String towerMachineModel, String towerMachineType) {
+        return amTowerMachineParamMapper.selectByParam(towerMachineModel, towerMachineType);
     }
 
     @Override

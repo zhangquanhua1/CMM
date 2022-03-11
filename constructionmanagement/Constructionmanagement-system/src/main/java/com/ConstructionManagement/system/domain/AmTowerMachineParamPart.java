@@ -9,17 +9,23 @@ import lombok.Data;
  */
 public class AmTowerMachineParamPart implements Serializable {
     private Long id;
+    //塔机id
     private Long pid;
-
-    private String partType;
-
-    private String partName;
-
-    private String partModel;
-
+    //部件id
+    private Long part_id;
+    //部件数量
     private Integer partCount;
-
     private static final long serialVersionUID = 1L;
+
+    AmPartParam amPartParam;
+
+    public AmPartParam getAmPartParam() {
+        return amPartParam;
+    }
+
+    public void setAmPartParam(AmPartParam amPartParam) {
+        this.amPartParam = amPartParam;
+    }
 
     public Long getId() {
         return id;
@@ -37,28 +43,12 @@ public class AmTowerMachineParamPart implements Serializable {
         this.pid = pid;
     }
 
-    public String getPartType() {
-        return partType;
+    public Long getPart_id() {
+        return part_id;
     }
 
-    public void setPartType(String partType) {
-        this.partType = partType;
-    }
-
-    public String getPartName() {
-        return partName;
-    }
-
-    public void setPartName(String partName) {
-        this.partName = partName;
-    }
-
-    public String getPartModel() {
-        return partModel;
-    }
-
-    public void setPartModel(String partModel) {
-        this.partModel = partModel;
+    public void setPart_id(Long part_id) {
+        this.part_id = part_id;
     }
 
     public Integer getPartCount() {
@@ -67,5 +57,9 @@ public class AmTowerMachineParamPart implements Serializable {
 
     public void setPartCount(Integer partCount) {
         this.partCount = partCount;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 }

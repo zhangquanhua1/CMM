@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.ConstructionManagement.common.config.LongJsonDeserializer;
+import com.ConstructionManagement.common.config.LongJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
 /**
@@ -16,6 +20,8 @@ public class AmTowerMachineParam  implements Serializable {
     /**
      * 序号
      */
+    @JsonSerialize(using = LongJsonSerializer.class)
+    @JsonDeserialize(using = LongJsonDeserializer.class)
     private Long id;
     /**
      * 塔机型号

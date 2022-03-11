@@ -6,8 +6,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import com.ConstructionManagement.common.config.RuoYiConfig;
+//import com.ConstructionManagement.common.config.RuoYiConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.FastByteArrayOutputStream;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,8 +37,11 @@ public class CaptchaController
     @Autowired
     private RedisCache redisCache;
 
-    @Autowired
-    private ISysConfigService configService;
+//    @Autowired
+//    private ISysConfigService configService;
+    //验证码类型
+    @Value("${ruoyi.captchaType}")
+    private String captchaType;
     /**
      * 生成验证码
      */
@@ -46,7 +50,8 @@ public class CaptchaController
     {
         AjaxResult ajax = AjaxResult.success();
         //获取验证码的开关是否开启
-        boolean captchaOnOff = configService.selectCaptchaOnOff();
+//        boolean captchaOnOff = configService.selectCaptchaOnOff();
+        boolean captchaOnOff = false;
         ajax.put("captchaOnOff", captchaOnOff);
         if (!captchaOnOff)
         {
@@ -61,8 +66,6 @@ public class CaptchaController
         String capStr = null, code = null;
         BufferedImage image = null;
 
-        //获取设置的验证码类型
-        String captchaType = RuoYiConfig.getCaptchaType();
 
         if ("math".equals(captchaType))
         {

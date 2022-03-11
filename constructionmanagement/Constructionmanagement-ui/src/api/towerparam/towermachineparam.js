@@ -15,7 +15,14 @@ export function getKitAndPart(pid) {
     method: 'get'
   })
 }
-
+// 获取可适用的部件
+export function getUsePart(query) {
+  return request({
+    url: '/asset/manage/getUsePart',
+    method: 'get',
+    params: query
+  })
+}
 // // 查询
 // export function getTowerMachineParam(postId) {
 //   return request({

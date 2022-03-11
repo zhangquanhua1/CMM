@@ -19,9 +19,22 @@ public class AmPartParam implements Serializable {
     private String partName;
 
     /**
+     * 部件类型
+     */
+    private String part_type;
+
+    /**
      * 部件代码
      */
     private String partCode;
+
+    public String getPart_type() {
+        return part_type;
+    }
+
+    public void setPart_type(String part_type) {
+        this.part_type = part_type;
+    }
 
     /**
      * 部件型号

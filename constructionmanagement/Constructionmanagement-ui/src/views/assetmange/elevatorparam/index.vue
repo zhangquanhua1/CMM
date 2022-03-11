@@ -67,7 +67,8 @@
       <el-table-column type="selection" width="55" align="center"/>
       <el-table-column
         type="index"
-        width="50">
+        width="50"
+      >
       </el-table-column>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="吊笼重量(kg)" align="center" prop="cageWeight"/>
@@ -111,142 +112,157 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-
-        <el-form-item label="厂家" prop="vender">
-          <el-input v-model="form.vender" placeholder="请输入厂家名称"/>
-        </el-form-item>
-
-        <el-form-item label="底笼尺寸" prop="bottomCageSize">
-          <el-input v-model="form.bottomCageSize" placeholder="请输入底笼尺寸（长、宽、高）,单位为：m"/>
-        </el-form-item>
-
-        <el-form-item label="吊笼内空尺寸" prop="cageSize">
-          <el-input v-model="form.cageSize" placeholder="请输入吊笼内空尺寸（长、宽、高）,单位为：m"/>
-        </el-form-item>
-
-        <el-form-item label="吊笼重量" prop="cageWeight">
-          <el-input v-model.number="form.cageWeight" placeholder="请输入吊笼重量,单位为：kg"/>
-        </el-form-item>
-
-        <el-form-item label="标准节" prop="standardKnot">
-          <el-input v-model="form.standardKnot" placeholder="请输入标准节（长、宽、高）,单位为：m"/>
-        </el-form-item>
-
-        <el-form-item label="标准节重量" prop="standardSectionWeight">
-          <el-input v-model.number="form.standardSectionWeight" placeholder="请输入标准节重量,单位为:kg"/>
-        </el-form-item>
-
-        <el-form-item label="最大高度" prop="maxHeight">
-          <el-input v-model.number="form.maxHeight" placeholder="请输入最大高度,单位为:m"/>
-        </el-form-item>
-
-        <el-form-item label="额定载荷" prop="specifiedLoad">
-          <el-input v-model.number="form.specifiedLoad" placeholder="请输入额定载荷,单位为:kg"/>
-        </el-form-item>
-        <el-form-item label="额定乘员" prop="ratedOccupant">
-          <el-input v-model.number="form.ratedOccupant" placeholder="请输入额定乘员,单位为:人"/>
-        </el-form-item>
-        <el-form-item label="起升速度" prop="upDownSpeed">
-          <el-input v-model.number="form.upDownSpeed" placeholder="请输入起升速度,单位为:m/min"/>
-        </el-form-item>
-        <el-form-item label="总功率" prop="totalPower">
-          <el-input v-model.number="form.totalPower" placeholder="请输入起升速度,单位为: m/min"/>
-        </el-form-item>
-        <el-form-item label="额定电压" prop="ratedVoltage">
-          <el-input v-model.number="form.ratedVoltage" placeholder="请输入额定电压,单位为: v"/>
-        </el-form-item>
-        <el-form-item label="额定电流" prop="ratedCurrent">
-          <el-input v-model.number="form.ratedCurrent" placeholder="请输入额定电流,单位为: A"/>
-        </el-form-item>
-        <el-form-item label="减速机速比" prop="reduceSpeedRatio">
-          <el-input v-model="form.reduceSpeedRatio" placeholder="请输入减速机速比"/>
-        </el-form-item>
-        <el-form-item label="限速器制动力矩" prop="speedLimiterBrakeTorque">
-          <el-input v-model.number="form.speedLimiterBrakeTorque" placeholder="请输入限速器制动力矩,单位为:KN"/>
-        </el-form-item>
-        <el-form-item label="制动速度" prop="retroSpeed">
-          <el-input v-model.number="form.retroSpeed" placeholder="请输入制动速度,单位为: m/min"/>
-        </el-form-item>
-        <el-form-item label="防坠器" prop="protectorId">
-          <template>
-            <el-select v-model="form.protectorId" clearable placeholder="请选择">
-              <el-option
-                v-for="item in this.protectors"
-                :key="item.value"
-                :label="item.standard"
-                :value="item.id">
-              </el-option>
-            </el-select>
-          </template>
-        </el-form-item>
-        <el-form-item label="附着要求" prop="attachmentRequirements">
-          <el-input v-model="form.attachmentRequirements" placeholder="请输入附着要求"/>
-        </el-form-item>
-        <el-form-item label="基础要求" prop="basicRequirements">
-          <el-input v-model="form.basicRequirements" placeholder="请输入基础要求"/>
-        </el-form-item>
-        <el-form-item label="供电要求" prop="supplyPowerRequirements">
-          <el-input v-model="form.supplyPowerRequirements" placeholder="请输入供电要求"/>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注"/>
-        </el-form-item>
-        <div
-          v-for="(item, index) in paramsKit"
-          :key="index">
-          <el-form-item label="配件名称">
-            <el-input v-model="item.kitName" placeholder="请输入配件名称"/>
+    <el-dialog :title="title" :visible.sync="open" width="1000px" append-to-body>
+      <el-steps :active="active" finish-status="success">
+        <el-step title="基本信息录入"></el-step>
+        <el-step title="部件绑定"></el-step>
+      </el-steps>
+      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+        <div v-show="steps1">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="厂家" prop="vender">
+                <el-input v-model="form.vender" placeholder="请输入厂家名称"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="底笼尺寸" prop="bottomCageSize">
+                <el-input v-model="form.bottomCageSize" placeholder="请输入底笼尺寸（长、宽、高）,单位为：m"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="吊笼内空尺寸" prop="cageSize">
+                <el-input v-model="form.cageSize" placeholder="请输入吊笼内空尺寸（长、宽、高）,单位为：m"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="吊笼重量" prop="cageWeight">
+                <el-input v-model.number="form.cageWeight" placeholder="请输入吊笼重量,单位为：kg"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="标准节" prop="standardKnot">
+                <el-input v-model="form.standardKnot" placeholder="请输入标准节（长、宽、高）,单位为：m"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="标准节重量" prop="standardSectionWeight">
+                <el-input v-model.number="form.standardSectionWeight" placeholder="请输入标准节重量,单位为:kg"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="最大高度" prop="maxHeight">
+                <el-input v-model.number="form.maxHeight" placeholder="请输入最大高度,单位为:m"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="额定载荷" prop="specifiedLoad">
+                <el-input v-model.number="form.specifiedLoad" placeholder="请输入额定载荷,单位为:kg"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="额定乘员" prop="ratedOccupant">
+                <el-input v-model.number="form.ratedOccupant" placeholder="请输入额定乘员,单位为:人"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="起升速度" prop="upDownSpeed">
+                <el-input v-model.number="form.upDownSpeed" placeholder="请输入起升速度,单位为:m/min"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="总功率" prop="totalPower">
+                <el-input v-model.number="form.totalPower" placeholder="请输入起升速度,单位为: m/min"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="额定电压" prop="ratedVoltage">
+                <el-input v-model.number="form.ratedVoltage" placeholder="请输入额定电压,单位为: v"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="额定电流" prop="ratedCurrent">
+                <el-input v-model.number="form.ratedCurrent" placeholder="请输入额定电流,单位为: A"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="减速机速比" prop="reduceSpeedRatio">
+                <el-input v-model="form.reduceSpeedRatio" placeholder="请输入减速机速比"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="限速器制动力矩" prop="speedLimiterBrakeTorque">
+                <el-input v-model.number="form.speedLimiterBrakeTorque" placeholder="请输入限速器制动力矩,单位为:KN"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="制动速度" prop="retroSpeed">
+                <el-input v-model.number="form.retroSpeed" placeholder="请输入制动速度,单位为: m/min"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="防坠器" prop="protectorId">
+                <template>
+                  <el-select v-model="form.protectorId" clearable placeholder="请选择">
+                    <el-option
+                      v-for="item in this.protectors"
+                      :key="item.value"
+                      :label="item.standard"
+                      :value="item.id"
+                    >
+                    </el-option>
+                  </el-select>
+                </template>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="附着要求" prop="attachmentRequirements">
+            <el-input v-model="form.attachmentRequirements" placeholder="请输入附着要求"/>
           </el-form-item>
-          <el-form-item label="配件单位">
-            <el-input v-model="item.kitUnit" placeholder="请输入配件单位"/>
+
+          <el-form-item label="基础要求" prop="basicRequirements">
+            <el-input v-model="form.basicRequirements" placeholder="请输入基础要求"/>
           </el-form-item>
-          <el-form-item label="配件数量">
-            <el-input-number v-model="item.kitCount" placeholder="请输入配件数量"/>
+          <el-form-item label="供电要求" prop="supplyPowerRequirements">
+            <el-input v-model="form.supplyPowerRequirements" placeholder="请输入供电要求"/>
           </el-form-item>
-          <el-button size="medium" @click.prevent="removeKit(index)">删除该配件</el-button>
-          <br/>
-          <br/>
-          <br/>
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="form.remark" placeholder="请输入备注"/>
+          </el-form-item>
         </div>
-        <el-form-item>
-          <el-button @click="addKit">新增配件信息</el-button>
-        </el-form-item>
-
-        <div
-          v-for="(item, index) in paramsPart"
-          :key="index">
-          <el-form-item label="部件名称">
-            <el-input v-model="item.partName" placeholder="请输入部件名称"/>
-          </el-form-item>
-          <el-form-item label="部件型号">
-            <el-input v-model="item.partModel" placeholder="请输入部件型号"/>
-          </el-form-item>
-          <el-form-item label="部件类型">
-            <el-input v-model="item.partType" placeholder="请输入部件类型"/>
-          </el-form-item>
-          <el-form-item label="部件数量">
-            <el-input-number v-model="item.partCount" placeholder="请输入部件数量"/>
-          </el-form-item>
-          <el-button @click.prevent="removePart(index)" >删除该部件</el-button>
-          <br/>
-          <br/>
-          <br/>
+        <div v-show="steps2" align="center">
+          <el-transfer v-model="value" :button-texts="['移除', '添加']" :data="partData" :titles="titles" filterable>
+            <div slot-scope="{ option }">
+              <div style="float: left">
+                {{ option.label }}
+              </div>
+              <div style="float: right">
+                <input class="input" placeholder="数量" style="width:50px;" type="text" value="1" :id="option.key"/>
+              </div>
+            </div>
+          </el-transfer>
         </div>
-        <el-form-item>
-          <el-button @click="addPart">新增部件件信息</el-button>
-        </el-form-item>
-
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <el-button style="margin-top: 12px;" @click="previous" v-if="active>0">上一步</el-button>
+        <el-button style="margin-top: 12px;" @click="next" v-if="active<1">下一步</el-button>
         <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
     <!--    详情弹窗-->
-    <el-dialog :title="title" :visible.sync="openDetail" width="40%"  class="spec-dialog" append-to-body>
-      <el-row >
+    <el-dialog :title="title" :visible.sync="openDetail" width="40%" class="spec-dialog" append-to-body>
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -262,7 +278,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -278,7 +294,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -294,7 +310,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -310,7 +326,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -326,7 +342,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -342,7 +358,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -358,7 +374,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -374,7 +390,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -390,7 +406,7 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -406,14 +422,14 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <ul class="list-group">
           <li class="list-group-item">
             备注: {{ elevatorParamDetail.remark }}
           </li>
         </ul>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -429,23 +445,23 @@
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
-              录入人部门id: {{ elevatorParamDetail.insertPersonDepartId }}
+              录入人部门: {{getDeptName(elevatorParamDetail.insertPersonDepartId)  }}
             </li>
           </ul>
         </el-col>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
-            <li class="list-group-item">
-              更新人部门id: {{ elevatorParamDetail.updatePersonDepartId }}
+            <li class="list-group-item" >
+              更新人部门: {{ getDeptName(elevatorParamDetail.updatePersonDepartId) }}
             </li>
           </ul>
         </el-col>
       </el-row>
-      <el-row >
+      <el-row>
         <el-col :span="12" :xs="100">
           <ul class="list-group">
             <li class="list-group-item">
@@ -484,21 +500,21 @@
           <el-col :span="8" :xs="100">
             <ul class="list-group">
               <li class="list-group-item">
-                {{ kit.kitName }}.
+                {{ kit.amKitParam.kitName }}.
               </li>
             </ul>
           </el-col>
           <el-col :span="8" :xs="100">
             <ul class="list-group">
               <li class="list-group-item">
-                {{ kit.kitUnit}}.
+                {{ kit.amKitParam.measurementUnit }}.
               </li>
             </ul>
           </el-col>
           <el-col :span="8" :xs="100">
             <ul class="list-group">
               <li class="list-group-item">
-                {{ kit.kitCount}}.
+                {{ kit.kitCount }}.
               </li>
             </ul>
           </el-col>
@@ -513,46 +529,46 @@
       </el-row>
       <div v-else>
         <br/><br/>
-        <el-row >
+        <el-row>
           <el-col :span="6" :xs="100">
             部件名称
           </el-col>
           <el-col :span="6" :xs="100">
             部件型号
           </el-col>
-          <el-col :span="6" :xs="100">
-            部件类别
-          </el-col>
+<!--          <el-col :span="6" :xs="100">-->
+<!--            部件类别-->
+<!--          </el-col>-->
           <el-col :span="6" :xs="100">
             数量:
           </el-col>
         </el-row>
-        <el-row  v-for="part in this.Parts">
+        <el-row v-for="part in this.Parts">
           <el-col :span="6" :xs="100">
             <ul class="list-group">
               <li class="list-group-item">
-                {{ part.partName }}.
+                {{ part.amPartParam.partName }}.
               </li>
             </ul>
           </el-col>
           <el-col :span="6" :xs="100">
             <ul class="list-group">
               <li class="list-group-item">
-                {{ part.partModel}}.
+                {{ part.amPartParam.partModel }}.
               </li>
             </ul>
           </el-col>
+<!--          <el-col :span="6" :xs="100">-->
+<!--            <ul class="list-group">-->
+<!--              <li class="list-group-item">-->
+<!--                {{ part.partType }}.-->
+<!--              </li>-->
+<!--            </ul>-->
+<!--          </el-col>-->
           <el-col :span="6" :xs="100">
             <ul class="list-group">
               <li class="list-group-item">
-                {{ part.partType}}.
-              </li>
-            </ul>
-          </el-col>
-          <el-col :span="6" :xs="100">
-            <ul class="list-group">
-              <li class="list-group-item">
-                {{ part.partCount}}.
+                {{ part.partCount }}.
               </li>
             </ul>
           </el-col>
@@ -572,7 +588,17 @@
 }
 </style>
 <script>
-import {listElevatorParam,getElevatorKitAndPart,addElevatorParam,delElevatorParam,updateElevatorParam ,getProtector } from '@/api/towerparam/elevatorparam'
+import {
+  listElevatorParam,
+  getElevatorKitAndPart,
+  addElevatorParam,
+  delElevatorParam,
+  updateElevatorParam,
+  getProtector
+} from '@/api/towerparam/elevatorparam'
+import { getUsePart } from '@/api/towerparam/towermachineparam'
+import { treeselect } from '@/api/system/dept'
+
 export default {
   name: 'elevatorparam',
   // dicts: ['sys_normal_disable'],
@@ -603,90 +629,117 @@ export default {
         vender: undefined,
         insertDate: undefined
       },
+      //是否加载过部件
+      load_parts:false,
       openDetail: false,
-      elevatorParamDetail:{},
-      kits:[],
-      Parts:[],
-      protectors:[],
+      elevatorParamDetail: {},
+      kits: [],
+      Parts: [],
+      protectors: [],
+      active: 0,
+      steps1: true,
+      steps2: false,
+      titles:['待选择部件','已选择部件'],
+      //获取部件
+      partData: [],
+      //获取添加的部件数量
+      amounts: [],
+      //部件id
+      value: [],
+      //记录已选择的设备名
+      last_towerMachineName:'',
       // 表单参数
-      paramsKit:[{kitName:'',kitUnit:'',kitCount:''}],
-      paramsPart:[{partName:'',partModel:'',partType:'',partCount:''}],
+      paramsPart: [{part_id: '', partCount: '' }],
       form: {
-        amElevatorParamKits:[],
-        amElevatorParamParts:[]
+        amElevatorParamKits: [],
+        amElevatorParamParts: []
       },
+      // 所属部门ID字典
+      depart_idOptions: [],
       // 表单校验
       rules: {
         cageWeight: [{
-          type: 'number', message: '吊笼重量必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '吊笼重量必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|10000)$/,
           message: '吊笼重量范围在0-10000',
           trigger: 'blur'
         }],
         standardSectionWeight: [{
-          type: 'number', message: '标准节重量必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '标准节重量必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '标准节重量范围在0-1000',
           trigger: 'blur'
         }],
         maxHeight: [{
-          type: 'number', message: '最大高度必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '最大高度必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '最大高度范围在0-1000',
           trigger: 'blur'
         }],
         specifiedLoad: [{
-          type: 'number', message: '额定载荷必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '额定载荷必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '额定载荷范围在0-1000',
           trigger: 'blur'
         }],
         ratedOccupant: [{
-          type: 'number', message: '额定乘员必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '额定乘员必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '额定乘员范围在0-1000',
           trigger: 'blur'
         }],
         upDownSpeed: [{
-          type: 'number', message: '起升速度必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '起升速度必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|10000)$/,
           message: '起升速度范围在0-10000',
           trigger: 'blur'
         }],
         totalPower: [{
-          type: 'number', message: '总功率必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '总功率必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '总功率范围在0-1000',
           trigger: 'blur'
         }],
         ratedVoltage: [{
-          type: 'number', message: '额定电压必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '额定电压必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '额定电压范围在0-1000',
           trigger: 'blur'
         }],
         ratedCurrent: [{
-          type: 'number', message: '额定电流必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '额定电流必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '额定电流范围在0-1000',
           trigger: 'blur'
         }],
         speedLimiterBrakeTorque: [{
-          type: 'number', message: '限速器制动力矩必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '限速器制动力矩必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '限速器制动力矩范围在0-1000',
           trigger: 'blur'
         }],
         retroSpeed: [{
-          type: 'number', message: '制动速度必须为数字值',trigger: 'blur' }, {
+          type: 'number', message: '制动速度必须为数字值', trigger: 'blur'
+        }, {
           pattern: /^(0|[1-9]\d?|1000)$/,
           message: '制动速度范围在0-1000',
           trigger: 'blur'
-        }],
-      },
+        }]
+      }
     }
   },
   created() {
+    this.getTreeselect()
     this.getList()
   },
   methods: {
@@ -699,10 +752,38 @@ export default {
         this.loading = false
       })
     },
+    /** 查询部件参数列表 */
+    getPartSS() {
+      const _this=this
+      getUsePart(null).then(response => {
+        response.data.forEach(function(item) {
+          _this.partData.push({ key: item.id, label: item.partName })
+        })
+      });
+    },
+    //获取部件的数量
+    getAmounts() {
+      //获取输入框数值
+      const _this = this
+      _this.amounts = []
+      this.value.forEach(function(id) {
+        const num = document.getElementById(id).value
+        if (num && num.length > 0) {
+          _this.amounts.push(num)
+        } else {
+          _this.amounts.push(1)
+        }
+      })
+    },
+    //构建ParamPart对象
+    buildParamParts(){
+      this.getAmounts();
+      this.paramsPart=this.amounts.map((partCount,i)=>({partCount, part_id: this.value[i]}))
+    },
     // 取消按钮
     cancel() {
       this.open = false
-      this.openDetail= false
+      this.openDetail = false
       this.reset()
     },
     // 表单重置
@@ -714,24 +795,24 @@ export default {
         cageWeight: undefined,
         standardKnot: undefined,
         standardSectionWeight: undefined,
-        maxHeight:undefined,
-        specifiedLoad:undefined ,
-        ratedOccupant:undefined ,
-        upDownSpeed:undefined ,
-        totalPower:undefined ,
-        ratedVoltage:undefined ,
-        ratedCurrent:undefined ,
-        reduceSpeedRatio:undefined ,
-        speedLimiterBrakeTorque:undefined ,
-        retroSpeed:undefined ,
-        protectorId:undefined ,
-        attachmentRequirements:undefined ,
-        basicRequirements:undefined ,
-        supplyPowerRequirements:undefined ,
-        remark:undefined ,
+        maxHeight: undefined,
+        specifiedLoad: undefined,
+        ratedOccupant: undefined,
+        upDownSpeed: undefined,
+        totalPower: undefined,
+        ratedVoltage: undefined,
+        ratedCurrent: undefined,
+        reduceSpeedRatio: undefined,
+        speedLimiterBrakeTorque: undefined,
+        retroSpeed: undefined,
+        protectorId: undefined,
+        attachmentRequirements: undefined,
+        basicRequirements: undefined,
+        supplyPowerRequirements: undefined,
+        remark: undefined
       },
-      this.paramsKit=[];
-      this.paramsPart=[];
+        this.paramsKit = []
+      this.paramsPart = []
       this.resetForm('form')
     },
     /** 搜索按钮操作 */
@@ -742,7 +823,7 @@ export default {
     /** 重置按钮操作 */
     resetQuery() {
       this.resetForm('queryForm')
-      this.queryParams.insertDate=''
+      this.queryParams.insertDate = ''
       this.handleQuery()
     },
     // 多选框选中数据
@@ -751,11 +832,21 @@ export default {
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      treeselect().then(response => {
+        this.depart_idOptions = response.data;
+      });
+    },
+    //根据部门id 获取部门名
+    getDeptName(id){
+      return this.getDeptNameByID(this.depart_idOptions,id)
+    },
     /** 新增按钮操作 */
     handleAdd() {
       getProtector().then((res) => {
-        this.protectors=res.data
-        console.log("this.protectors"+res.data)
+        this.protectors = res.data
+        console.log('this.protectors' + res.data)
       })
       this.reset()
       this.open = true
@@ -764,34 +855,33 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       getProtector().then((res) => {
-        this.protectors=res.data
-        console.log("this.protectors"+res.data)
+        this.protectors = res.data
+        console.log('this.protectors' + res.data)
       })
 
       this.reset()
       this.form = row
       getElevatorKitAndPart(row.id).then((res) => {
-        this.paramsKit=res.data.amElevatorParamKits;
-        this.paramsPart=res.data.amElevatorParamParts;
+        this.paramsKit = res.data.amElevatorParamKits
+        this.paramsPart = res.data.amElevatorParamParts
       })
       this.open = true
       this.title = '修改'
     },
     /** 提交按钮 */
     submitForm: function() {
+      this.buildParamParts()
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
-            this.form.amElevatorParamKits=this.paramsKit;
-            this.form.amElevatorParamParts=this.paramsPart;
+            this.form.amElevatorParamParts = this.paramsPart
             updateElevatorParam(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
               this.open = false
               this.getList()
             })
           } else {
-            this.form.amElevatorParamKits=this.paramsKit;
-            this.form.amElevatorParamParts=this.paramsPart;
+            this.form.amElevatorParamParts = this.paramsPart
             addElevatorParam(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
@@ -799,8 +889,10 @@ export default {
             })
           }
         }
-        this.paramsKit=[];
-        this.paramsPart=[];
+        this.value=[]
+        this.amounts=[]
+        this.paramsPart = []
+        this.load_parts=false
       })
     },
 
@@ -815,29 +907,30 @@ export default {
       }).catch(() => {
       })
     },
-    handleDetail(row){
-      const pid= row.id || 0
+    handleDetail(row) {
+      const pid = row.id || 0
       getElevatorKitAndPart(pid).then((res) => {
-        this.kits=res.data.amElevatorParamKits;
-        this.Parts=res.data.amElevatorParamParts;
+        this.kits = res.data.amPartParamKits
+        this.Parts = res.data.amElevatorParamParts
       })
       this.elevatorParamDetail = row
       this.openDetail = true
       this.title = '详情'
     },
-    removeKit(index) {
-      this.paramsKit.splice(index, 1)
+    previous() {
+      if (this.active-- > 2) this.active = 0
+      this.steps1 = true
+      this.steps2 = false
     },
-    addKit() {
-      this.paramsKit.push({ kitName: '', kitUnit: '',kitCount: ''})
+    next() {
+      if(!this.load_parts) {
+        this.getPartSS()
+        this.load_parts=true
+      }
+      if (this.active++ > 2) this.active = 0
+      this.steps1 = false
+      this.steps2 = true
     },
-    removePart(index) {
-      this.paramsPart.splice(index, 1)
-    },
-    addPart() {
-      this.paramsPart.push({partName:'',partModel:'',partType:'',partCount:''})
-    },
-
 
     /** 导出按钮操作 */
     handleExport() {

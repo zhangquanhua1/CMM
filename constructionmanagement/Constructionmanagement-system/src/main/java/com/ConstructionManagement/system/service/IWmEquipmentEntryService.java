@@ -13,4 +13,6 @@ public interface IWmEquipmentEntryService {
     List<WmEquipmentEntry> selectBySelective(WmEquipmentEntry record);
 
     int updateByPrimaryKeySelective(WmEquipmentEntry record);
+    int confirmByIds(Long []ids);
+    int AntiConfirmByIds(Long []ids);
 }

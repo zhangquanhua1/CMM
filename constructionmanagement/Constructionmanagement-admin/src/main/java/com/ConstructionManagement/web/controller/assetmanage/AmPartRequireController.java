@@ -6,6 +6,7 @@ import com.ConstructionManagement.common.core.domain.AjaxResult;
 import com.ConstructionManagement.common.core.page.TableDataInfo;
 import com.ConstructionManagement.common.enums.BusinessType;
 import com.ConstructionManagement.system.domain.*;
+import com.ConstructionManagement.system.service.IAmKitParamService;
 import com.ConstructionManagement.system.service.IAmPartRequireKitService;
 import com.ConstructionManagement.system.service.IAmPartRequireService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class AmPartRequireController extends BaseController {
     IAmPartRequireService iAmPartRequireService;
     @Autowired
     IAmPartRequireKitService iAmPartRequireKitService;
+    @Autowired
+    private IAmKitParamService ikps;
     /**
      * 获取列表
      */
@@ -42,9 +45,20 @@ public class AmPartRequireController extends BaseController {
     @PreAuthorize("@ss.hasPermi('asset:manage:partrequire:list')")
     @GetMapping("/kit/{pid}")
     public AjaxResult getlist(@PathVariable Long pid) {
-        //System.out.println("pid==="+pid);
         if(pid<=0||pid==null) return AjaxResult.error("该部件不存在配件");
         return AjaxResult.success(iAmPartRequireKitService.selectByPid(pid));
+    }
+
+    /**
+     * 获取所选类别的所适用配件
+     */
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitparam:list')")
+    @GetMapping("/kits")
+    public AjaxResult getKitS(AmPartRequire amPartRequire) {
+        AmKitParam akp=new AmKitParam();
+        akp.setApplicableKitType(amPartRequire.getPartType());
+        List<AmKitParam> listKits=ikps.selectBySelective(akp);;
+        return AjaxResult.success(listKits);
     }
 
     /**

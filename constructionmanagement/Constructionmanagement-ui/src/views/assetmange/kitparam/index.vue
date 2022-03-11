@@ -82,8 +82,9 @@
       <el-table-column label="零配件名称" align="center" prop="kitName"/>
       <el-table-column label="代码" align="center" prop="kitCode"/>
       <el-table-column label="型号" align="center" prop="kitModel"/>
-      <el-table-column label="适用配件类型" align="center" prop="applicableKitType"/>
+      <el-table-column label="适用部件类型" align="center" prop="applicableKitType"/>
       <el-table-column label="技术参数" align="center" prop="technicalParam"/>
+      <el-table-column label="计量单位" align="center" prop="measurementUnit"/>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -129,12 +130,29 @@
           <el-input v-model="form.kitModel" placeholder="请输入零配件型号"/>
         </el-form-item>
 
-        <el-form-item label="适用配件类型" prop="applicableKitType">
-          <el-input v-model="form.applicableKitType" placeholder="请输入适用配件类型"/>
+        <el-form-item label="适用部件件类型" prop="applicableKitType">
+          <el-select v-model="form.applicableKitType" placeholder="请选择适用部件类型">
+            <el-option
+              v-for="dict in applicableKitTypeS"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item label="技术参数" prop="technicalParam">
           <el-input v-model.number="form.technicalParam" placeholder="请输入技术参数"/>
+        </el-form-item>
+        <el-form-item label="计量单位" prop="measurementUnit">
+          <el-select v-model="form.measurementUnit" placeholder="请选择计量单位">
+            <el-option
+              v-for="dict in measurement_unitS"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注"/>
@@ -177,6 +195,11 @@ export default {
       total: 0,
       // 岗位表格数据
       postList: [],
+
+      //计量单位
+      measurement_unitS:[],
+      //适用部件类型
+      applicableKitTypeS:[],
       // 弹出层标题
       title: '',
       // 是否显示弹出层
@@ -195,6 +218,7 @@ export default {
         kitModel:'',
         applicableKitType:'',
         technicalParam:'',
+        measurementUnit:'',
         remark:''
       },
       // 表单校验
@@ -211,6 +235,10 @@ export default {
   },
   created() {
     this.getList()
+    this.getDicts('measurement_unit').then(response => {
+        this.measurement_unitS = response.data})
+    this.getDicts('parts_type').then(response => {
+      this.applicableKitTypeS = response.data})
   },
   methods: {
     /** 查询列表 */
@@ -230,33 +258,7 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        towerMachineModel: undefined,
-        towerMachineName: undefined,
-        towerMachineType: undefined,
-        vender: undefined,
-        ratedLiftingDistance: undefined,
-        maximumLiftingWeight: undefined,
-        maximumRatedWeight:undefined,
-        maximumStartingWeightWorkingRange:undefined ,
-        maximumRangeWork:undefined ,
-        maximumHeightLift:undefined ,
-        upDownSpeed:undefined ,
-        variableAmplitudeSpeed:undefined ,
-        swivellingSpeed:undefined ,
-        upSpeed:undefined ,
-        towerMachineWeight:undefined ,
-        balanceWeight:undefined ,
-        workingVoltage:undefined ,
-        totalInstalledCapacity:undefined ,
-        motorPower:undefined ,
-        frequencyConverterPower:undefined ,
-        standardSectionSpecifications:undefined ,
-        attachedWallFrameSpecifications:undefined ,
-        specificationClassification:undefined ,
-        remark:undefined ,
       },
-        this.paramsKit=[];
-      this.paramsPart=[];
       this.resetForm('form')
     },
     /** 搜索按钮操作 */
@@ -300,6 +302,7 @@ export default {
               this.getList()
             })
           } else {
+            console.log('this.form'+this.form.measurementUnit)
             addKitParam(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false

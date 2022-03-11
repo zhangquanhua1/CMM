@@ -28,6 +28,22 @@ export function updateEquipmentEntry(data) {
   })
 }
 
+// 零配件信息确认
+export function equipmentInforConfirm(ids) {
+  return request({
+    url: '/inventory/equipmentEntry/confirm',
+    method: 'put',
+    data: ids
+  })
+}
+// 零配件信息反确认
+export function equipmentAntiConfirm(ids) {
+  return request({
+    url: '/inventory/equipmentEntry/AntiConfirm',
+    method: 'put',
+    data: ids
+  })
+}
 // 删除
 export function delEquipmentEntry(postId) {
   return request({

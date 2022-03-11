@@ -12,7 +12,7 @@ public interface IAmTowerMachineParamService {
 
     List<AmTowerMachineParam> selectBySelective(AmTowerMachineParam amTowerMachineParam);
 
-    AmTowerMachineParam selectByParam(String towerMachineModel,String towerMachineName,String vender);
+    AmTowerMachineParam selectByParam(String towerMachineModel,String towerMachineType);
 
     int updateByPrimaryKeySelective(AmTowerMachineParam record);
 }

@@ -762,7 +762,7 @@ import {
   delEquipmentEntry,
   listEquipmentEntry,
   updateEquipmentEntry
-} from '@/api/towerparam/EquipmentEntry'
+} from '@/api/inventory/EquipmentEntry'
 export default {
   name: 'equipmentEntry',
   // dicts: ['sys_normal_disable'],

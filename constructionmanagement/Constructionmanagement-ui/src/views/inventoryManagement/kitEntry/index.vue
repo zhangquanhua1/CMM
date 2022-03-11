@@ -537,7 +537,7 @@ import {
   delKitEntry,
   listKitEntry,
   updateKitEntry,getProtector
-} from '@/api/towerparam/KitEntry'
+} from '@/api/inventory/KitEntry'
 export default {
   name: 'kitEntry',
   // dicts: ['sys_normal_disable'],

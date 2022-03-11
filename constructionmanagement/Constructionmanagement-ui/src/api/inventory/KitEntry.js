@@ -33,6 +33,22 @@ export function updateKitEntry(data) {
     data: data
   })
 }
+// 零配件信息确认
+export function kitInforConfirm(ids) {
+  return request({
+    url: '/inventory/kitEntry/confirm',
+    method: 'put',
+    data: ids
+  })
+}
+// 零配件信息反确认
+export function kitAntiConfirm(ids) {
+  return request({
+    url: '/inventory/kitEntry/AntiConfirm',
+    method: 'put',
+    data: ids
+  })
+}
 
 // 删除
 export function delKitEntry(postId) {

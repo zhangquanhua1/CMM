@@ -31,4 +31,14 @@ public class WmEquipmentEntryServiceImpl implements IWmEquipmentEntryService {
     public int updateByPrimaryKeySelective(WmEquipmentEntry record) {
         return we.updateByPrimaryKeySelective(record);
     }
+
+    @Override
+    public int confirmByIds(Long[] ids) {
+        return we.confirmByIds(ids);
+    }
+
+    @Override
+    public int AntiConfirmByIds(Long[] ids) {
+        return we.AntiConfirmByIds(ids);
+    }
 }

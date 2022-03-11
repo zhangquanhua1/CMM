@@ -15,7 +15,22 @@ export function getPartRequireKit(pid) {
     method: 'get'
   })
 }
+// 获取部件对应的配件
+export function getKitS(query) {
+  return request({
+    url: '/asset/partrequire/kits',
+    method: 'get',
+    params: query
+  })
+}
 
+export function getEquipmentModel(query) {
+  return request({
+    url: '/asset/manage/towermachine/list',
+    method: 'get',
+    params: query
+  })
+}
 // 新增
 export function addPartRequire(data) {
   return request({

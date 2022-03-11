@@ -136,7 +136,6 @@
           placeholder="选择录入日期"
         ></el-date-picker>
       </el-form-item>
-
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -147,23 +146,23 @@
         <el-button
           type="primary"
           plain
-          icon="el-icon-plus"
+          icon="el-icon-check"
           size="mini"
-          @click="handleAdd"
-          v-hasPermi="['inventory:manage:equipmententry:add']"
-        >新增
+          @click="handleConfirmS"
+          v-hasPermi="['inventory:manage:equipmententry:confirm']"
+        >确认
         </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
           type="danger"
           plain
-          icon="el-icon-delete"
+          icon="el-icon-close"
           size="mini"
           :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['inventory:manage:equipmententry:remove']"
-        >删除
+          @click="handleAntiConfirmS"
+          v-hasPermi="['inventory:manage:equipmententry:confirm']"
+        >反确认
         </el-button>
       </el-col>
       <el-col :span="1.5">
@@ -200,23 +199,32 @@
           <span>{{ parseTime2(scope.row.insertDate) }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="状态" align="center" prop="status" :filters="[{ text: '未确认', value: 0 },
+      { text: '确认', value: 1 },{ text: '反确认', value: 2 }]"
+                       :filter-method="filterState">
+        <template slot-scope="scope">
+          <el-tag :type="'primary'" v-if="scope.row.status==0" >未确认</el-tag>
+          <el-tag :type="'success'" v-else-if="scope.row.status==1">确认</el-tag>
+          <el-tag :type="'danger'"v-else>反确认</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['inventory:manage:equipmententry:edit']"
-          >修改
+            icon="el-icon-check"
+            @click="handleConfirm(scope.row)"
+            v-hasPermi="['inventory:manage:equipmententry:confirm']"
+          >确认
           </el-button>
           <el-button
             size="mini"
             type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['inventory:manage:equipmententry:remove']"
-          >删除
+            icon="el-icon-close"
+            @click="handleAntiConfirm(scope.row)"
+            v-hasPermi="['inventory:manage:equipmententry:confirm']"
+          >反确认
           </el-button>
           <el-button
             size="mini"
@@ -570,6 +578,7 @@
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
+        <el-button @click="submit" v-if="this.title!='详情'">{{title}}</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
@@ -584,11 +593,9 @@
 </style>
 <script>
 import {
-  addEquipmentEntry,
-  delEquipmentEntry,
+ equipmentAntiConfirm, equipmentInforConfirm,
   listEquipmentEntry,
-  updateEquipmentEntry
-} from '@/api/towerparam/EquipmentEntry'
+} from '@/api/inventory/EquipmentEntry'
 export default {
   name: 'equipmentEntry',
   // dicts: ['sys_normal_disable'],
@@ -634,68 +641,6 @@ export default {
       },
       openDetail: false,
       Detail:{},
-      form: {
-      },
-      // 表单校验
-      rules: {
-        equipmentNumber: [
-          { required: true, message: '设备编号不能为空', trigger: 'blur' },{
-            type: 'number', message: '设备编号必须为数字值',trigger: 'blur' }
-        ],
-        equipmentSelfNumber: [
-          { type: 'number', message: '设备自编号必须为数字值',trigger: 'blur' }
-        ],
-        invoiceNumber: [
-          { type: 'number', message: '发票号必须为数字值',trigger: 'blur' }
-        ],
-        buildingNo: [
-          { type: 'number', message: '楼号必须为数字值',trigger: 'blur' }
-        ],
-        contractUnitPrice: [
-          { type: 'number', message: '合同单价必须为数字值',trigger: 'blur' }
-        ],
-        amount: [
-          { type: 'number', message: '数量必须为数字值',trigger: 'blur' }
-        ],
-        rate: [
-          { type: 'number', message: '税率必须为数字值',trigger: 'blur' }
-        ],
-        exclusiveTaxPrice: [
-          { type: 'number', message: '不含税价必须为数字值',trigger: 'blur' }
-        ],
-        taxation: [
-          { type: 'number', message: '税金必须为数字值',trigger: 'blur' }
-        ],
-        depreciationRate: [
-          { type: 'number', message: '折旧率必须为数字值',trigger: 'blur' }
-        ],
-        // contactNumber: [
-        //   { type: 'number', message: '联系电话必须为数字值',trigger: 'blur' }
-        // ],
-        contactNumber: [
-          {
-            required: true,
-            message: "请输入联系电话",
-            trigger: "blur"
-          },
-          {
-            validator: function(rule, value, callback) {
-              if (/^1[34578]\d{9}$/.test(value) == false) {
-                callback(new Error("手机号格式错误"));
-              } else {
-                callback();
-              }
-            },
-            trigger: "blur"
-          }
-        ],
-        financingAmount: [
-          { type: 'number', message: '融资金额必须为数字值',trigger: 'blur' }
-        ],
-
-
-
-      },
     }
   },
   created() {
@@ -721,49 +666,6 @@ export default {
       this.openDetail= false
       this.reset()
     },
-    // 表单重置
-    reset() {
-      this.form = {
-        vender: undefined,
-        equipmentNumber: undefined,
-        equipmentSelfNumber:undefined,
-        equipmentName: undefined,
-        standardModel: undefined,
-        equipmentType: undefined,
-        recordNumber: undefined,
-        rightsUnit:undefined,
-        belongWarehouse:undefined ,
-        projectAddress:undefined ,
-        financeLease:undefined,
-        invoiceNumber:undefined,
-        purchaseContract:undefined,
-        manufacturingLicenseNo:undefined,
-        purchaseDate:undefined ,
-        retireDate:undefined ,
-        unitResponsiblePerson:undefined ,
-        department:undefined ,
-        buildingNo:undefined ,
-        equipmentSource:undefined ,
-        registrant:undefined ,
-        confirmPerson:undefined ,
-        invoiceTime:undefined ,
-        financingMaturityDate:undefined ,
-        manufacturingNo:undefined ,
-        contractUnitPrice:undefined ,
-        amount:undefined ,
-        rate:undefined ,
-        exclusiveTaxPrice:undefined ,
-        taxation:undefined ,
-        depreciationRate:undefined ,
-        contactNumber:undefined ,
-        registrationTime:undefined ,
-        acknowledgingTime:undefined ,
-        financingBatch:undefined ,
-        financingAmount:undefined ,
-      },
-
-        this.resetForm('form')
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1
@@ -785,55 +687,65 @@ export default {
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = '添加'
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset()
-      this.form = row
-      this.open = true
-      this.title = '修改'
-    },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.id != undefined) {
-            updateEquipmentEntry(this.form).then(response => {
-              this.$modal.msgSuccess('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            addEquipmentEntry(this.form).then(response => {
-              this.$modal.msgSuccess('新增成功')
-              this.open = false
-              this.getList()
-            })
-          }
-        }
-      })
-    },
-
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const postIds = row.id || this.ids
-      this.$modal.confirm('是否确认删除？').then(function() {
-        return delEquipmentEntry(postIds)
+    /** 多选确认按钮操作 */
+    handleConfirmS() {
+      if(this.Detail.id!=null) this.ids.push(this.Detail.id)
+      const postIds=this.ids
+      this.$modal.confirm('是否 确认').then(function() {
+        return equipmentInforConfirm(postIds)
       }).then(() => {
         this.getList()
-        this.$modal.msgSuccess('删除成功')
+        this.$modal.msgSuccess('确认 成功')
       }).catch(() => {
+        this.$modal.msgError('确认 失败')
       })
+      this.ids=[]
+    },
+    /** 提交按钮 */
+    submit: function() {
+      if(this.title=='信息确认'){
+        this.handleConfirmS(this.Detail.id);
+        this.openDetail  = false
+
+      }else if(this.title=='信息反确认'){
+        this.handleAntiConfirmS(this.Detail.id)
+        this.openDetail  = false
+      }
+    },
+
+    /** 多选反确认按钮操作 */
+    handleAntiConfirmS() {
+      if(this.Detail.id!=null) this.ids.push(this.Detail.id)
+      const Ids =this.ids
+      this.$modal.confirm('是否 反确认').then(function() {
+        return equipmentAntiConfirm(Ids)
+      }).then(() => {
+        this.getList()
+        this.$modal.msgSuccess('反确认成功')
+      }).catch(() => {
+        this.$modal.msgError('反确认 失败')
+      })
+      this.ids=[]
     },
     handleDetail(row){
       this.Detail = row
       this.openDetail = true
       this.title = '详情'
+    },
+    /**行确认操作*/
+    handleConfirm(row){
+      this.Detail = row
+      this.openDetail = true
+      this.title = '信息确认'
+    },
+    /**行确认操作*/
+    handleAntiConfirm(row){
+      this.Detail = row
+      this.openDetail = true
+      this.title = '信息反确认'
+    },
+    filterState(value,row){
+      return row.status === value;
     },
     /** 导出按钮操作 */
     handleExport() {

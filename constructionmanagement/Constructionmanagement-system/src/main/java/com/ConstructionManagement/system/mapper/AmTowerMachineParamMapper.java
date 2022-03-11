@@ -13,8 +13,8 @@ public interface AmTowerMachineParamMapper {
     int insertSelective(AmTowerMachineParam record);
 
     List<AmTowerMachineParam> selectBySelective(AmTowerMachineParam amTowerMachineParam);
-    AmTowerMachineParam selectByParam(@Param("towerMachineModel")String towerMachineModel, @Param("towerMachineName")String towerMachineName,
-                                      @Param("vender")String vender);
+    AmTowerMachineParam selectByParam(String towerMachineModel,
+                                      String towerMachineType);
 
     int updateByPrimaryKeySelective(AmTowerMachineParam record);
 

@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface AmElevatorParamPartMapper {
 
-    int deleteByPid(Long pid);
+    int deleteByPid(Long elevatorId);
 
     int insertSelective(AmElevatorParamPart record);
 
-    List<AmElevatorParamPart> selectByPid(Long pid);
+    List<AmElevatorParamPart> selectByPid(Long elevatorId);
 }

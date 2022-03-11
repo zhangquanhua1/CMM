@@ -8,11 +8,19 @@ export function listPartParam(query) {
     params: query
   })
 }
-// 获取配件
+// 获取部件的配件
 export function getKit(pid) {
   return request({
     url: '/asset/partparam/kit/' + pid,
     method: 'get'
+  })
+}
+// 获取配件
+export function getKitS(partName) {
+  return request({
+    url: '/asset/partparam/kits' ,
+    method: 'get',
+    params: partName
   })
 }
 

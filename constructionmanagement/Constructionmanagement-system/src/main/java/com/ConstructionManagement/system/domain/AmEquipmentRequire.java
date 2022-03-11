@@ -28,7 +28,7 @@ public class AmEquipmentRequire implements Serializable {
     private String equipmentName;
 
     /**
-     * 规格型号
+     * 设备型号
      */
     private String standardModel;
 

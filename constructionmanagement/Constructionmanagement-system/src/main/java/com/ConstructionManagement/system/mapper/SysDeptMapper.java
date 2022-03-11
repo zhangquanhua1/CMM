@@ -1,6 +1,8 @@
 package com.ConstructionManagement.system.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import com.ConstructionManagement.common.core.domain.entity.SysDept;
 
@@ -9,6 +11,7 @@ import com.ConstructionManagement.common.core.domain.entity.SysDept;
  *
  * @author ruoyi
  */
+@Mapper
 public interface SysDeptMapper
 {
     /**

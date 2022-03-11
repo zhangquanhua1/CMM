@@ -11,15 +11,22 @@ import lombok.Data;
 public class AmPartRequireKit implements Serializable {
     private Long id;
 
+    //部件需求id
     private Long partRequireId;
-
-    private String kitModel;
-
-    private String kitName;
-
+    //配件id
+    private Long kit_id;
+   //配件数量
     private Integer kitCount;
-
+    private AmKitParam amKitParam;
     private static final long serialVersionUID = 1L;
+
+    public AmKitParam getAmKitParam() {
+        return amKitParam;
+    }
+
+    public void setAmKitParam(AmKitParam amKitParam) {
+        this.amKitParam = amKitParam;
+    }
 
     public Long getId() {
         return id;
@@ -37,20 +44,12 @@ public class AmPartRequireKit implements Serializable {
         this.partRequireId = partRequireId;
     }
 
-    public String getKitModel() {
-        return kitModel;
+    public Long getKit_id() {
+        return kit_id;
     }
 
-    public void setKitModel(String kitModel) {
-        this.kitModel = kitModel;
-    }
-
-    public String getKitName() {
-        return kitName;
-    }
-
-    public void setKitName(String kitName) {
-        this.kitName = kitName;
+    public void setKit_id(Long kit_id) {
+        this.kit_id = kit_id;
     }
 
     public Integer getKitCount() {

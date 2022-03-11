@@ -12,4 +12,6 @@ public interface WmKitEntryMapper {
 
     int updateByPrimaryKeySelective(WmKitEntry record);
 
+    int confirmByIds(Long []ids);
+    int AntiConfirmByIds(Long []ids);
 }

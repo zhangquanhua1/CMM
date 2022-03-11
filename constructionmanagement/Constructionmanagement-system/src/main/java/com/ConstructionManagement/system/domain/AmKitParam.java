@@ -35,6 +35,18 @@ public class AmKitParam implements Serializable {
      * 适用配件类型
      */
     private String applicableKitType;
+    /**
+     * 计量单位
+     */
+    private String measurementUnit;
+
+    public String getMeasurementUnit() {
+        return measurementUnit;
+    }
+
+    public void setMeasurementUnit(String measurementUnit) {
+        this.measurementUnit = measurementUnit;
+    }
 
     /**
      * 备注

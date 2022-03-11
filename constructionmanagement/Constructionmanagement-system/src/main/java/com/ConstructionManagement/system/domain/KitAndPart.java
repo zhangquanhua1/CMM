@@ -7,7 +7,7 @@ public class KitAndPart {
     /**
      * 零配件
      */
-    private List<AmTowerMachineParamKit> amTowerMachineParamkits;
+    private List<AmPartParamKit> amPartParamKits;
     /**
      * 部件
      */
@@ -15,12 +15,12 @@ public class KitAndPart {
 
     private static final long serialVersionUID = 1L;
 
-    public List<AmTowerMachineParamKit> getAmTowerMachineParamkits() {
-        return amTowerMachineParamkits;
+    public List<AmPartParamKit> getAmPartParamKits() {
+        return amPartParamKits;
     }
 
-    public void setAmTowerMachineParamkits(List<AmTowerMachineParamKit> amTowerMachineParamkits) {
-        this.amTowerMachineParamkits = amTowerMachineParamkits;
+    public void setAmPartParamKits(List<AmPartParamKit> amPartParamKits) {
+        this.amPartParamKits = amPartParamKits;
     }
 
     public List<AmTowerMachineParamPart> getAmTowerMachineParamParts() {

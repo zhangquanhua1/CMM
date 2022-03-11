@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class WmKitEntryController extends BaseController {
     /**
      * 修改保存
      */
-    @PreAuthorize("@ss.hasPermi('inventory:manage:kitentry:edit') " )
+    @PreAuthorize("@ss.hasPermi('inventory:manage:kitentry:edit')" )
     @Log(title = "零配件录入", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody WmKitEntry wee)
@@ -88,6 +89,35 @@ public class WmKitEntryController extends BaseController {
         wee.setUpdatePersonDepartId(getDeptId());
         wee.setUpdateDate(new Date());
         int result=ke.updateByPrimaryKeySelective(wee);
+        return toAjax(result);
+    }
+
+    /**
+     * 零配件信息确认
+     */
+    @PreAuthorize("@ss.hasPermi('inventory:manage:kitentry:confirm')" )
+    @Log(title = "零配件信息确认", businessType = BusinessType.UPDATE)
+    @PutMapping("/confirm")
+    public AjaxResult confirm(@RequestBody Long[] ids)
+    {
+        System.out.println("ids"+ids);
+        if(ids==null||ids.length==0) return AjaxResult.error("确认失败");
+        redisCache.deleteObject(wmKitEntryKey);
+        int result=ke.confirmByIds(ids);
+        return toAjax(result);
+    }
+
+    /**
+     * 零配件信息反确认
+     */
+    @PreAuthorize("@ss.hasPermi('inventory:manage:kitentry:confirm')" )
+    @Log(title = "零配件信息反确认", businessType = BusinessType.UPDATE)
+    @PutMapping("/AntiConfirm")
+    public AjaxResult AntiConfirm(@RequestBody Long[] ids)
+    {
+        if(ids==null||ids.length==0) return AjaxResult.error("反确认失败");
+        redisCache.deleteObject(wmKitEntryKey);
+        int result=ke.AntiConfirmByIds(ids);
         return toAjax(result);
     }
 }

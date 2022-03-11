@@ -9,10 +9,11 @@
         <result column="technical_param" jdbcType="VARCHAR" property="technicalParam" />
         <result column="applicable_kit_type" jdbcType="VARCHAR" property="applicableKitType" />
         <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
     </resultMap>
     <sql id="Base_Column_List">
         id
-        ,kit_name,kit_code,kit_model, technical_param,applicable_kit_type,remark</sql>
+        ,kit_name,kit_code,kit_model, technical_param,applicable_kit_type,remark,measurement_unit</sql>
     <insert id="insertSelective" parameterType="com.ConstructionManagement.system.domain.AmKitParam">
         insert into am_kit_param
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -37,6 +38,9 @@
             <if test="remark != null">
                 remark,
             </if>
+            <if test="measurementUnit != null">
+                measurement_unit,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -60,6 +64,9 @@
             <if test="remark != null">
                 #{remark,jdbcType=VARCHAR},
             </if>
+            <if test="measurementUnit != null">
+                #{measurementUnit,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective">
@@ -82,6 +89,9 @@
             </if>
             <if test="remark != null">
               remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="measurementUnit != null">
+                measurement_unit = #{measurementUnit,jdbcType=VARCHAR},
             </if>
         </set>
          where id = #{id,jdbcType=BIGINT}
@@ -107,6 +117,9 @@
           <if test="kitModel != null">
             and kit_model = #{kitModel,jdbcType=VARCHAR}
           </if>
+            <if test="applicableKitType != null">
+                and applicable_kit_type = #{applicableKitType,jdbcType=VARCHAR}
+            </if>
         </where>
   </select>
 

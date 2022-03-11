@@ -11,4 +11,7 @@ public interface IWmKitEntryService {
     List<WmKitEntry> selectBySelective(WmKitEntry record);
 
     int updateByPrimaryKeySelective(WmKitEntry record);
+
+    int confirmByIds(Long []ids);
+    int AntiConfirmByIds(Long []ids);
 }

@@ -90,4 +90,33 @@ public class WmEquipmentEntryController extends BaseController {
         int result=iw.updateByPrimaryKeySelective(wee);
         return toAjax(result);
     }
+
+    /**
+     * 设备信息确认
+     */
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:confirm')" )
+    @Log(title = "设备信息确认", businessType = BusinessType.UPDATE)
+    @PutMapping("/confirm")
+    public AjaxResult confirm(@RequestBody Long[] ids)
+    {
+        System.out.println("ids"+ids);
+        if(ids==null||ids.length==0) return AjaxResult.error("确认失败");
+        redisCache.deleteObject(wmEquipmentEntryKey);
+        int result=iw.confirmByIds(ids);
+        return toAjax(result);
+    }
+
+    /**
+     * 设备信息反确认
+     */
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:confirm')" )
+    @Log(title = "设备信息反确认", businessType = BusinessType.UPDATE)
+    @PutMapping("/AntiConfirm")
+    public AjaxResult AntiConfirm(@RequestBody Long[] ids)
+    {
+        if(ids==null||ids.length==0) return AjaxResult.error("反确认失败");
+        redisCache.deleteObject(wmEquipmentEntryKey);
+        int result=iw.AntiConfirmByIds(ids);
+        return toAjax(result);
+    }
 }

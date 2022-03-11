@@ -23,7 +23,8 @@ public class AmPartParamController extends BaseController {
     private IAmPartParamService iAmPartParamService;
     @Autowired
     private IAmPartParamKitService iamPartParamKitService;
-
+    @Autowired
+    private IAmKitParamService ikps;
     /**
      * 获取列表
      */
@@ -35,13 +36,25 @@ public class AmPartParamController extends BaseController {
         return getDataTable(amPartParams);
     }
     /**
-     * 获取 配件
+     * 获取部件的 配件
      */
     @PreAuthorize("@ss.hasPermi('asset:manage:partparam:list')")
     @GetMapping("/kit/{pid}")
     public AjaxResult getlist(@PathVariable Long pid) {
         if(pid<=0||pid==null) return AjaxResult.error("该部件不存在配件");
         List<AmPartParamKit> listKits=iamPartParamKitService.selectByPid(pid);;
+        return AjaxResult.success(listKits);
+    }
+
+    /**
+     * 获取配件
+     */
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitparam:list')")
+    @GetMapping("/kits")
+    public AjaxResult getKitS(AmPartParam amPartParam) {
+        AmKitParam akp=new AmKitParam();
+        akp.setApplicableKitType(amPartParam.getPart_type());
+        List<AmKitParam> listKits=ikps.selectBySelective(akp);;
         return AjaxResult.success(listKits);
     }
 
@@ -68,14 +81,14 @@ public class AmPartParamController extends BaseController {
     {
         if(amPartParam==null)
             return AjaxResult.error("全空部件参数禁止插入");
-        String partCode=amPartParam.getPartCode();
-        String partModel=amPartParam.getPartModel();
-        String partName=amPartParam.getPartName();
+//        String partCode=amPartParam.getPartCode();
+//        String partModel=amPartParam.getPartModel();
+//        String partName=amPartParam.getPartName();
         Long pid;
-        if (partCode!=null&&partModel!=null&&null!=partName&&iAmPartParamService.selectByParam
-                (partCode,partModel, partName)!=null) {
-            return AjaxResult.error("该部件参数已存在");
-        }
+//        if (partCode!=null&&partModel!=null&&null!=partName&&iAmPartParamService.selectByParam
+//                (partCode,partModel, partName)!=null) {
+//            return AjaxResult.error("该部件参数已存在");
+//        }
 
         int result=iAmPartParamService.insertSelective(amPartParam);
         if(result<0)

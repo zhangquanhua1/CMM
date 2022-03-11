@@ -110,8 +110,8 @@ export function addDateRange(params, dateRange, propName) {
 export function selectDictLabel(datas, value) {
 	var actions = [];
 	Object.keys(datas).some((key) => {
-		if (datas[key].value == ('' + value)) {
-			actions.push(datas[key].label);
+		if (datas[key].dictValue == ('' + value)) {
+			actions.push(datas[key].dictLabel);
 			return true;
 		}
 	})
@@ -125,8 +125,8 @@ export function selectDictLabels(datas, value, separator) {
 	var temp = value.split(currentSeparator);
 	Object.keys(value.split(currentSeparator)).some((val) => {
 		Object.keys(datas).some((key) => {
-			if (datas[key].value == ('' + temp[val])) {
-				actions.push(datas[key].label + currentSeparator);
+			if (datas[key].dictValue == ('' + temp[val])) {
+				actions.push(datas[key].dictLabel + currentSeparator);
 			}
 		})
 	})
@@ -276,3 +276,75 @@ export  function objectValueAllEmpty1(object){
   }
   return false;
 }
+
+/**
+ * 根据 部门id获取 部门名称
+ * @param list
+ * @param id
+ * @returns {*}
+ */
+export function  getDeptNameByID(list,id){
+  let _this=this
+  for (let i = 0; i < list.length; i++) {
+    let a=list[i]
+    if(a.id===id){
+      return a.label
+    }else{
+      if(a.children && a.children.length>0){
+        let res=_this.getDeptNameByID(a.children,id)
+        if(res){
+          return res
+        }
+      }
+    }
+  }
+}
+
+//将字符串Long型转为Long
+function fromString(str, unsigned, radix) {
+  // 处理异常情况
+  if (str.length === 0)
+    throw Error('empty string');
+
+  //处理为0的情况
+  if (str === "NaN" || str === "Infinity" || str === "+Infinity" || str === "-Infinity")
+    return ZERO;
+
+  //处理只有两个参数的情况
+  if (typeof unsigned === 'number') {
+    // For goog.math.long compatibility
+    radix = unsigned,
+      unsigned = false;
+  } else {
+    unsigned = !! unsigned;
+  }
+  radix = radix || 10;
+  if (radix < 2 || 36 < radix)
+    throw RangeError('radix');
+
+  var p;
+  if ((p = str.indexOf('-')) > 0)
+    throw Error('interior hyphen');
+  else if (p === 0) {
+    // 转为正值处理
+    return fromString(str.substring(1), unsigned, radix).neg();
+  }
+
+  // 从最高位分8位处理一次，如果长度超过8位，则先处理高位，然后将高位直接乘以进制的8次方，再处理低后8位，循环到最后8位为止
+  var result = ZERO;
+  for (var i = 0; i < str.length; i += 8) {
+    var size = Math.min(8, str.length - i),
+      value = parseInt(str.substring(i, i + size), radix);
+    if (size < 8) {
+      var power = fromNumber(pow_dbl(radix, size));
+      result = result.mul(power).add(fromNumber(value));
+    } else {
+      result = result.mul(radixToPower);
+      result = result.add(fromNumber(value));
+    }
+  }
+  result.unsigned = unsigned;
+  return result;
+}
+
+

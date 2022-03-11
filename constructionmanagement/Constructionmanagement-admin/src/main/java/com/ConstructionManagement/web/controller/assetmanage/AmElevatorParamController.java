@@ -9,11 +9,13 @@ import com.ConstructionManagement.system.domain.*;
 import com.ConstructionManagement.system.service.IAmElevatorParamKitService;
 import com.ConstructionManagement.system.service.IAmElevatorParamPartService;
 import com.ConstructionManagement.system.service.IAmElevatorParamService;
+import com.ConstructionManagement.system.service.IAmPartParamKitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +28,8 @@ public class AmElevatorParamController extends BaseController {
     IAmElevatorParamKitService iAmElevatorParamKitService;
     @Autowired
     IAmElevatorParamPartService iAmElevatorParamPartService;
-
+    @Autowired
+    private IAmPartParamKitService iamPartParamKitService;
     /**
      * 获取列表
      */
@@ -43,11 +46,22 @@ public class AmElevatorParamController extends BaseController {
     @PreAuthorize("@ss.hasPermi('asset:manage:elevatorparam:list')")
     @GetMapping("/kitandpart/{pid}")
     public AjaxResult getlist(@PathVariable Long pid) {
-        //System.out.println("pid==="+pid);
         if(pid<=0||pid==null) return AjaxResult.error("该电梯不存在配件、部件");
+
+        List<AmElevatorParamPart> listParts=iAmElevatorParamPartService.selectByPid(pid);
+        List<AmPartParamKit> listKits=new ArrayList<AmPartParamKit>();
+        for (AmElevatorParamPart part:listParts) {
+            System.out.println("AmTowerMachineParamPart"+part.getPart_id());
+            List<AmPartParamKit> Kits=iamPartParamKitService.selectByPid(part.getPart_id());
+            for (AmPartParamKit appk:Kits ) {
+                appk.setKitCount(appk.getKitCount()*part.getPartCount());
+                listKits.add(appk);
+            }
+        }
         ElevatorKitPart kp=new ElevatorKitPart();
-        kp.setAmElevatorParamKits(iAmElevatorParamKitService.selectByPid(pid));
-        kp.setAmElevatorParamParts(iAmElevatorParamPartService.selectByPid(pid));
+
+        kp.setAmPartParamKits(listKits);
+        kp.setAmElevatorParamParts(listParts);
         return AjaxResult.success(kp);
     }
 
@@ -79,15 +93,7 @@ public class AmElevatorParamController extends BaseController {
         if(result<0)
             return AjaxResult.error("添加失败");
         pid= amElevatorParam.getId();
-        List<AmElevatorParamKit> kits=amElevatorParam.getAmElevatorParamKits();
         List<AmElevatorParamPart> parts=amElevatorParam.getAmElevatorParamParts();
-        if(kits!=null&&kits.size()>0&&!kits.isEmpty()) {
-            for (AmElevatorParamKit kit : kits) {
-                kit.setElevatorId(pid);
-                result *= iAmElevatorParamKitService.insertSelective(kit);
-
-            }
-        }
         if(parts!=null&&parts.size()>0&&!parts.isEmpty()) {
             for (AmElevatorParamPart part : parts) {
                 part.setElevatorId(pid);
@@ -106,18 +112,12 @@ public class AmElevatorParamController extends BaseController {
     public AjaxResult edit(@Validated @RequestBody AmElevatorParam amElevatorParam)
     {
         Long pid= amElevatorParam.getId();
-        List<AmElevatorParamKit> kits=amElevatorParam.getAmElevatorParamKits();
         List<AmElevatorParamPart> parts=amElevatorParam.getAmElevatorParamParts();
         amElevatorParam.setUpdatePerson(getUsername());
         amElevatorParam.setUpdatePersonDepartId(getDeptId());
         amElevatorParam.setUpdateDate(new Date());
         int result=iAmElevatorParamService.updateByPrimaryKeySelective(amElevatorParam);
-        result*=iAmElevatorParamKitService.deleteByPid(pid);
         result*=iAmElevatorParamPartService.deleteByPid(pid);
-        for (AmElevatorParamKit kit: kits) {
-            kit.setElevatorId(pid);
-            result*=iAmElevatorParamKitService.insertSelective(kit);
-        }
         for (AmElevatorParamPart part:parts){
             part.setElevatorId(pid);
             result*=iAmElevatorParamPartService.insertSelective(part);

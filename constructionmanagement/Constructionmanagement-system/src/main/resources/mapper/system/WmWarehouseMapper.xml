@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.WmWarehouseMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.WmWarehouse">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="contract_num" jdbcType="VARCHAR" property="contractNum" />
+    <result column="insert_person" jdbcType="VARCHAR" property="insertPerson" />
+    <result column="insert_person_depart_id" jdbcType="BIGINT" property="insertPersonDepartId" />
+    <result column="update_person" jdbcType="VARCHAR" property="updatePerson" />
+    <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="area" jdbcType="BIGINT" property="area" />
+    <result column="depart_id" jdbcType="BIGINT" property="depart_id" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, `name`, address, charge_person, contract_num, insert_person,
+insert_person_depart_id, update_person, update_person_depart_id,insert_date,
+update_date,`type`,area,depart_id,remark,status
+  </sql>
+  <select id="selectBySelective" parameterType="com.ConstructionManagement.system.domain.WmWarehouse" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from wm_warehouse
+   <where>
+     <if test="code != null">
+       and   code like concat('%', #{code}, '%')
+     </if>
+     <if test="name != null">
+       and   `name` like concat('%', #{name}, '%')
+     </if>
+     <if test="address != null">
+       and   address like concat('%', #{address}, '%')
+     </if>
+     <if test="chargePerson != null">
+       and   charge_person like concat('%', #{chargePerson}, '%')
+     </if>
+     <if test="contractNum != null">
+       and   contract_num like concat('%', #{contractNum}, '%')
+     </if>
+     <if test="type != null">
+       and   `type` =#{type}
+     </if>
+     <if test="depart_id != null">
+       and   depart_id =#{depart_id}
+     </if>
+   </where>
+  </select>
+  <select id="selectByAllUse" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/> from wm_warehouse where status ='0'
+  </select>
+  <delete id="deleteByIds" parameterType="java.lang.Long">
+    delete from wm_warehouse
+    where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.WmWarehouse" useGeneratedKeys="true">
+    insert into wm_warehouse
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="chargePerson != null">
+        charge_person,
+      </if>
+      <if test="contractNum != null">
+        contract_num,
+      </if>
+      <if test="insertPerson != null">
+        insert_person,
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id,
+      </if>
+      <if test="updatePerson != null">
+        update_person,
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id,
+      </if>
+      <if test="insertDate != null">
+        insert_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="depart_id != null">
+        depart_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="contractNum != null">
+        #{contractNum,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPerson != null">
+        #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=BIGINT},
+      </if>
+      <if test="depart_id != null">
+        #{depart_id,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.WmWarehouse">
+    update wm_warehouse
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePerson != null">
+        charge_person = #{chargePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="contractNum != null">
+        contract_num = #{contractNum,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPerson != null">
+        insert_person = #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id = #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        update_person = #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id = #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        insert_date = #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+
+      <if test="type != null">
+        `type` = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=BIGINT},
+      </if>
+      <if test="depart_id != null">
+        depart_id  = #{depart_id ,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
