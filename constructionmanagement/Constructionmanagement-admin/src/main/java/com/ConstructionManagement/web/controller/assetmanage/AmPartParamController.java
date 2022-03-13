@@ -66,7 +66,6 @@ public class AmPartParamController extends BaseController {
     @DeleteMapping("/{Ids}")
     public AjaxResult remove(@PathVariable Long[] Ids)
     {
-        //System.out.println("删除");
         return toAjax(iAmPartParamService.deleteByIds(Ids));
     }
 

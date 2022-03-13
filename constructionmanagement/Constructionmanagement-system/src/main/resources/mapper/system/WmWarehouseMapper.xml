@@ -15,7 +15,7 @@
     <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="type" jdbcType="INTEGER" property="type" />
-    <result column="area" jdbcType="BIGINT" property="area" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
     <result column="depart_id" jdbcType="BIGINT" property="depart_id" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="status" jdbcType="VARCHAR" property="status" />
@@ -210,7 +210,7 @@ update_date,`type`,area,depart_id,remark,status
         `type` = #{type,jdbcType=INTEGER},
       </if>
       <if test="area != null">
-        area = #{area,jdbcType=BIGINT},
+        area = #{area,jdbcType=VARCHAR},
       </if>
       <if test="depart_id != null">
         depart_id  = #{depart_id ,jdbcType=BIGINT},

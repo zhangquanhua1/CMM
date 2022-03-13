@@ -26,7 +26,6 @@ public class AmKitParamController extends BaseController {
     @PreAuthorize("@ss.hasPermi('asset:manage:kitparam:list')")
     @GetMapping("/list")
     public TableDataInfo list(AmKitParam amKitParam) {
-        //System.out.println("TowerMachineModel"+amTowerMachineParam.getTowerMachineModel());
         startPage();
         List<AmKitParam> amKitParams = iamKitParamService.selectBySelective(amKitParam);
         return getDataTable(amKitParams);

@@ -14,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +31,6 @@ public class WmKitEntryController extends BaseController {
     @PreAuthorize("@ss.hasPermi('inventory:manage:kitentry:list')")
     @GetMapping("/list")
     public TableDataInfo list(WmKitEntry wee, @Param("objectValueAllEmpty") boolean objectValueAllEmpty ) {
-        // System.out.println(objectValueAllEmpty);
         List<WmKitEntry> wees;
         startPage();
         wees=redisCache.getCacheObject(wmKitEntryKey);
@@ -100,7 +98,7 @@ public class WmKitEntryController extends BaseController {
     @PutMapping("/confirm")
     public AjaxResult confirm(@RequestBody Long[] ids)
     {
-        System.out.println("ids"+ids);
+
         if(ids==null||ids.length==0) return AjaxResult.error("确认失败");
         redisCache.deleteObject(wmKitEntryKey);
         int result=ke.confirmByIds(ids);

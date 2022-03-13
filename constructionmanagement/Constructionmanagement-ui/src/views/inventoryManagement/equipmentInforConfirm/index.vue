@@ -20,7 +20,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="设备自编号" label-width="auto" prop="equipmentSelfNumber">
+      <el-form-item label="设备自编号" prop="equipmentSelfNumber">
         <el-input
           v-model="queryParams.equipmentSelfNumber"
           placeholder="请输入设备自编号"
@@ -116,7 +116,7 @@
           placeholder="选择报废日期"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="融资到期日期" label-width="auto">
+      <el-form-item label="融资到期日期" >
         <el-date-picker
           v-model="queryParams.financingMaturityDate"
           size="small"
@@ -244,344 +244,330 @@
       @pagination="getList"
     />
     <!--    详情弹窗-->
-    <el-dialog :title="title" :visible.sync="openDetail" width="40%"  class="spec-dialog" append-to-body>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备名称: {{ Detail.equipmentName }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备编号: {{ Detail.equipmentNumber }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              生产厂家: {{ Detail.vender }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              规格型号: {{ Detail.standardModel }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备类别: {{ Detail.equipmentType }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备自编号: {{ Detail.equipmentSelfNumber }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              产权单位: {{ Detail.rightsUnit }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              归属仓库: {{ Detail.belongWarehouse }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              项目地址: {{ Detail.projectAddress }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">是否融资:
-              <span v-if="Detail.financeLease==0">否</span>
-              <span v-else>是</span>
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              发票号: {{ Detail.invoiceNumber}}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              购买合同: {{ Detail.purchaseContract }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="24" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              制造许可证号: {{ Detail.manufacturingLicenseNo }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
+    <el-drawer
+      title="设备详情"
+      size="60%"
+      :visible.sync="openDetail"
+      :with-header="true"
+    >
+      <div style="margin-left: 10px">
+        <el-collapse v-model="activeNames" accordion>
+          <el-collapse-item title="设备信息" name="1">
+            <el-row>
+              <el-col :span="4" class="col_title">设备名称：</el-col>
+              <el-col :span="4">{{ Detail.equipmentName != null ? Detail.equipmentName : '-' }}</el-col>
+              <el-col :span="4" class="col_title">设备编号：</el-col>
+              <el-col :span="4">{{ Detail.equipmentNumber != null ? Detail.equipmentNumber : '-' }}</el-col>
+              <el-col :span="4" class="col_title">生产厂家：</el-col>
+              <el-col :span="4">{{ Detail.vender != null ? Detail.vender : '-' }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">规格型号：</el-col>
+              <el-col :span="4">{{ Detail.standardModel != null ? Detail.standardModel : '-' }}</el-col>
+              <el-col :span="4" class="col_title">设备类别：</el-col>
+              <el-col :span="4">{{ Detail.equipmentType != null ? Detail.equipmentType : '-' }}</el-col>
+              <el-col :span="4" class="col_title">设备自编号：</el-col>
+              <el-col :span="4">{{ Detail.equipmentSelfNumber != null ? Detail.equipmentSelfNumber : '-' }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">产权单位：</el-col>
+              <el-col :span="4">{{ Detail.rightsUnit != null ? Detail.rightsUnit : '-' }}</el-col>
+              <el-col :span="4" class="col_title">归属仓库：</el-col>
+              <el-col :span="4">{{ Detail.belongWarehouse != null ? Detail.belongWarehouse : '-' }}</el-col>
+              <el-col :span="4" class="col_title">项目地址：</el-col>
+              <el-col :span="4">{{ Detail.projectAddress != null ? Detail.projectAddress : '-' }}</el-col>
+            </el-row>
 
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              出厂日期: {{ parseTime2(Detail.productDate) }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              采购日期: {{ parseTime2(Detail.purchaseDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              报废日期: {{ parseTime2(Detail.retireDate) }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              单位责任人: {{ Detail.unitResponsiblePerson }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              所属部门: {{Detail.department}}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              楼号: {{ Detail.buildingNo }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备来源: {{ Detail.equipmentSource }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              登记人: {{ (Detail.registrant) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              开票时间: {{ parseTime2(Detail.invoiceTime) }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              融资到期日期: {{parseTime2(Detail.financingMaturityDate)  }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              出厂编号: {{ Detail.manufacturingNo }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              合同单价: {{ (Detail.contractUnitPrice) }} 元
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              数量: {{ Detail.amount }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              税率: {{ (Detail.rate) }}%
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              不含税价: {{ Detail.exclusiveTaxPrice }}元
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              税金: {{ (Detail.taxation) }}元
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              折旧率: {{ Detail.depreciationRate }}%
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              联系电话: {{ (Detail.contactNumber) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">是否融资：</el-col>
+              <el-col :span="4"><span v-if="Detail.financeLease==0">否</span>
+                <span v-else>是</span></el-col>
+              <el-col :span="4" class="col_title">购买合同：</el-col>
+              <el-col :span="4">{{ Detail.purchaseContract != null ? Detail.purchaseContract : '-' }}</el-col>
+              <el-col :span="4" class="col_title">制造许可证号：</el-col>
+              <el-col :span="4">{{
+                  Detail.manufacturingLicenseNo != null ? Detail.manufacturingLicenseNo : '-'
+                }}
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">出厂日期：</el-col>
+              <el-col :span="4">{{ Detail.productDate != null ? parseTime2(Detail.productDate) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">采购日期：</el-col>
+              <el-col :span="4">{{ Detail.purchaseDate != null ? parseTime2(Detail.purchaseDate) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">报废日期：</el-col>
+              <el-col :span="4">{{ Detail.retireDate != null ? parseTime2(Detail.retireDate) : '-' }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">单位责任人：</el-col>
+              <el-col :span="4">{{ Detail.unitResponsiblePerson != null ? Detail.unitResponsiblePerson : '-' }}</el-col>
+              <el-col :span="4" class="col_title">所属部门：</el-col>
+              <el-col :span="4">
+                <el-col :span="4">{{ Detail.department != null ? Detail.department : '-' }}</el-col>
+              </el-col>
+              <el-col :span="4" class="col_title"> 楼号:</el-col>
+              <el-col :span="4">
+                <el-col :span="4">{{ Detail.buildingNo != null ? Detail.buildingNo : '-' }}</el-col>
+              </el-col>
+            </el-row>
 
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              登记时间: {{ parseTime(Detail.registrationTime) }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              确认时间: {{parseTime(Detail.acknowledgingTime)  }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              融资批次: {{ Detail.financingBatch }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              融资金额: {{ (Detail.financingAmount) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入人: {{ Detail.insertPerson }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入时间: {{ parseTime(Detail.insertDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入人部门id: {{ Detail.insertPersonDepartId }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              更新人部门id: {{ Detail.updatePersonDepartId }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              更新人: {{ Detail.updatePerson }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入时间: {{ parseTime(Detail.updateDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="submit" v-if="this.title!='详情'">{{title}}</el-button>
-        <el-button @click="cancel">取 消</el-button>
+            <el-row>
+              <el-col :span="4" class="col_title">设备来源：</el-col>
+              <el-col :span="4">{{ Detail.equipmentSource != null ? (Detail.equipmentSource) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">登记人：</el-col>
+              <el-col :span="4">
+                {{ Detail.registrant != null ? Detail.registrant : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title"> 开票时间:</el-col>
+              <el-col :span="4">
+                {{ Detail.invoiceTime != null ? parseTime(Detail.invoiceTime) : '-' }}
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="4" class="col_title">出厂编号：</el-col>
+              <el-col :span="4">{{ Detail.manufacturingNo != null ? (Detail.manufacturingNo) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">合同单价：</el-col>
+              <el-col :span="4">
+                {{ Detail.contractUnitPrice != null ? Detail.contractUnitPrice : '-' }} 元
+              </el-col>
+              <el-col :span="4" class="col_title"> 融资到期日期:</el-col>
+              <el-col :span="4">
+                {{ Detail.financingMaturityDate != null ? parseTime(Detail.financingMaturityDate) : '-' }}
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="4" class="col_title">数量：</el-col>
+              <el-col :span="4">{{ Detail.amount != null ? (Detail.amount) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">税率：</el-col>
+              <el-col :span="4">
+                {{ Detail.rate != null ? Detail.rate : '-' }} %
+              </el-col>
+              <el-col :span="4" class="col_title"> 不含税价:</el-col>
+              <el-col :span="4">
+                {{ Detail.exclusiveTaxPrice != null ? Detail.exclusiveTaxPrice : '-' }} 元
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">税金：</el-col>
+              <el-col :span="4">{{ Detail.taxation != null ? (Detail.taxation) : '-' }} 元</el-col>
+              <el-col :span="4" class="col_title">折旧率：</el-col>
+              <el-col :span="4">
+                {{ Detail.depreciationRate != null ? Detail.depreciationRate : '-' }} %
+              </el-col>
+              <el-col :span="4" class="col_title"> 联系电话:</el-col>
+              <el-col :span="4">
+                {{ Detail.contactNumber != null ? Detail.contactNumber : '-' }} 元
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title"> 登记时间:</el-col>
+              <el-col :span="4">
+                {{ Detail.registrationTime != null ? parseTime(Detail.registrationTime) : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title"> 确认时间:</el-col>
+              <el-col :span="4">
+                {{ Detail.acknowledgingTime != null ? parseTime(Detail.acknowledgingTime) : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title"> 融资批次:</el-col>
+              <el-col :span="4">
+                {{ Detail.financingBatch != null ? (Detail.financingBatch) : '-' }}
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title"> 融资金额:</el-col>
+              <el-col :span="4">
+                {{ Detail.financingAmount != null ? (Detail.financingAmount) : '-' }}
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">录入人部门：</el-col>
+              <el-col :span="4">
+                {{ Detail.insertPersonDepartId != null ? getDeptName(Detail.insertPersonDepartId) : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title">更新人部门：</el-col>
+              <el-col :span="4">
+                {{ Detail.updatePersonDepartId != null ? getDeptName(Detail.updatePersonDepartId) : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title"> 更新人:</el-col>
+              <el-col :span="4">
+                {{ Detail.updatePerson != null ? Detail.updatePerson : '-' }}
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">录入时间：</el-col>
+              <el-col :span="4">{{ Detail.updateDate != null ? parseTime(Detail.updateDate) : '-' }}</el-col>
+            </el-row>
+          </el-collapse-item>
+          <el-collapse-item title="设备参数" name="2">
+            <div v-if="EquipmentDetail!=null&&EquipmentDetail!=undefined">
+              <el-row>
+                <el-col :span="4" class="col_title">设备名称：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.towerMachineName != null ? EquipmentDetail.towerMachineName : '-' }}
+                </el-col>
+                <el-col :span="4" class="col_title">生产厂家：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.vender != null ? EquipmentDetail.vender : '-' }}</el-col>
+                <el-col :span="4" class="col_title">设备型号：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.towerMachineModel != null ? EquipmentDetail.towerMachineModel : '-' }}
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">额定起重力距：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.ratedLiftingDistance != null ? EquipmentDetail.ratedLiftingDistance : '-' }} KN/m
+                </el-col>
+                <el-col :span="4" class="col_title">最大起重量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumLiftingWeight != null ? EquipmentDetail.maximumLiftingWeight : '-' }} T
+                </el-col>
+                <el-col :span="4" class="col_title">最大幅度额定起重量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumRatedWeight != null ? EquipmentDetail.maximumRatedWeight : '-' }} T
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">最大起重量工作幅度：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.maximumStartingWeightWorkingRange != null ? EquipmentDetail.maximumStartingWeightWorkingRange : '-'
+                  }}
+                  M
+                </el-col>
+                <el-col :span="4" class="col_title">最大工作幅度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumRangeWork != null ? EquipmentDetail.maximumRangeWork : '-' }} M
+                </el-col>
+                <el-col :span="4" class="col_title">最大起升高度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumHeightLift != null ? EquipmentDetail.maximumHeightLift : '-' }} M
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">起升速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.upDownSpeed != null ? EquipmentDetail.upDownSpeed : '-' }} m/min
+                </el-col>
+                <el-col :span="4" class="col_title">变幅速度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.variableAmplitudeSpeed != null ? EquipmentDetail.variableAmplitudeSpeed : '-' }}
+                  m/min
+                </el-col>
+                <el-col :span="4" class="col_title">回转速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.swivellingSpeed != null ? EquipmentDetail.swivellingSpeed : '-' }}
+                  r/min
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">顶升速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.upSpeed != null ? EquipmentDetail.upSpeed : '-' }} m/min</el-col>
+                <el-col :span="4" class="col_title">塔机自重：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.balanceWeight != null ? EquipmentDetail.balanceWeight : '-' }} t
+                </el-col>
+                <el-col :span="4" class="col_title">平衡重量：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.balanceWeight != null ? EquipmentDetail.balanceWeight : '-' }} t
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">工作电压：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.workingVoltage != null ? EquipmentDetail.workingVoltage : '-' }}
+                  v
+                </el-col>
+                <el-col :span="4" class="col_title">装机总容量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.totalInstalledCapacity != null ? EquipmentDetail.totalInstalledCapacity : '-' }} KW
+                </el-col>
+                <el-col :span="4" class="col_title">电机功率：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.motorPower != null ? EquipmentDetail.motorPower : '-' }} KW
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">变频器功率：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.frequencyConverterPower != null ? EquipmentDetail.frequencyConverterPower : '-' }}
+                  KW
+                </el-col>
+                <el-col :span="4" class="col_title">标准节规格：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.standardSectionSpecifications != null ? EquipmentDetail.standardSectionSpecifications : '-'
+                  }}
+                </el-col>
+                <el-col :span="4" class="col_title">附墙框规格：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.attachedWallFrameSpecifications != null ? EquipmentDetail.attachedWallFrameSpecifications : '-'
+                  }}
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">备注：</el-col>
+                <el-col :span="20">{{ EquipmentDetail.remark != null ? EquipmentDetail.remark : '-' }}</el-col>
+              </el-row>
+            </div>
+            <div v-else>无该设备的参数信息</div>
+          </el-collapse-item>
+          <el-collapse-item title="部件清单" name="3">
+            <el-table
+              :data="EquipmentPartsList"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="partName"
+                label="部件名称"
+                width="180"
+              >
+              </el-table-column>
+              <el-table-column label="部件型号" align="center" prop="partModel">
+              </el-table-column>
+              <el-table-column label="部件代码" align="center" prop="partCode">
+              </el-table-column>
+              <el-table-column label="部件类型" align="center" prop="partType">
+              </el-table-column>
+              <el-table-column label="适用设备类型" align="center" prop="applicableDeviceType">
+              </el-table-column>
+              <el-table-column label="数量" align="center" prop="partCount">
+              </el-table-column>
+              <el-table-column label="计量单位" align="center" prop="measurementUnit">
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item title="配件清单" name="4">
+            <el-table
+              :data="EquipmentKitsList"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="kitName"
+                label="零配件名称"
+                width="180"
+              >
+              </el-table-column>
+              <el-table-column label="配件型号" align="center" prop="kitModel">
+              </el-table-column>
+              <el-table-column label="配件代码" align="center" prop="kitCode">
+              </el-table-column>
+              <el-table-column label="技术参数" align="center" prop="technicalParam">
+              </el-table-column>
+              <el-table-column label="适用部件类型" align="center" prop="applicableKitType">
+              </el-table-column>
+              <el-table-column label="数量" align="center" prop="kitCount">
+              </el-table-column>
+              <el-table-column label="计量单位" align="center" prop="measurementUnit">
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+        </el-collapse>
+        <br/> <br/> <br/>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submit" v-if="this.title=='信息确认'">{{title}}</el-button>
+          <el-button type="danger" @click="submit" v-if="this.title=='信息反确认'">{{title}}</el-button>
+          <el-button @click="cancel" v-if="this.title!='详情'">取 消</el-button>
+        </div>
       </div>
-    </el-dialog>
+
+    </el-drawer>
   </div>
 </template>
 <style lang="scss">
@@ -593,11 +579,13 @@
 </style>
 <script>
 import {
- equipmentAntiConfirm, equipmentInforConfirm,
+  equipmentAntiConfirm, equipmentInforConfirm, getKitAndPartByEquipmentEntry2,
   listEquipmentEntry,
 } from '@/api/inventory/EquipmentEntry'
+import { getEquipmentParam } from '@/api/towerparam/equipmentrequire'
+import { treeselect } from '@/api/system/dept'
 export default {
-  name: 'equipmentEntry',
+  name: 'equipmentEntryInforConfirm',
   // dicts: ['sys_normal_disable'],
   data() {
     return {
@@ -641,6 +629,15 @@ export default {
       },
       openDetail: false,
       Detail:{},
+      //部件清单
+      EquipmentPartsList: [],
+      //配件清单
+      EquipmentKitsList: [],
+      activeNames: ['1'],
+      //添加时选择的设备类别的设备参数
+      EquipmentDetail: { id: undefined },
+      // 所属部门ID字典
+      depart_idOptions: [],
     }
   },
   created() {
@@ -665,6 +662,16 @@ export default {
       this.open = false
       this.openDetail= false
       this.reset()
+    },
+    /** 查询部门下拉树结构 */
+    getTreeselect() {
+      treeselect().then(response => {
+        this.depart_idOptions = response.data
+      })
+    },
+    //根据部门id 获取部门名
+    getDeptName(row) {
+      return this.getDeptNameByID(this.depart_idOptions, row.depart_id)
     },
     /** 搜索按钮操作 */
     handleQuery() {
@@ -728,7 +735,14 @@ export default {
       this.ids=[]
     },
     handleDetail(row){
-      this.Detail = row
+      getEquipmentParam(row.standardModel, row.equipmentType).then(response => {
+        this.EquipmentDetail = response.data
+      })
+      getKitAndPartByEquipmentEntry2(row.id).then((response) => {
+        this.EquipmentKitsList = response.data.wmEquipmentEntryKits
+        this.EquipmentPartsList = response.data.wmEquipmentEntryParts
+      })
+      this.Detail=row
       this.openDetail = true
       this.title = '详情'
     },

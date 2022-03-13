@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmEquipmentRequireKitMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmEquipmentRequireKit">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="equiment_id" jdbcType="BIGINT" property="equimentId" />
+    <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
+    <result column="kit_code" jdbcType="VARCHAR" property="kitCode" />
+    <result column="kit_model" jdbcType="VARCHAR" property="kitModel" />
+    <result column="technical_param" jdbcType="VARCHAR" property="technicalParam" />
+    <result column="applicable_kit_type" jdbcType="VARCHAR" property="applicableKitType" />
+    <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
+    <result column="kit_count" jdbcType="INTEGER" property="kitCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, equiment_id, kit_name, kit_code, kit_model, technical_param, applicable_kit_type,
+    measurement_unit,kit_count
+  </sql>
+  <select id="selectByEquipmentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from am_equipment_require_kit
+    where equiment_id = #{equimentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByEquipmentId" parameterType="java.lang.Long">
+    delete from am_equipment_require_kit
+    where equiment_id = #{equimentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmEquipmentRequireKit" useGeneratedKeys="true">
+    insert into am_equipment_require_kit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="equimentId != null">
+        equiment_id,
+      </if>
+      <if test="kitName != null">
+        kit_name,
+      </if>
+      <if test="kitCode != null">
+        kit_code,
+      </if>
+      <if test="kitModel != null">
+        kit_model,
+      </if>
+      <if test="technicalParam != null">
+        technical_param,
+      </if>
+      <if test="applicableKitType != null">
+        applicable_kit_type,
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit,
+      </if>
+      <if test="kitCount != null">
+        kit_count,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="equimentId != null">
+        #{equimentId,jdbcType=BIGINT},
+      </if>
+      <if test="kitName != null">
+        #{kitName,jdbcType=VARCHAR},
+      </if>
+      <if test="kitCode != null">
+        #{kitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="kitModel != null">
+        #{kitModel,jdbcType=VARCHAR},
+      </if>
+      <if test="technicalParam != null">
+        #{technicalParam,jdbcType=VARCHAR},
+      </if>
+      <if test="applicableKitType != null">
+        #{applicableKitType,jdbcType=VARCHAR},
+      </if>
+      <if test="measurementUnit != null">
+        #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="kitCount != null">
+        #{kitCount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

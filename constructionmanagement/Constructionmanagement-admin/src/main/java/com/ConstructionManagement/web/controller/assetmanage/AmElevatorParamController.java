@@ -51,7 +51,6 @@ public class AmElevatorParamController extends BaseController {
         List<AmElevatorParamPart> listParts=iAmElevatorParamPartService.selectByPid(pid);
         List<AmPartParamKit> listKits=new ArrayList<AmPartParamKit>();
         for (AmElevatorParamPart part:listParts) {
-            System.out.println("AmTowerMachineParamPart"+part.getPart_id());
             List<AmPartParamKit> Kits=iamPartParamKitService.selectByPid(part.getPart_id());
             for (AmPartParamKit appk:Kits ) {
                 appk.setKitCount(appk.getKitCount()*part.getPartCount());

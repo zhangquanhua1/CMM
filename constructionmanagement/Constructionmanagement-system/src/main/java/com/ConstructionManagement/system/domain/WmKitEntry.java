@@ -157,32 +157,75 @@ public class WmKitEntry implements Serializable {
      */
     private Integer status;
 
+    /**
+     * 所属仓库
+     */
+    private String warehouse;
 
-    public Integer getStatus() {
-        return status;
-    }
+    /**
+     * 是否入库 0 入库 1不入
+     */
+    private Integer whetherStorage;
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
+    /**
+     * 防坠器编号
+     */
+    private String protectorNum;
 
+    /**
+     * 防坠器规格
+     */
+    private String standard;
 
+    /**
+     * 防坠器型号
+     */
+    private String model;
 
-    public Date getPurchaseDate() {
-        return purchaseDate;
-    }
+    /**
+     * 防坠器出厂日期
+     */
+    private Date productDate;
 
-    public void setPurchaseDate(Date purchaseDate) {
-        this.purchaseDate = purchaseDate;
-    }
+    /**
+     * 防坠器检测日期
+     */
+    private Date checkDate;
 
-    public Date getRetireDate() {
-        return retireDate;
-    }
+    /**
+     * 录入批次号
+     */
+    private String batchNumber;
 
-    public void setRetireDate(Date retireDate) {
-        this.retireDate = retireDate;
-    }
+    /**
+     * 供应商
+     */
+    private String supplierId;
+
+    /**
+     * 经办人
+     */
+    private String practiName;
+
+    /**
+     * 供应商联系地址
+     */
+    private String supplierAdd;
+
+    /**
+     * 供应商联系电话
+     */
+    private String supplierTel;
+
+    /**
+     * 经办人员电话
+     */
+    private String mobile;
+
+    /**
+     * 附件
+     */
+    private String enclosure;
 
     private static final long serialVersionUID = 1L;
 
@@ -400,6 +443,142 @@ public class WmKitEntry implements Serializable {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public Date getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(Date purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
+    public Date getRetireDate() {
+        return retireDate;
+    }
+
+    public void setRetireDate(Date retireDate) {
+        this.retireDate = retireDate;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(String warehouse) {
+        this.warehouse = warehouse;
+    }
+
+    public Integer getWhetherStorage() {
+        return whetherStorage;
+    }
+
+    public void setWhetherStorage(Integer whetherStorage) {
+        this.whetherStorage = whetherStorage;
+    }
+
+    public String getProtectorNum() {
+        return protectorNum;
+    }
+
+    public void setProtectorNum(String protectorNum) {
+        this.protectorNum = protectorNum;
+    }
+
+    public String getStandard() {
+        return standard;
+    }
+
+    public void setStandard(String standard) {
+        this.standard = standard;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    public Date getProductDate() {
+        return productDate;
+    }
+
+    public void setProductDate(Date productDate) {
+        this.productDate = productDate;
+    }
+
+    public Date getCheckDate() {
+        return checkDate;
+    }
+
+    public void setCheckDate(Date checkDate) {
+        this.checkDate = checkDate;
+    }
+
+    public String getBatchNumber() {
+        return batchNumber;
+    }
+
+    public void setBatchNumber(String batchNumber) {
+        this.batchNumber = batchNumber;
+    }
+
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public String getPractiName() {
+        return practiName;
+    }
+
+    public void setPractiName(String practiName) {
+        this.practiName = practiName;
+    }
+
+    public String getSupplierAdd() {
+        return supplierAdd;
+    }
+
+    public void setSupplierAdd(String supplierAdd) {
+        this.supplierAdd = supplierAdd;
+    }
+
+    public String getSupplierTel() {
+        return supplierTel;
+    }
+
+    public void setSupplierTel(String supplierTel) {
+        this.supplierTel = supplierTel;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEnclosure() {
+        return enclosure;
+    }
+
+    public void setEnclosure(String enclosure) {
+        this.enclosure = enclosure;
     }
 
     public static long getSerialVersionUID() {

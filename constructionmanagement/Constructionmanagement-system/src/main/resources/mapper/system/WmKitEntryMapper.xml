@@ -32,14 +32,29 @@
     <result column="purchase_date" jdbcType="TIMESTAMP" property="purchaseDate" />
     <result column="retire_date" jdbcType="TIMESTAMP" property="retireDate" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+    <result column="whether_storage" jdbcType="INTEGER" property="whetherStorage" />
+    <result column="protector_num" jdbcType="VARCHAR" property="protectorNum" />
+    <result column="standard" jdbcType="VARCHAR" property="standard" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="product_date" jdbcType="TIMESTAMP" property="productDate" />
+    <result column="check_date" jdbcType="TIMESTAMP" property="checkDate" />
+    <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="supplier_id" jdbcType="VARCHAR" property="supplierId" />
+    <result column="practi_name" jdbcType="VARCHAR" property="practiName" />
+    <result column="supplier_add" jdbcType="VARCHAR" property="supplierAdd" />
+    <result column="supplier_tel" jdbcType="VARCHAR" property="supplierTel" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="enclosure" jdbcType="VARCHAR" property="enclosure" />
   </resultMap>
   <sql id="Base_Column_List">
     id, kit_name, product_num, vender, kit_type, equipment, total_assets, rights_unit,
     kit_properties, kit_standard, brachium, depreciation_rate, unit_type, measurement_unit,
     standard_section_height, kit_model, kit_code, amount, single_price, whole_machine_accessories,
     protector_id, insert_person, insert_person_depart_id, update_person, update_person_depart_id,
-    insert_date, update_date,purchase_date,
-    retire_date,status
+    insert_date, update_date, purchase_date, retire_date, `status`, warehouse, whether_storage,
+    protector_num, `standard`, model, product_date, check_date, batch_number, supplier_id,
+    practi_name, supplier_add, supplier_tel, mobile, enclosure
   </sql>
   <select id="selectBySelective" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -78,7 +93,6 @@
     <foreach collection="array" item="id" open="(" separator="," close=")">
       #{id}
     </foreach>
-
   </delete>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.WmKitEntry" useGeneratedKeys="true">
     insert into wm_kit_entry
@@ -168,7 +182,49 @@
         retire_date,
       </if>
       <if test="status != null">
-        status,
+        `status`,
+      </if>
+      <if test="warehouse != null">
+        warehouse,
+      </if>
+      <if test="whetherStorage != null">
+        whether_storage,
+      </if>
+      <if test="protectorNum != null">
+        protector_num,
+      </if>
+      <if test="standard != null">
+        `standard`,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="productDate != null">
+        product_date,
+      </if>
+      <if test="checkDate != null">
+        check_date,
+      </if>
+      <if test="batchNumber != null">
+        batch_number,
+      </if>
+      <if test="supplierId != null">
+        supplier_id,
+      </if>
+      <if test="practiName != null">
+        practi_name,
+      </if>
+      <if test="supplierAdd != null">
+        supplier_add,
+      </if>
+      <if test="supplierTel != null">
+        supplier_tel,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="enclosure != null">
+        enclosure,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -258,6 +314,48 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="warehouse != null">
+        #{warehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="whetherStorage != null">
+        #{whetherStorage,jdbcType=INTEGER},
+      </if>
+      <if test="protectorNum != null">
+        #{protectorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="standard != null">
+        #{standard,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        #{productDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkDate != null">
+        #{checkDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="batchNumber != null">
+        #{batchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null">
+        #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="practiName != null">
+        #{practiName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAdd != null">
+        #{supplierAdd,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierTel != null">
+        #{supplierTel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="enclosure != null">
+        #{enclosure,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -349,14 +447,56 @@
         retire_date = #{retireDate,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="warehouse != null">
+        warehouse = #{warehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="whetherStorage != null">
+        whether_storage = #{whetherStorage,jdbcType=INTEGER},
+      </if>
+      <if test="protectorNum != null">
+        protector_num = #{protectorNum,jdbcType=VARCHAR},
+      </if>
+      <if test="standard != null">
+        `standard` = #{standard,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkDate != null">
+        check_date = #{checkDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="batchNumber != null">
+        batch_number = #{batchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null">
+        supplier_id = #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="practiName != null">
+        practi_name = #{practiName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAdd != null">
+        supplier_add = #{supplierAdd,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierTel != null">
+        supplier_tel = #{supplierTel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="enclosure != null">
+        enclosure = #{enclosure,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="confirmByIds">
     update wm_kit_entry set  status =1
-  where id in
+    where id in
     <foreach collection="array" item="id" open="(" separator="," close=")">
       #{id}
     </foreach>

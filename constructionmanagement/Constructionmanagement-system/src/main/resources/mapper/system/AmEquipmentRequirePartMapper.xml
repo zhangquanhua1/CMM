@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.AmEquipmentRequirePartMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmEquipmentRequirePart">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="equipment_id" jdbcType="BIGINT" property="equipmentId" />
+    <result column="part_name" jdbcType="VARCHAR" property="partName" />
+    <result column="part_type" jdbcType="VARCHAR" property="partType" />
+    <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+    <result column="part_model" jdbcType="VARCHAR" property="partModel" />
+    <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
+    <result column="applicable_device_type" jdbcType="VARCHAR" property="applicableDeviceType" />
+    <result column="part_count" jdbcType="INTEGER" property="partCount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, equipment_id, part_name, part_type, part_code, part_model, measurement_unit,
+    applicable_device_type,part_count
+  </sql>
+  <select id="selectByEquipmentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from am_equipment_require_part
+    where equipment_id = #{iequipmentId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByEquipmentId" parameterType="java.lang.Long">
+    delete from am_equipment_require_part
+    where equipment_id = #{iequipmentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmEquipmentRequirePart" useGeneratedKeys="true">
+    insert into am_equipment_require_part
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="equipmentId != null">
+        equipment_id,
+      </if>
+      <if test="partName != null">
+        part_name,
+      </if>
+      <if test="partType != null">
+        part_type,
+      </if>
+      <if test="partCode != null">
+        part_code,
+      </if>
+      <if test="partModel != null">
+        part_model,
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit,
+      </if>
+      <if test="applicableDeviceType != null">
+        applicable_device_type,
+      </if>
+      <if test="partCount != null">
+        part_count,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="equipmentId != null">
+        #{equipmentId,jdbcType=BIGINT},
+      </if>
+      <if test="partName != null">
+        #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="partType != null">
+        #{partType,jdbcType=VARCHAR},
+      </if>
+      <if test="partCode != null">
+        #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="partModel != null">
+        #{partModel,jdbcType=VARCHAR},
+      </if>
+      <if test="measurementUnit != null">
+        #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="applicableDeviceType != null">
+        #{applicableDeviceType,jdbcType=VARCHAR},
+      </if>
+      <if test="partCount != null">
+        #{partCount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -8,7 +8,14 @@ export function listEquipmentEntry(query) {
     params: query
   })
 }
-
+//获取所有可用的仓库
+export function getAllUseWH() {
+  return request({
+    url: '/asset/warehouse/listAll',
+    method: 'get',
+    params: null
+  })
+}
 // 新增
 export function addEquipmentEntry(data) {
   return request({
@@ -17,8 +24,22 @@ export function addEquipmentEntry(data) {
     data: data
   })
 }
+//设备录入详情的配件部件
+export function getKitAndPartByEquipmentEntry2(pid) {
+  return request({
+    url: '/inventory/equipmentEntry/kitandpart2/' + pid,
+    method: 'get'
+  })
+}
 
 
+// 获取配件部件
+export function getKitAndPartByEquipmentEntry(pid) {
+  return request({
+    url: '/inventory/equipmentEntry/kitandpart/' + pid,
+    method: 'get'
+  })
+}
 // 修改
 export function updateEquipmentEntry(data) {
   return request({

@@ -20,8 +20,6 @@ public class AmTowerMachineParam  implements Serializable {
     /**
      * 序号
      */
-    @JsonSerialize(using = LongJsonSerializer.class)
-    @JsonDeserialize(using = LongJsonDeserializer.class)
     private Long id;
     /**
      * 塔机型号

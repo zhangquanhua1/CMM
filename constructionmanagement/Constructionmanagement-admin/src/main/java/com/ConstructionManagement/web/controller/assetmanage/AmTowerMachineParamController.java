@@ -36,7 +36,6 @@ public class AmTowerMachineParamController extends BaseController {
     @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:list')")
     @GetMapping("/towermachine/list")
     public TableDataInfo list(AmTowerMachineParam amTowerMachineParam) {
-        System.out.println("amTowerMachineParam.getTowerMachineType()"+amTowerMachineParam.getTowerMachineType());
         startPage();
         List<AmTowerMachineParam> amTowerMachineParams = amTowerMachineParamService.selectBySelective(amTowerMachineParam);
         return getDataTable(amTowerMachineParams);
@@ -45,8 +44,7 @@ public class AmTowerMachineParamController extends BaseController {
     //根据设备型号和设备类别 获取设备参数
     @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:list')")
     @GetMapping("/equipmentParam")
-    public AjaxResult listByParam(@RequestParam("model") String towerMachineModel,@RequestParam("type") String towerMachineType) {
-        //System.out.println("amTowerMachineParam.getTowerMachineType()"+towerMachineType);
+    public AjaxResult listByParam(@RequestParam("towerMachineModel") String towerMachineModel,@RequestParam("towerMachineType") String towerMachineType) {
         AmTowerMachineParam amTowerMachineParams = amTowerMachineParamService.selectByParam(towerMachineModel,towerMachineType);
         return AjaxResult.success(amTowerMachineParams);
     }
@@ -61,7 +59,6 @@ public class AmTowerMachineParamController extends BaseController {
         List<AmTowerMachineParamPart> listParts=amTowerMachineParamPartService.selectByPid(pid);
         List<AmPartParamKit> listKits=new ArrayList<AmPartParamKit>();
         for (AmTowerMachineParamPart part:listParts) {
-            //System.out.println("AmTowerMachineParamPart"+part.getPart_id());
             List<AmPartParamKit> Kits=iamPartParamKitService.selectByPid(part.getPart_id());
             for (AmPartParamKit appk:Kits ) {
                 appk.setKitCount(appk.getKitCount()*part.getPartCount());
@@ -80,7 +77,6 @@ public class AmTowerMachineParamController extends BaseController {
     @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:list')")
     @GetMapping("/getUsePart")
     public AjaxResult getUsePart(AmTowerMachineParam amTowerMachineParam) {
-       // System.out.println("ap"+amTowerMachineParam.getTowerMachineName());
         AmPartParam ap=new AmPartParam();
         ap.setApplicableDeviceType(amTowerMachineParam.getTowerMachineType());
         List<AmPartParam> listParts=ipps.selectBySelective(ap);

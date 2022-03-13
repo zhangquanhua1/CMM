@@ -2,6 +2,8 @@ package com.ConstructionManagement.system.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -235,6 +237,26 @@ public class WmEquipmentEntry implements Serializable {
      * 确认状态 0 未确认 1 确认 2 反确认
      */
     private Integer status;
+    //设备录入配件
+    private List<WmEquipmentEntryKit> wmEquipmentEntryKits;
+    //设备录入部件
+    private List<WmEquipmentEntryPart> wmEquipmentEntryParts;
+
+    public List<WmEquipmentEntryKit> getWmEquipmentEntryKits() {
+        return wmEquipmentEntryKits;
+    }
+
+    public void setWmEquipmentEntryKits(List<WmEquipmentEntryKit> wmEquipmentEntryKits) {
+        this.wmEquipmentEntryKits = wmEquipmentEntryKits;
+    }
+
+    public List<WmEquipmentEntryPart> getWmEquipmentEntryParts() {
+        return wmEquipmentEntryParts;
+    }
+
+    public void setWmEquipmentEntryParts(List<WmEquipmentEntryPart> wmEquipmentEntryParts) {
+        this.wmEquipmentEntryParts = wmEquipmentEntryParts;
+    }
 
     public Integer getStatus() {
         return status;

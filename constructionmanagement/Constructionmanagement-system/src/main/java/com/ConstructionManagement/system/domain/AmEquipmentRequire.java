@@ -2,6 +2,8 @@ package com.ConstructionManagement.system.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -83,6 +85,36 @@ public class AmEquipmentRequire implements Serializable {
     private Integer state;
 
     /**
+     * 零配件
+     */
+    private List<AmPartParamKit> amPartParamKits;
+    /**
+     * 部件
+     */
+    private List<AmTowerMachineParamPart> amTowerMachineParamParts;
+
+    public List<AmEquipmentRequireKit> getAmEquipmentRequireKits() {
+        return amEquipmentRequireKits;
+    }
+
+    public void setAmEquipmentRequireKits(List<AmEquipmentRequireKit> amEquipmentRequireKits) {
+        this.amEquipmentRequireKits = amEquipmentRequireKits;
+    }
+
+    public List<AmEquipmentRequirePart> getAmEquipmentRequireParts() {
+        return amEquipmentRequireParts;
+    }
+
+    public void setAmEquipmentRequireParts(List<AmEquipmentRequirePart> amEquipmentRequireParts) {
+        this.amEquipmentRequireParts = amEquipmentRequireParts;
+    }
+
+    //设备需求配件
+    private List<AmEquipmentRequireKit> amEquipmentRequireKits;
+    //设备需求部件
+    private List<AmEquipmentRequirePart> amEquipmentRequireParts;
+
+    /**
      * 审核意见
      */
     private String auditAdvice;
@@ -118,6 +150,22 @@ public class AmEquipmentRequire implements Serializable {
     private Date updateDate;
 
     private static final long serialVersionUID = 1L;
+
+    public List<AmPartParamKit> getAmPartParamKits() {
+        return amPartParamKits;
+    }
+
+    public void setAmPartParamKits(List<AmPartParamKit> amPartParamKits) {
+        this.amPartParamKits = amPartParamKits;
+    }
+
+    public List<AmTowerMachineParamPart> getAmTowerMachineParamParts() {
+        return amTowerMachineParamParts;
+    }
+
+    public void setAmTowerMachineParamParts(List<AmTowerMachineParamPart> amTowerMachineParamParts) {
+        this.amTowerMachineParamParts = amTowerMachineParamParts;
+    }
 
     public Long getId() {
         return id;

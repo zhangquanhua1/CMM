@@ -109,6 +109,13 @@
       <el-table-column label="联系手机" align="center" prop="contractNum"  />
       <el-table-column label="仓库类型" align="center" prop="type" :formatter="typeFormat" />
       <el-table-column label="所属部门" align="center" prop="depart_id" :formatter="getDeptName"  />
+      <el-table-column label="仓库状态" align="center" prop="status"   >
+        <template slot-scope="scope">
+          <el-tag :type="'success'" v-if="scope.row.status=='0'">可用</el-tag>
+          <el-tag :type="'primary'" v-else-if="scope.row.status=='1'">维护中</el-tag>
+          <el-tag :type="'danger'" v-else>已满</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -139,7 +146,7 @@
     />
 
     <!-- 添加或修改仓库维护对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="600px" v-dialog-drag :close-on-click-modal = "false" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="12">
@@ -198,6 +205,20 @@
         </el-row>
         <el-row>
           <el-col :span="24">
+            <el-form-item label="仓库状态" prop="status">
+              <el-select v-model="form.status" placeholder="请选择仓库状态">
+                <el-option
+                  v-for="dict in warehouseStatus"
+                  :key="dict.dictValue"
+                  :label="dict.dictLabel"
+                  :value="dict.dictValue"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
             </el-form-item>
@@ -243,6 +264,8 @@ export default {
       open: false,
       // 仓库类型字典
       typeOptions: [],
+      //仓库状态
+      warehouseStatus:[],
       // 所属部门ID字典
       depart_idOptions: [],
       // 查询参数
@@ -281,6 +304,9 @@ export default {
     this.getTreeselect();
     this.getDicts('warehouse_type').then(response => {
       this.typeOptions = response.data
+    })
+    this.getDicts('warehouseStatus').then(response => {
+      this.warehouseStatus = response.data
     })
   },
   methods: {
@@ -323,6 +349,7 @@ export default {
         address: null,
         chargePerson: null,
         contractNum: null,
+        status:null,
         type: null,
         depart_id: null,
         remark: null

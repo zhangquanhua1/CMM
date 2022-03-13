@@ -22,9 +22,17 @@ export function getEquipmentParam(model, type) {
     url: '/asset/manage/equipmentParam',
     method: 'get',
     params: {
-      model: model,
-      type: type
+      towerMachineModel: model,
+      towerMachineType: type
     }
+  })
+}
+
+// 获取配件部件
+export function getEquipmentKitAndPart(pid) {
+  return request({
+    url: '/asset/equipmentrequire/kitandpart/' + pid,
+    method: 'get'
   })
 }
 // 新增

@@ -214,7 +214,7 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
-    <!-- 添加或修改对话框 -->
+    <!-- 添加 -->
     <el-dialog :title="title" :visible.sync="open" width="1200px" v-dialog-drag class="spec-dialog" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-collapse v-model="activeNames" @change="handleChange" accordion>
@@ -266,11 +266,11 @@
                   <el-input v-model="form.rightsUnit" placeholder="请输入产权单位"/>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
-                <el-form-item label="配件属性" prop="kitProperties">
-                  <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>
-                </el-form-item>
-              </el-col>
+              <!--              <el-col :span="8">-->
+              <!--                <el-form-item label="配件属性" prop="kitProperties">-->
+              <!--                  <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>-->
+              <!--                </el-form-item>-->
+              <!--              </el-col>-->
               <el-col :span="8">
                 <el-form-item label="归属仓库" prop="belongWarehouse">
                   <el-select v-model="form.belongWarehouse" placeholder="请选择归属仓库">
@@ -360,7 +360,8 @@
                 <el-col :span="4" class="col_title">最大起重量工作幅度：</el-col>
                 <el-col :span="4">
                   {{
-                    EquipmentDetail.maximumStartingWeightWorkingRange != null ? EquipmentDetail.maximumStartingWeightWorkingRange : '-' }}
+                    EquipmentDetail.maximumStartingWeightWorkingRange != null ? EquipmentDetail.maximumStartingWeightWorkingRange : '-'
+                  }}
                   M
                 </el-col>
                 <el-col :span="4" class="col_title">最大工作幅度：</el-col>
@@ -418,12 +419,14 @@
                 <el-col :span="4" class="col_title">标准节规格：</el-col>
                 <el-col :span="4">
                   {{
-                    EquipmentDetail.standardSectionSpecifications != null ? EquipmentDetail.standardSectionSpecifications : '-' }}
+                    EquipmentDetail.standardSectionSpecifications != null ? EquipmentDetail.standardSectionSpecifications : '-'
+                  }}
                 </el-col>
                 <el-col :span="4" class="col_title">附墙框规格：</el-col>
                 <el-col :span="4">
                   {{
-                    EquipmentDetail.attachedWallFrameSpecifications != null ? EquipmentDetail.attachedWallFrameSpecifications : '-' }}
+                    EquipmentDetail.attachedWallFrameSpecifications != null ? EquipmentDetail.attachedWallFrameSpecifications : '-'
+                  }}
                 </el-col>
               </el-row>
               <el-row>
@@ -469,18 +472,15 @@
                   <span v-else>{{ scope.row.amPartParam.partModel }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="部件代码" align="center" prop="partCode">
+              <el-table-column label="部件代码" align="center" prop="amPartParam.partCode">
                 <template slot-scope="scope">
                   <el-input v-if="isEdit" v-model="scope.row.amPartParam.partCode" placeholder="请输入部件代码"></el-input>
                   <span v-else>{{ scope.row.amPartParam.partCode }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="部件类型" align="center" prop="part_type">
+              <el-table-column label="部件类型" align="center" prop="amPartParam.part_type">
                 <template slot-scope="scope">
-<!--                  <el-input v-if="isEdit" v-model="scope.row.amPartParam.part_type"-->
-<!--                            placeholder="请输入部件类型"-->
-<!--                  ></el-input>-->
-                  <el-select  v-if="isEdit" v-model="scope.row.amPartParam.part_type" placeholder="请选择适用部件类型">
+                  <el-select v-if="isEdit" v-model="scope.row.amPartParam.part_type" placeholder="请选择适用部件类型">
                     <el-option
                       v-for="dict in applicableKitTypeS"
                       :key="dict.dictValue"
@@ -493,9 +493,6 @@
               </el-table-column>
               <el-table-column label="适用设备类型" align="center" prop="applicableDeviceType">
                 <template slot-scope="scope">
-<!--                  <el-input v-if="isEdit" v-model="scope.row.amPartParam.applicableDeviceType"-->
-<!--                            placeholder="适用设备类型"-->
-<!--                  ></el-input>-->
                   <el-select v-if="isEdit" v-model="scope.row.amPartParam.applicableDeviceType" placeholder="适用设备类型">
                     <el-option
                       v-for="dict in applicableDeviceTypeS"
@@ -515,8 +512,6 @@
               </el-table-column>
               <el-table-column label="计量单位" align="center" prop="measurementUnit">
                 <template slot-scope="scope">
-<!--                  <el-input v-if="isEdit" v-model="scope.row.amPartParam.measurementUnit" placeholder="请输入计量单位"-->
-<!--                  ></el-input>-->
                   <el-select v-if="isEdit" v-model="scope.row.amPartParam.measurementUnit" placeholder="请选择计量单位">
                     <el-option
                       v-for="dict in measurement_unitS"
@@ -562,7 +557,7 @@
               style="width: 100%"
             >
               <el-table-column
-                prop="kitName"
+                prop=""
                 label="配件名称"
                 width="180"
               >
@@ -571,19 +566,19 @@
                   <span v-else>{{ scope.row.amKitParam.kitName }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件型号" align="center" prop="kitModel">
+              <el-table-column label="配件型号" align="center" prop="">
                 <template slot-scope="scope">
                   <el-input v-if="isEditKit" v-model="scope.row.amKitParam.kitModel" placeholder="请输入配件型号"></el-input>
                   <span v-else>{{ scope.row.amKitParam.kitModel }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件代码" align="center" prop="kitCode">
+              <el-table-column label="配件代码" align="center" prop="">
                 <template slot-scope="scope">
                   <el-input v-if="isEditKit" v-model="scope.row.amKitParam.kitCode" placeholder="请输入配件代码"></el-input>
                   <span v-else>{{ scope.row.amKitParam.kitCode }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="技术参数" align="center" prop="technicalParam">
+              <el-table-column label="技术参数" align="center" prop="">
                 <template slot-scope="scope">
                   <el-input v-if="isEditKit" v-model="scope.row.amKitParam.technicalParam"
                             placeholder="请输入技术参数"
@@ -591,12 +586,9 @@
                   <span v-else>{{ scope.row.amKitParam.technicalParam }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="适用部件类型" align="center" prop="applicableKitType">
+              <el-table-column label="适用部件类型" align="center" prop="">
                 <template slot-scope="scope">
-<!--                  <el-input v-if="isEditKit" v-model="scope.row.amKitParam.applicableKitType"-->
-<!--                            placeholder="适用部件类型"-->
-<!--                  ></el-input>-->
-                  <el-select  v-if="isEditKit" v-model="scope.row.amKitParam.applicableKitType" placeholder="请选择适用部件类型">
+                  <el-select v-if="isEditKit" v-model="scope.row.amKitParam.applicableKitType" placeholder="请选择适用部件类型">
                     <el-option
                       v-for="dict in applicableKitTypeS"
                       :key="dict.dictValue"
@@ -607,16 +599,14 @@
                   <span v-else>{{ scope.row.amKitParam.applicableKitType }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="数量" align="center" prop="kitCount">
+              <el-table-column label="数量" align="center" prop="">
                 <template slot-scope="scope">
                   <el-input v-if="isEditKit" v-model="scope.row.kitCount" placeholder="请输入数量"></el-input>
                   <span v-else>{{ scope.row.kitCount }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="计量单位" align="center" prop="measurementUnit">
+              <el-table-column label="计量单位" align="center" prop="">
                 <template slot-scope="scope">
-<!--                  <el-input v-if="isEditKit" v-model="scope.row.amKitParam.measurementUnit" placeholder="请输入计量单位"-->
-<!--                  ></el-input>-->
                   <el-select v-if="isEditKit" v-model="scope.row.amKitParam.measurementUnit" placeholder="请选择计量单位">
                     <el-option
                       v-for="dict in measurement_unitS"
@@ -647,198 +637,684 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
-    <!--    详情弹窗-->
-    <el-dialog :title="title" :visible.sync="openDetail" width="40%" class="spec-dialog" append-to-body>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备名称: {{ Detail.equipmentName }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备编号: {{ Detail.equipmentNumber }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              生产厂家: {{ Detail.vender }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              规格型号: {{ Detail.standardModel }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备类别: {{ Detail.equipmentType }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              设备数量: {{ Detail.equipmentCount }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              产权单位: {{ Detail.rightsUnit }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              归属仓库: {{ Detail.belongWarehouse }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              项目地址: {{ Detail.projectAddress }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              项目日期: {{ parseTime2(Detail.projectDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              发起日期: {{ parseTime2(Detail.initDate) }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              需求发起人: {{ Detail.demandSponsors }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              采购原因: {{ Detail.procurementCauses }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">审核状态：
-              <span v-if="Detail.state==0">待审核</span>
-              <span v-else-if="Detail.state==1">审核通过</span>
-              <span v-else>审核不通过</span>
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              审核意见:
-              <span v-if="Detail.auditAdvice==null">
-                待审核状态中
-              </span>
-              <span v-else> {{ Detail.auditAdvice }}</span>
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              发起日期: {{ parseTime2(Detail.initDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入人: {{ Detail.insertPerson }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入时间: {{ parseTime(Detail.insertDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入人部门: {{ getDeptName(Detail.insertPersonDepartId) }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              更新人部门: {{ getDeptName(Detail.updatePersonDepartId) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              更新人: {{ Detail.updatePerson }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入时间: {{ parseTime(Detail.updateDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
+    <!--修改对话框 -->
+    <el-dialog :title="title" :visible.sync="openUpdate" width="1200px" v-dialog-drag class="spec-dialog"
+               append-to-body
+    >
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-collapse v-model="activeNames" @change="handleChange2" accordion>
+          <el-collapse-item title="设备信息" name="1">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="设备名称" prop="equipmentName">
+                  <el-input v-model="form.equipmentName" placeholder="请输入设备名称"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="设备编号" prop="equipmentNumber">
+                  <el-input v-model="form.equipmentNumber" placeholder="请输入设备编号"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="生产厂家" prop="vender">
+                  <el-input v-model="form.vender" placeholder="请输入生产厂家"/>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="设备型号" prop="standardModel">
+                  <el-input v-model="form.standardModel" placeholder="请输入设备型号"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="设备类型" prop="equipmentType">
+                  <el-select v-model="form.equipmentType" placeholder="请选择设备类型">
+                    <el-option
+                      v-for="dict in applicableDeviceTypeS"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="设备数量" prop="equipmentCount">
+                  <el-input v-model.number="form.equipmentCount" placeholder="请输入设备数量"/>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="产权单位" prop="rightsUnit">
+                  <el-input v-model="form.rightsUnit" placeholder="请输入产权单位"/>
+                </el-form-item>
+              </el-col>
+              <!--              <el-col :span="8">-->
+              <!--                <el-form-item label="配件属性" prop="kitProperties">-->
+              <!--                  <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>-->
+              <!--                </el-form-item>-->
+              <!--              </el-col>-->
+              <el-col :span="8">
+                <el-form-item label="归属仓库" prop="belongWarehouse">
+                  <el-select v-model="form.belongWarehouse" placeholder="请选择归属仓库">
+                    <el-option
+                      v-for="dict in warehouses"
+                      :key="dict.id"
+                      :label="dict.name"
+                      :value="dict.name"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="项目地址" prop="projectAddress">
+                  <el-input v-model="form.projectAddress" placeholder="请输入项目地址"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="项目日期">
+                  <el-date-picker
+                    v-model="form.projectDate"
+                    size="small"
+                    style="width: 240px"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="选择项目日期"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="发起日期">
+                  <el-date-picker
+                    v-model="form.initDate"
+                    size="small"
+                    style="width: 240px"
+                    value-format="yyyy-MM-dd"
+                    type="date"
+                    placeholder="选择发起日期"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="需求发起人" prop="demandSponsors">
+                  <el-input v-model="form.demandSponsors" placeholder="请输入需求发起人"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="采购原因" prop="procurementCauses">
+                  <el-input v-model="form.procurementCauses" placeholder="请输入采购原因"/>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-collapse-item>
+          <el-collapse-item title="设备参数" name="2">
+            <div v-if="EquipmentDetail!=null&&EquipmentDetail!=undefined">
+              <el-row>
+                <el-col :span="4" class="col_title">设备名称：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.towerMachineName != null ? EquipmentDetail.towerMachineName : '-' }}
+                </el-col>
+                <el-col :span="4" class="col_title">生产厂家：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.vender != null ? EquipmentDetail.vender : '-' }}</el-col>
+                <el-col :span="4" class="col_title">设备型号：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.towerMachineModel != null ? EquipmentDetail.towerMachineModel : '-' }}
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">额定起重力距：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.ratedLiftingDistance != null ? EquipmentDetail.ratedLiftingDistance : '-' }} KN/m
+                </el-col>
+                <el-col :span="4" class="col_title">最大起重量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumLiftingWeight != null ? EquipmentDetail.maximumLiftingWeight : '-' }} T
+                </el-col>
+                <el-col :span="4" class="col_title">最大幅度额定起重量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumRatedWeight != null ? EquipmentDetail.maximumRatedWeight : '-' }} T
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">最大起重量工作幅度：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.maximumStartingWeightWorkingRange != null ? EquipmentDetail.maximumStartingWeightWorkingRange : '-'
+                  }}
+                  M
+                </el-col>
+                <el-col :span="4" class="col_title">最大工作幅度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumRangeWork != null ? EquipmentDetail.maximumRangeWork : '-' }} M
+                </el-col>
+                <el-col :span="4" class="col_title">最大起升高度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumHeightLift != null ? EquipmentDetail.maximumHeightLift : '-' }} M
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">起升速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.upDownSpeed != null ? EquipmentDetail.upDownSpeed : '-' }} m/min
+                </el-col>
+                <el-col :span="4" class="col_title">变幅速度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.variableAmplitudeSpeed != null ? EquipmentDetail.variableAmplitudeSpeed : '-' }}
+                  m/min
+                </el-col>
+                <el-col :span="4" class="col_title">回转速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.swivellingSpeed != null ? EquipmentDetail.swivellingSpeed : '-' }}
+                  r/min
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">顶升速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.upSpeed != null ? EquipmentDetail.upSpeed : '-' }} m/min</el-col>
+                <el-col :span="4" class="col_title">塔机自重：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.balanceWeight != null ? EquipmentDetail.balanceWeight : '-' }} t
+                </el-col>
+                <el-col :span="4" class="col_title">平衡重量：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.balanceWeight != null ? EquipmentDetail.balanceWeight : '-' }} t
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">工作电压：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.workingVoltage != null ? EquipmentDetail.workingVoltage : '-' }}
+                  v
+                </el-col>
+                <el-col :span="4" class="col_title">装机总容量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.totalInstalledCapacity != null ? EquipmentDetail.totalInstalledCapacity : '-' }} KW
+                </el-col>
+                <el-col :span="4" class="col_title">电机功率：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.motorPower != null ? EquipmentDetail.motorPower : '-' }} KW
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">变频器功率：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.frequencyConverterPower != null ? EquipmentDetail.frequencyConverterPower : '-' }}
+                  KW
+                </el-col>
+                <el-col :span="4" class="col_title">标准节规格：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.standardSectionSpecifications != null ? EquipmentDetail.standardSectionSpecifications : '-'
+                  }}
+                </el-col>
+                <el-col :span="4" class="col_title">附墙框规格：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.attachedWallFrameSpecifications != null ? EquipmentDetail.attachedWallFrameSpecifications : '-'
+                  }}
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">备注：</el-col>
+                <el-col :span="20">{{ EquipmentDetail.remark != null ? EquipmentDetail.remark : '-' }}</el-col>
+              </el-row>
+            </div>
+            <div v-else>无该设备的参数信息</div>
+          </el-collapse-item>
+          <el-collapse-item title="部件清单" name="3">
+            <el-row :gutter="10" class="mb8">
+              <el-col :span="1.5">
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  size="mini"
+                  @click="addPartRowUpdate"
+                  v-hasPermi="['asset:manage:partrequire:add']"
+                >新增
+                </el-button>
+                <el-button type="primary" size="mini" v-if="!isEdit" @click="editPart()">编辑</el-button>
+                <el-button type="primary" size="mini" v-if="isEdit" @click="savePartRow()">保存</el-button>
+              </el-col>
+            </el-row>
+            <el-table
+              :data="EquipmentPartsList"
+              :key="mainTableKey"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="partName"
+                label="部件名称"
+                width="180"
+              >
+                <template slot-scope="scope">
+                  <el-input v-if="isEdit" v-model="scope.row.partName" placeholder="请输入部件名称"></el-input>
+                  <span v-else>{{ scope.row.partName }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="部件型号" align="center" prop="partModel">
+                <template slot-scope="scope">
+                  <el-input v-if="isEdit" v-model="scope.row.partModel" placeholder="请输入部件型号"></el-input>
+                  <span v-else>{{ scope.row.partModel }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="部件代码" align="center" prop="partCode">
+                <template slot-scope="scope">
+                  <el-input v-if="isEdit" v-model="scope.row.partCode" placeholder="请输入部件代码"></el-input>
+                  <span v-else>{{ scope.row.partCode }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="部件类型" align="center" prop="partType">
+                <template slot-scope="scope">
+                  <el-select v-if="isEdit" v-model="scope.row.partType" placeholder="请选择适用部件类型">
+                    <el-option
+                      v-for="dict in applicableKitTypeS"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    ></el-option>
+                  </el-select>
+                  <span v-else>{{ scope.row.part_type }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="适用设备类型" align="center" prop="applicableDeviceType">
+                <template slot-scope="scope">
+                  <el-select v-if="isEdit" v-model="scope.row.applicableDeviceType" placeholder="适用设备类型">
+                    <el-option
+                      v-for="dict in applicableDeviceTypeS"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    ></el-option>
+                  </el-select>
+                  <span v-else>{{ scope.row.applicableDeviceType }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="数量" align="center" prop="partCount">
+                <template slot-scope="scope">
+                  <el-input v-if="isEdit" v-model="scope.row.partCount" placeholder="请输入数量"></el-input>
+                  <span v-else>{{ scope.row.partCount }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="计量单位" align="center" prop="measurementUnit">
+                <template slot-scope="scope">
+                  <el-select v-if="isEdit" v-model="scope.row.measurementUnit" placeholder="请选择计量单位">
+                    <el-option
+                      v-for="dict in measurement_unitS"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    ></el-option>
+                  </el-select>
+                  <span v-else>{{ scope.row.measurementUnit }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="100">
+                <template slot-scope="scope">
+
+                  <el-button
+                    size="mini"
+                    type="text"
+                    @click="delPartRow(scope.row)"
+                  >删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item title="配件清单" name="4">
+            <el-row :gutter="10" class="mb8">
+              <el-col :span="1.5">
+                <el-button
+                  type="primary"
+                  icon="el-icon-plus"
+                  size="mini"
+                  @click="addKitRowUpdate"
+                  v-hasPermi="['asset:manage:partrequire:add']"
+                >新增
+                </el-button>
+                <el-button type="primary" size="mini" v-if="!isEditKit" @click="editKit()">编辑</el-button>
+                <el-button type="primary" size="mini" v-if="isEditKit" @click="saveKitRow()">保存</el-button>
+              </el-col>
+            </el-row>
+            <el-table
+              :data="EquipmentKitsList"
+              :key="mainTableKey2"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop=""
+                label="配件名称"
+                width="180"
+              >
+                <template slot-scope="scope">
+                  <el-input v-if="isEditKit" v-model="scope.row.kitName" placeholder="请输入配件名称"></el-input>
+                  <span v-else>{{ scope.row.kitName }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="配件型号" align="center" prop="kitModel">
+                <template slot-scope="scope">
+                  <el-input v-if="isEditKit" v-model="scope.row.kitModel" placeholder="请输入配件型号"></el-input>
+                  <span v-else>{{ scope.row.kitModel }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="配件代码" align="center" prop="kitCode">
+                <template slot-scope="scope">
+                  <el-input v-if="isEditKit" v-model="scope.row.kitCode" placeholder="请输入配件代码"></el-input>
+                  <span v-else>{{ scope.row.kitCode }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="技术参数" align="center" prop="technicalParam">
+                <template slot-scope="scope">
+                  <el-input v-if="isEditKit" v-model="scope.row.technicalParam"
+                            placeholder="请输入技术参数"
+                  ></el-input>
+                  <span v-else>{{ scope.row.technicalParam }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="适用部件类型" align="center" prop="applicableKitType">
+                <template slot-scope="scope">
+                  <el-select v-if="isEditKit" v-model="scope.row.applicableKitType" placeholder="请选择适用部件类型">
+                    <el-option
+                      v-for="dict in applicableKitTypeS"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    ></el-option>
+                  </el-select>
+                  <span v-else>{{ scope.row.applicableKitType }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="数量" align="center" prop="kitCount">
+                <template slot-scope="scope">
+                  <el-input v-if="isEditKit" v-model="scope.row.kitCount" placeholder="请输入数量"></el-input>
+                  <span v-else>{{ scope.row.kitCount }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="计量单位" align="center" prop="measurementUnit">
+                <template slot-scope="scope">
+                  <el-select v-if="isEditKit" v-model="scope.row.measurementUnit" placeholder="请选择计量单位">
+                    <el-option
+                      v-for="dict in measurement_unitS"
+                      :key="dict.dictValue"
+                      :label="dict.dictLabel"
+                      :value="dict.dictValue"
+                    ></el-option>
+                  </el-select>
+                  <span v-else>{{ scope.row.measurementUnit }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center" class-name="small-padding fixed-width" min-width="100">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="text"
+                    @click="delKitRow(scope.row)"
+                  >删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+        </el-collapse>
+      </el-form>
       <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!--    详情弹窗-->
+    <el-drawer
+      title="设备详情"
+      size="60%"
+      :visible.sync="drawer"
+      :with-header="true"
+    >
+      <div style="margin-left: 10px">
+        <el-collapse v-model="activeNames" accordion>
+          <el-collapse-item title="设备信息" name="1">
+            <el-row>
+              <el-col :span="4" class="col_title">设备名称：</el-col>
+              <el-col :span="4">{{ Detail.equipmentName != null ? Detail.equipmentName : '-' }}</el-col>
+              <el-col :span="4" class="col_title">设备编号：</el-col>
+              <el-col :span="4">{{ Detail.equipmentNumber != null ? Detail.equipmentNumber : '-' }}</el-col>
+              <el-col :span="4" class="col_title">生产厂家：</el-col>
+              <el-col :span="4">{{ Detail.vender != null ? Detail.vender : '-' }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">规格型号：</el-col>
+              <el-col :span="4">{{ Detail.standardModel != null ? Detail.standardModel : '-' }}</el-col>
+              <el-col :span="4" class="col_title">设备类别：</el-col>
+              <el-col :span="4">{{ Detail.equipmentType != null ? Detail.equipmentType : '-' }}</el-col>
+              <el-col :span="4" class="col_title">设备数量：</el-col>
+              <el-col :span="4">{{ Detail.equipmentCount != null ? Detail.equipmentCount : '-' }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">产权单位：</el-col>
+              <el-col :span="4">{{ Detail.rightsUnit != null ? Detail.rightsUnit : '-' }}</el-col>
+              <el-col :span="4" class="col_title">归属仓库：</el-col>
+              <el-col :span="4">{{ Detail.belongWarehouse != null ? Detail.belongWarehouse : '-' }}</el-col>
+              <el-col :span="4" class="col_title">项目地址：</el-col>
+              <el-col :span="4">{{ Detail.projectAddress != null ? Detail.projectAddress : '-' }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">项目日期：</el-col>
+              <el-col :span="4">{{ Detail.projectDate != null ? parseTime2(Detail.projectDate) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">发起日期：</el-col>
+              <el-col :span="4">{{ Detail.initDate != null ? parseTime2(Detail.initDate) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">需求发起人：</el-col>
+              <el-col :span="4">{{ Detail.demandSponsors != null ? Detail.demandSponsors : '-' }}</el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">采购原因：</el-col>
+              <el-col :span="4">{{ Detail.procurementCauses != null ? Detail.procurementCauses : '-' }}</el-col>
+              <el-col :span="4" class="col_title">审核状态：</el-col>
+              <el-col :span="4">
+                <span v-if="Detail.state==0">待审核</span>
+                <span v-else-if="Detail.state==1">审核通过</span>
+                <span v-else>审核不通过</span>
+              </el-col>
+              <el-col :span="4" class="col_title"> 审核意见:</el-col>
+              <el-col :span="4">
+                  <span v-if="Detail.auditAdvice==null">
+                待审核状态中
+              </span>
+                <span v-else> {{ Detail.auditAdvice }}</span>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="4" class="col_title">发起日期：</el-col>
+              <el-col :span="4">{{ Detail.initDate != null ? parseTime2(Detail.initDate) : '-' }}</el-col>
+              <el-col :span="4" class="col_title">录入人：</el-col>
+              <el-col :span="4">
+                {{ Detail.insertPerson != null ? Detail.insertPerson : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title"> 录入时间:</el-col>
+              <el-col :span="4">
+                {{ Detail.insertDate != null ? parseTime(Detail.insertDate) : '-' }}
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">录入人部门：</el-col>
+              <el-col :span="4">
+                {{ Detail.insertPersonDepartId != null ? getDeptName(Detail.insertPersonDepartId) : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title">更新人部门：</el-col>
+              <el-col :span="4">
+                {{ Detail.updatePersonDepartId != null ? getDeptName(Detail.updatePersonDepartId) : '-' }}
+              </el-col>
+              <el-col :span="4" class="col_title"> 更新人:</el-col>
+              <el-col :span="4">
+                {{ Detail.updatePerson != null ? Detail.updatePerson : '-' }}
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="4" class="col_title">录入时间：</el-col>
+              <el-col :span="4">{{ Detail.updateDate != null ? parseTime(Detail.updateDate) : '-' }}</el-col>
+            </el-row>
+          </el-collapse-item>
+          <el-collapse-item title="设备参数" name="2">
+            <div v-if="EquipmentDetail!=null&&EquipmentDetail!=undefined">
+              <el-row>
+                <el-col :span="4" class="col_title">设备名称：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.towerMachineName != null ? EquipmentDetail.towerMachineName : '-' }}
+                </el-col>
+                <el-col :span="4" class="col_title">生产厂家：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.vender != null ? EquipmentDetail.vender : '-' }}</el-col>
+                <el-col :span="4" class="col_title">设备型号：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.towerMachineModel != null ? EquipmentDetail.towerMachineModel : '-' }}
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">额定起重力距：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.ratedLiftingDistance != null ? EquipmentDetail.ratedLiftingDistance : '-' }} KN/m
+                </el-col>
+                <el-col :span="4" class="col_title">最大起重量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumLiftingWeight != null ? EquipmentDetail.maximumLiftingWeight : '-' }} T
+                </el-col>
+                <el-col :span="4" class="col_title">最大幅度额定起重量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumRatedWeight != null ? EquipmentDetail.maximumRatedWeight : '-' }} T
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">最大起重量工作幅度：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.maximumStartingWeightWorkingRange != null ? EquipmentDetail.maximumStartingWeightWorkingRange : '-'
+                  }}
+                  M
+                </el-col>
+                <el-col :span="4" class="col_title">最大工作幅度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumRangeWork != null ? EquipmentDetail.maximumRangeWork : '-' }} M
+                </el-col>
+                <el-col :span="4" class="col_title">最大起升高度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.maximumHeightLift != null ? EquipmentDetail.maximumHeightLift : '-' }} M
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">起升速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.upDownSpeed != null ? EquipmentDetail.upDownSpeed : '-' }} m/min
+                </el-col>
+                <el-col :span="4" class="col_title">变幅速度：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.variableAmplitudeSpeed != null ? EquipmentDetail.variableAmplitudeSpeed : '-' }}
+                  m/min
+                </el-col>
+                <el-col :span="4" class="col_title">回转速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.swivellingSpeed != null ? EquipmentDetail.swivellingSpeed : '-' }}
+                  r/min
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">顶升速度：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.upSpeed != null ? EquipmentDetail.upSpeed : '-' }} m/min</el-col>
+                <el-col :span="4" class="col_title">塔机自重：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.balanceWeight != null ? EquipmentDetail.balanceWeight : '-' }} t
+                </el-col>
+                <el-col :span="4" class="col_title">平衡重量：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.balanceWeight != null ? EquipmentDetail.balanceWeight : '-' }} t
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">工作电压：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.workingVoltage != null ? EquipmentDetail.workingVoltage : '-' }}
+                  v
+                </el-col>
+                <el-col :span="4" class="col_title">装机总容量：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.totalInstalledCapacity != null ? EquipmentDetail.totalInstalledCapacity : '-' }} KW
+                </el-col>
+                <el-col :span="4" class="col_title">电机功率：</el-col>
+                <el-col :span="4">{{ EquipmentDetail.motorPower != null ? EquipmentDetail.motorPower : '-' }} KW
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">变频器功率：</el-col>
+                <el-col :span="4">
+                  {{ EquipmentDetail.frequencyConverterPower != null ? EquipmentDetail.frequencyConverterPower : '-' }}
+                  KW
+                </el-col>
+                <el-col :span="4" class="col_title">标准节规格：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.standardSectionSpecifications != null ? EquipmentDetail.standardSectionSpecifications : '-'
+                  }}
+                </el-col>
+                <el-col :span="4" class="col_title">附墙框规格：</el-col>
+                <el-col :span="4">
+                  {{
+                    EquipmentDetail.attachedWallFrameSpecifications != null ? EquipmentDetail.attachedWallFrameSpecifications : '-'
+                  }}
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="4" class="col_title">备注：</el-col>
+                <el-col :span="20">{{ EquipmentDetail.remark != null ? EquipmentDetail.remark : '-' }}</el-col>
+              </el-row>
+            </div>
+            <div v-else>无该设备的参数信息</div>
+          </el-collapse-item>
+          <el-collapse-item title="部件清单" name="3">
+            <el-table
+              :data="DetailParts"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="partName"
+                label="部件名称"
+                width="180"
+              >
+              </el-table-column>
+              <el-table-column label="部件型号" align="center" prop="partModel">
+              </el-table-column>
+              <el-table-column label="部件代码" align="center" prop="partCode">
+              </el-table-column>
+              <el-table-column label="部件类型" align="center" prop="partType">
+              </el-table-column>
+              <el-table-column label="适用设备类型" align="center" prop="applicableDeviceType">
+              </el-table-column>
+              <el-table-column label="数量" align="center" prop="partCount">
+              </el-table-column>
+              <el-table-column label="计量单位" align="center" prop="measurementUnit">
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+          <el-collapse-item title="配件清单" name="4">
+            <el-table
+              :data="DetailKits"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="kitName"
+                label="零配件名称"
+                width="180"
+              >
+              </el-table-column>
+              <el-table-column label="配件型号" align="center" prop="kitModel">
+              </el-table-column>
+              <el-table-column label="配件代码" align="center" prop="kitCode">
+              </el-table-column>
+              <el-table-column label="技术参数" align="center" prop="technicalParam">
+              </el-table-column>
+              <el-table-column label="适用部件类型" align="center" prop="applicableKitType">
+              </el-table-column>
+              <el-table-column label="数量" align="center" prop="kitCount">
+              </el-table-column>
+              <el-table-column label="计量单位" align="center" prop="measurementUnit">
+              </el-table-column>
+            </el-table>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+
+    </el-drawer>
     <!--    审核弹窗-->
     <el-dialog :title="title" :visible.sync="openAudit" width="25%" @close="getList" class="spec-dialog" append-to-body>
       <el-form ref="form" :model="form" label-width="80px">
@@ -892,7 +1368,8 @@ import {
   listEquipmentRequire,
   updateEquipmentRequire,
   getAllUseWH,
-  getEquipmentParam
+  getEquipmentParam,
+  getEquipmentKitAndPart
 } from '@/api/towerparam/equipmentrequire'
 import { treeselect } from '@/api/system/dept'
 import { getKitAndPart } from '@/api/towerparam/towermachineparam'
@@ -939,8 +1416,15 @@ export default {
       openAudit: false,
       Detail: {},
       //添加时选择的设备类别的设备参数
-      EquipmentDetail: {},
-      form: {},
+      EquipmentDetail: { id: '' },
+      form: {
+        amPartParamKits: [],
+        amTowerMachineParamParts: [],
+        //修改过后的配件
+        amEquipmentRequireKits: [],
+        //修改过后的部件
+        amEquipmentRequireParts: []
+      },
       //可用仓库
       warehouses: [],
       //设备类别
@@ -964,18 +1448,26 @@ export default {
       last_modle: '',
       //记录上一次的选择的设备类别
       last_type: '',
+      //记录上一次选择的设备id
+      last_equmentId: '',
       //计量单位
-      measurement_unitS:[],
+      measurement_unitS: [],
       //适用部件类型
-      applicableKitTypeS:[],
-
+      applicableKitTypeS: [],
+      //详情部件
+      DetailParts: [],
+      //详情配件
+      DetailKits: [],
+      //详情页抽屉展示
+      drawer: false,
+      openUpdate: false,
       // 表单校验
       rules: {
         equipmentNumber: [
           { required: true, message: '设备编号不能为空', trigger: 'blur' }
         ],
         equipmentCount: [{
-          type: 'Number', message: '设备数量必须为数字值', trigger: 'blur'
+          type: 'number', message: '设备数量必须为数字值', trigger: 'blur'
         }]
       }
     }
@@ -983,9 +1475,11 @@ export default {
   created() {
     this.getList()
     this.getDicts('measurement_unit').then(response => {
-      this.measurement_unitS = response.data})
+      this.measurement_unitS = response.data
+    })
     this.getDicts('parts_type').then(response => {
-      this.applicableKitTypeS = response.data})
+      this.applicableKitTypeS = response.data
+    })
     this.getDicts('applicableDeviceType').then(response => {
       this.applicableDeviceTypeS = response.data
     })
@@ -1005,18 +1499,42 @@ export default {
       this.open = false
       this.openDetail = false
       this.openAudit = false
+      this.EquipmentKitsList = []
+      this.EquipmentPartsList = [],
+        this.openUpdate = false
       this.reset()
     },
     //点击面板
     handleChange(data) {
-      this.getEquipmentParamS()
+      if (this.form.equipmentType == undefined || this.form.standardModel == undefined) {
+        this.EquipmentDetail = null
+        return
+      }
       if (this.last_type != this.form.equipmentType ||
         this.last_modle != this.form.standardModel) {
+        this.getEquipmentParamS()
+      }
+      if (this.last_equmentId != this.EquipmentDetail.id) {
+        this.getPartsAndKits()
+      }
+    },
+    //点击面板
+    handleChange2() {
+      if (this.form.equipmentType == undefined || this.form.standardModel == undefined) {
+        this.EquipmentDetail = null
+        return
+      }
+      if (this.last_type != this.form.equipmentType ||
+        this.last_modle != this.form.standardModel) {
+        this.getEquipmentParamS()
+      }
+      if (this.last_equmentId != this.EquipmentDetail.id) {
         this.getPartsAndKits()
       }
     },
     //获取设备的部件和配件
     getPartsAndKits() {
+      this.last_equmentId = this.EquipmentDetail.id
       console.log('this.EquipmentDetail.id' + this.EquipmentDetail.id)
       getKitAndPart(this.EquipmentDetail.id).then(response => {
         this.EquipmentKitsList = response.data.amPartParamKits
@@ -1027,6 +1545,8 @@ export default {
     async getEquipmentParamS() {
       var type = this.form.equipmentType
       var model = this.form.standardModel
+      this.last_modle = type
+      this.last_modle = model
       if (type == undefined || model == undefined) return
       getEquipmentParam(model, type).then(response => {
         this.EquipmentDetail = response.data
@@ -1057,6 +1577,7 @@ export default {
         standardModel: undefined,
         equipmentType: undefined,
         equipmentCount: undefined,
+        kitProperties: undefined,
         rightsUnit: undefined,
         belongWarehouse: undefined,
         projectAddress: undefined,
@@ -1091,9 +1612,6 @@ export default {
     /** 新增按钮操作 */
     handleAdd() {
       this.getUsedWH()
-      // this.getDicts('applicableDeviceType').then(response => {
-      //   this.applicableDeviceTypeS = response.data
-      // })
       this.reset()
       this.open = true
       this.title = '添加'
@@ -1101,12 +1619,16 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.getUsedWH()
-      // this.getDicts('applicableDeviceType').then(response => {
-      //   this.applicableDeviceTypeS = response.data
-      // })
+      getEquipmentParam(row.standardModel, row.equipmentType).then(response => {
+        this.EquipmentDetail = response.data
+      })
       this.reset()
       this.form = row
-      this.open = true
+      getEquipmentKitAndPart(row.id).then((res) => {
+        this.EquipmentKitsList = res.data.amEquipmentRequireKits
+        this.EquipmentPartsList = res.data.amEquipmentRequireParts
+      })
+      this.openUpdate = true
       this.title = '修改'
     },
     /** 提交按钮 */
@@ -1114,18 +1636,24 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.form.id != undefined) {
+            this.form.amEquipmentRequireKits = this.EquipmentKitsList
+            this.form.amEquipmentRequireParts = this.EquipmentPartsList
             updateEquipmentRequire(this.form).then(response => {
               this.$modal.msgSuccess('修改成功')
-              this.open = false
+              this.openUpdate = false
               this.getList()
             })
           } else {
+            this.form.amPartParamKits = this.EquipmentKitsList
+            this.form.amTowerMachineParamParts = this.EquipmentPartsList
             addEquipmentRequire(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
               this.getList()
             })
           }
+          this.EquipmentPartsList = []
+          this.EquipmentKitsList = []
         }
       })
     },
@@ -1141,10 +1669,18 @@ export default {
       }).catch(() => {
       })
     },
+    //设备需求详情
     handleDetail(row) {
       this.getTreeselect()
       this.Detail = row
-      this.openDetail = true
+      getEquipmentKitAndPart(row.id).then((res) => {
+        this.DetailKits = res.data.amEquipmentRequireKits
+        this.DetailParts = res.data.amEquipmentRequireParts
+      })
+      getEquipmentParam(row.standardModel, row.equipmentType).then(response => {
+        this.EquipmentDetail = response.data
+      })
+      this.drawer = true
       this.title = '详情'
     },
     handleAudit(row) {
@@ -1164,8 +1700,6 @@ export default {
     },
     // 编辑部件
     editPart(row) {
-      // // 备份原始数据
-      // row['oldRow'] = JSON.parse(JSON.stringify(row))
       this.isEdit = true
       this.mainTableKey = Math.random()
     },
@@ -1177,7 +1711,7 @@ export default {
     // 新增部件
     addPartRow() {
       this.EquipmentPartsList.push({
-          id: new Date(),
+          pid: new Date().getTime(),
           amPartParam: {
             partName: '',
             partModel: '',
@@ -1191,11 +1725,26 @@ export default {
       )
       this.isEdit = true
     },
+    // 新增部件
+    addPartRowUpdate() {
+      this.EquipmentPartsList.push({
+          pid: new Date().getTime(),
+          partName: '',
+          partModel: '',
+          partCode: '',
+          part_type: '',
+          applicableDeviceType: '',
+          measurementUnit: '',
+          partCount: ''
+        }
+      )
+      this.isEdit = true
+    },
     //删除部件
     delPartRow(row) {
       const list = []
       this.EquipmentPartsList.forEach(function(item) {
-        if (item.id !== row.id) {
+        if (item.id !== row.id || item.pid != row.pid) {
           list.push(item)
         }
       })
@@ -1205,7 +1754,7 @@ export default {
     delKitRow(row) {
       const list = []
       this.EquipmentKitsList.forEach(function(item) {
-        if (item.id !== row.id) {
+        if (item.id !== row.id || item.pid != row.pid) {
           list.push(item)
         }
       })
@@ -1223,7 +1772,7 @@ export default {
     // 新增配件
     addKitRow() {
       this.EquipmentKitsList.push({
-          id: new Date(),
+          pid: new Date().getTime(),
           amKitParam: {
             kitName: '',
             kitModel: '',
@@ -1232,6 +1781,21 @@ export default {
             applicableKitType: '',
             measurementUnit: ''
           },
+          kitCount: ''
+        }
+      )
+      this.isEditKit = true
+    },
+    // 新增配件
+    addKitRowUpdate() {
+      this.EquipmentKitsList.push({
+          pid: new Date().getTime(),
+          kitName: '',
+          kitModel: '',
+          kitCode: '',
+          technicalParam: '',
+          applicableKitType: '',
+          measurementUnit: '',
           kitCount: ''
         }
       )
