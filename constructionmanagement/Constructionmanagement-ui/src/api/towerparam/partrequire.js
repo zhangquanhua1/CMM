@@ -57,3 +57,18 @@ export function delPartRequire(postId) {
     method: 'delete'
   })
 }
+// 确认已采购
+export function confirmIsBuy(postId) {
+  return request({
+    url: '/asset/partrequire/' + postId,
+    method: 'post'
+  })
+}
+// 查询已审核的部件需求
+export function listAudited(query) {
+  return request({
+    url: '/asset/partrequire/listAudited',
+    method: 'get',
+    params: query
+  })
+}

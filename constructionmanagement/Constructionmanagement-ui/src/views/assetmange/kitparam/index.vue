@@ -65,7 +65,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
+          v-hasPermi="['asset:manage:kitparam:export']"
         >导出
         </el-button>
       </el-col>
@@ -326,7 +326,9 @@ export default {
 
     /** 导出按钮操作 */
     handleExport() {
-      this.download()
+      this.download('/asset/kitparam/export', {
+        ...this.queryParams
+      }, `kitparam_${new Date().getTime()}.xlsx`)
     }
   }
 }

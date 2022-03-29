@@ -27,4 +27,9 @@ public class WmEquipmentEntryKitServiceImpl implements IWmEquipmentEntryKitServi
     public List<WmEquipmentEntryKit> selectByEquipmentId(Long equimentId) {
         return week.selectByEquipmentId(equimentId);
     }
+
+    @Override
+    public WmEquipmentEntryKit selectById(Long id) {
+        return week.selectById(id);
+    }
 }

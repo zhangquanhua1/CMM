@@ -1,5 +1,8 @@
 package com.ConstructionManagement.web.controller.inventorymanagement;
 
+import cn.afterturn.easypoi.excel.ExcelImportUtil;
+import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.result.ExcelImportResult;
 import com.ConstructionManagement.common.annotation.Log;
 import com.ConstructionManagement.common.core.controller.BaseController;
 import com.ConstructionManagement.common.core.domain.AjaxResult;
@@ -8,12 +11,20 @@ import com.ConstructionManagement.common.core.redis.RedisCache;
 import com.ConstructionManagement.common.enums.BusinessType;
 import com.ConstructionManagement.system.domain.*;
 import com.ConstructionManagement.system.service.*;
+import com.ConstructionManagement.web.controller.ExportUtil;
 import io.lettuce.core.dynamic.annotation.Param;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,8 +48,11 @@ public class WmEquipmentEntryController extends BaseController {
     @Autowired
     IWmEquipmentEntryPartService ieeps;
 
+    @Autowired
+    IInventoryService iis;
+
     /**
-     * 获取列表
+     * 获取设备录入列表
      */
     @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:list')")
     @GetMapping("/list")
@@ -56,10 +70,50 @@ public class WmEquipmentEntryController extends BaseController {
         wees = iw.selectBySelective(wee);
         return getDataTable(wees);
     }
+
+    /**
+     * 根据id获取设备详情
+     *
+     * @param id
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:list')")
+    @GetMapping("/{id}")
+    public AjaxResult selectById(@PathVariable Long id) {
+        WmEquipmentEntry result = iw.selectById(id);
+        return AjaxResult.success(result);
+    }
+
+    /**
+     * 根据配件id获取设备绑定的配件的详情
+     *
+     * @param id
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:list')")
+    @GetMapping("/kit/{id}")
+    public AjaxResult selectKitById(@PathVariable Long id) {
+        WmEquipmentEntryKit result = ieeks.selectById(id);
+        return AjaxResult.success(result);
+    }
+
+    /**
+     * 根据部件id获取设备绑定的部件的详情
+     *
+     * @param id
+     * @return
+     */
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:list')")
+    @GetMapping("/part/{id}")
+    public AjaxResult selectPartById(@PathVariable Long id) {
+        WmEquipmentEntryPart result = ieeps.selectById(id);
+        return AjaxResult.success(result);
+    }
+
     /**
      * 设备录入的部件和配件详情
      */
-    @PreAuthorize("@ss.hasPermi('asset:manage:towermachine:list')")
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:list')")
     @GetMapping("/kitandpart2/{pid}")
     public AjaxResult getlistKitsAndParts(@PathVariable Long pid) {
         if (pid <= 0 || pid == null) return AjaxResult.error("不存在配件、部件");
@@ -70,6 +124,7 @@ public class WmEquipmentEntryController extends BaseController {
         kp.setWmEquipmentEntryParts(parts);
         return AjaxResult.success(kp);
     }
+
 
     /**
      * 获取所选设备类型及型号的部件、配件
@@ -83,8 +138,8 @@ public class WmEquipmentEntryController extends BaseController {
         List<WmEquipmentEntryKit> aerKits = new ArrayList<>();
         //设备部件
         List<WmEquipmentEntryPart> aerParts = new ArrayList<>();
-         long indexPart=0;
-         long indexKit=0;
+        long indexPart = 0;
+        long indexKit = 0;
         //遍历部件获取部件的配件
         for (AmTowerMachineParamPart part : listParts) {
             WmEquipmentEntryPart rp = new WmEquipmentEntryPart();
@@ -146,7 +201,6 @@ public class WmEquipmentEntryController extends BaseController {
         wee.setInsertDate(new Date());
         redisCache.deleteObject(wmEquipmentEntryKey);
         int result = iw.insertSelective(wee);
-
         result *= insertKitAndPart(wee);
 
         return toAjax(result);
@@ -198,11 +252,55 @@ public class WmEquipmentEntryController extends BaseController {
     @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:confirm')")
     @Log(title = "设备信息确认", businessType = BusinessType.UPDATE)
     @PutMapping("/confirm")
-    public AjaxResult confirm(@RequestBody Long[] ids) {
-
-        if (ids == null || ids.length == 0) return AjaxResult.error("确认失败");
+    public AjaxResult confirm(@RequestBody List<WmEquipmentEntry> eqe) {
         redisCache.deleteObject(wmEquipmentEntryKey);
-        int result = iw.confirmByIds(ids);
+        int result = 0;
+        if (eqe != null && !eqe.isEmpty() && eqe.size() > 0) {
+            for (WmEquipmentEntry wke : eqe) {
+                Inventory ivt = new Inventory();
+                ivt.setName(wke.getEquipmentName());
+                //设置为设备
+                ivt.setType(1);
+                ivt.setModel(wke.getStandardModel());
+                ivt.setAmount(wke.getAmount());
+                ivt.setTypeId(wke.getId());
+                ivt.setBelongWarehouse(wke.getBelongWarehouse());
+                result = iw.confirmById(wke.getId());
+                if (result > 0) {
+                    result = iis.insertSelective(ivt);
+                    List<WmEquipmentEntryKit> kits = ieeks.selectByEquipmentId(wke.getId());
+                    List<WmEquipmentEntryPart> parts = ieeps.selectByEquipmentId(wke.getId());
+                    if (kits != null && !kits.isEmpty() && kits.size() > 0) {
+                        for (WmEquipmentEntryKit kit : kits) {
+                            Inventory ivt1 = new Inventory();
+                            ivt1.setName(kit.getKitName());
+                            //设置为设备-配件
+                            ivt1.setType(4);
+                            ivt1.setModel(kit.getKitModel());
+                            ivt1.setAmount((long) (kit.getKitCount()));
+                            ivt1.setTypeId(kit.getId());
+                            ivt1.setBelongWarehouse(wke.getBelongWarehouse());
+                            ivt1.setPid(wke.getId());
+                            result = iis.insertSelective(ivt1);
+                        }
+                    }
+                    if (parts != null && !parts.isEmpty() && parts.size() > 0) {
+                        for (WmEquipmentEntryPart part : parts) {
+                            Inventory ivt1 = new Inventory();
+                            ivt1.setName(part.getPartName());
+                            //设置为设备-部件
+                            ivt1.setType(5);
+                            ivt1.setModel(part.getPartModel());
+                            ivt1.setAmount((long) (part.getPartCount()));
+                            ivt1.setTypeId(part.getId());
+                            ivt1.setBelongWarehouse(wke.getBelongWarehouse());
+                            ivt1.setPid(wke.getId());
+                            result = iis.insertSelective(ivt1);
+                        }
+                    }
+                }
+            }
+        }
         return toAjax(result);
     }
 
@@ -218,4 +316,97 @@ public class WmEquipmentEntryController extends BaseController {
         int result = iw.AntiConfirmByIds(ids);
         return toAjax(result);
     }
+
+    /**
+     * 设备录入导出
+     * @param response
+     * @param wwh
+     */
+    @Log(title = "设备录入", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:export')")
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, WmEquipmentEntry wwh) {
+        List<WmEquipmentEntry> list = iw.selectBySelective(wwh);
+        if (list != null && list.size() > 0 && !list.isEmpty()) {
+            for (WmEquipmentEntry wpe : list) {
+                List<WmEquipmentEntryKit> kits = ieeks.selectByEquipmentId(wpe.getId());
+                List<WmEquipmentEntryPart> parts = ieeps.selectByEquipmentId(wpe.getId());
+                wpe.setWmEquipmentEntryKits(kits);
+                wpe.setWmEquipmentEntryParts(parts);
+            }
+
+        }
+        new ExportUtil().outPut(response, "设备录入表", list, WmEquipmentEntry.class);
+    }
+
+    /**
+     * 设备信息确认导出
+     * @param response
+     * @param wwh
+     */
+
+    @Log(title = "设备信息确认", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmententry:export')")
+    @PostMapping("/exportConfirm")
+    public void exportConfirm(HttpServletResponse response, WmEquipmentEntry wwh) {
+        List<WmEquipmentEntry> list = iw.selectBySelective(wwh);
+        if (list != null && list.size() > 0 && !list.isEmpty()) {
+            for (WmEquipmentEntry wpe : list) {
+                List<WmEquipmentEntryKit> kits = ieeks.selectByEquipmentId(wpe.getId());
+                List<WmEquipmentEntryPart> parts = ieeps.selectByEquipmentId(wpe.getId());
+                wpe.setWmEquipmentEntryKits(kits);
+                wpe.setWmEquipmentEntryParts(parts);
+            }
+
+        }
+        new ExportUtil().outPut(response, "设备信息确认表", list, WmEquipmentEntry.class);
+    }
+
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response) {
+        try {
+            InputStream fis = Thread.currentThread().getContextClassLoader().getResourceAsStream("static/EETemplate.xlsx");
+            Workbook workbook = WorkbookFactory.create(fis);
+            response.setContentType("application/binary;charset=ISO8859-1");
+            response.setHeader("Content-disposition", "attachment;  ");
+            ServletOutputStream out = null;
+            out = response.getOutputStream();
+            workbook.write(out);
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //关闭文件输出流
+        }
+        return;
+
+    }
+
+    /**
+     * 设备需求导入
+     * @param response
+     * @param file
+     * @param updateSupport
+     * @return
+     * @throws Exception
+     */
+
+    @Log(title = "设备录入", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('asset:manage:partrequire:import')")
+    @PostMapping("/importData")
+    public AjaxResult importData(HttpServletResponse response, MultipartFile file, boolean updateSupport) throws Exception {
+        if (file == null)
+            return AjaxResult.error("导入的文件内容不能为空");
+        ImportParams params = new ImportParams();
+        params.setNeedVerify(true);
+        params.setVerifyFileSplit(false);
+        params.setTitleRows(0);
+        params.setHeadRows(2);
+        ExcelImportResult<WmEquipmentEntry> result = ExcelImportUtil.importExcelMore(file.getInputStream(), WmEquipmentEntry.class, params);
+        String operName = getUsername();
+        String message = iw.importData(result, updateSupport, operName);
+        return AjaxResult.success(message);
+    }
+
 }

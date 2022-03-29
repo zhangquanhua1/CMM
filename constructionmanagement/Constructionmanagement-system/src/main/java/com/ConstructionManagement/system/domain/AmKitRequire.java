@@ -1,131 +1,177 @@
 package com.ConstructionManagement.system.domain;
 
+import com.ConstructionManagement.common.annotation.Excel;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
+
 
 /**
  * am_kit_require
  * @author
  */
-@Data
+
 public class AmKitRequire implements Serializable {
     private Long id;
 
     /**
      * 零配件名称
      */
+    @Excel(name = "配件名称")
     private String kitName;
 
     /**
      * 产品编号
      */
-    private Long productNum;
+    @Excel(name="产品编号")
+    @Length(min=0,max=50,message="产品编号不能超过50个字符")
+    private String productNum;
 
     /**
      * 生产厂家
      */
+    @Excel(name="生产厂家")
     private String vender;
 
     /**
      * 零配件类别
      */
+    @Excel(name="适用部件类别")
     private String kitType;
 
     /**
      * 所属设备
      */
+    @Excel(name="所属设备")
     private String equipment;
 
     /**
      * 资产总计
      */
+    @Excel(name="资产总计")
     private Double totalAssets;
 
     /**
      * 产权单位
      */
+    @Excel(name="产权单位")
     private String rightsUnit;
 
     /**
      * 配件属性
      */
+    @Excel(name="配件属性")
     private String kitProperties;
 
     /**
      * 配件规格
      */
+    @Excel(name="配件规格")
     private String kitStandard;
 
     /**
      * 臂长(米)
      */
+    @Excel(name="臂长",suffix="米")
+    @Min(0)
     private Integer brachium;
 
     /**
      * 设备型号
      */
+    @Excel(name="设备型号")
     private String unitType;
 
     /**
      * 计量单位
      */
+    @Excel(name="计量单位")
     private String measurementUnit;
 
     /**
      * 标准节高度(米)
      */
+    @Excel(name="标准节高度",suffix="米")
+    @Min(0)
     private Double standardSectionHeight;
 
     /**
      * 配件型号
      */
+    @Excel(name="配件型号")
     private String kitModel;
 
     /**
      * 配件代码
      */
+    @Excel(name="配件代码")
     private String kitCode;
 
     /**
      * 数量
      */
+    @Excel(name="配件数量")
+    @Min(value=0,message="配件数量要为数值，最小为0")
     private Long amount;
 
     /**
      * 单价
      */
+    @Excel(name="单价")
+    @Min(value=0,message="单价要为数值，最小为0")
     private Double singlePrice;
 
     /**
      * 是否整机配件 0否 1是
      */
+    @Excel(name="是否整机配件",readConverterExp = "0=否,1=是", prompt="0否，1是")
     private Integer wholeMachineAccessories;
 
     /**
      * 需求发起人
      */
+    @Excel(name="需求发起人")
     private String demandSponsors;
 
     /**
      * 发起日期
      */
+    @Excel(name="发起日期",dateFormat = "yyyy-MM-dd", type = Excel.Type.ALL)
     private Date initDate;
 
     /**
      * 采购原因
      */
+    @Excel(name="采购原因")
     private String procurementCauses;
 
     /**
      * 审核状态 0代表未审核 1 审核 通过 其他审核未通过
      */
+    @Excel(name="审核状态",readConverterExp = "0=未审核,1=通过,2=未通过",type = Excel.Type.EXPORT)
     private Integer state;
 
     /**
      * 审核意见
      */
+    @Excel(name = "审核意见",type = Excel.Type.EXPORT)
     private String auditAdvice;
+
+    /**
+     * 归属仓库
+     */
+    @Excel(name = "归属仓库")
+    private String belongWarehouse;
+
+    public String getBelongWarehouse() {
+        return belongWarehouse;
+    }
+
+    public void setBelongWarehouse(String belongWarehouse) {
+        this.belongWarehouse = belongWarehouse;
+    }
 
     /**
      * 插入人
@@ -157,6 +203,12 @@ public class AmKitRequire implements Serializable {
      */
     private Date updateDate;
 
+    /**
+     * 是否已采购 0 待采购 1已采购
+     */
+    @Excel(name = "是否已采购",readConverterExp = "0=待采购,1=已采购",type = Excel.Type.EXPORT)
+    private Integer isBuy;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -175,11 +227,11 @@ public class AmKitRequire implements Serializable {
         this.kitName = kitName;
     }
 
-    public Long getProductNum() {
+    public String getProductNum() {
         return productNum;
     }
 
-    public void setProductNum(Long productNum) {
+    public void setProductNum(String productNum) {
         this.productNum = productNum;
     }
 
@@ -401,5 +453,13 @@ public class AmKitRequire implements Serializable {
 
     public void setAuditAdvice(String auditAdvice) {
         this.auditAdvice = auditAdvice;
+    }
+
+    public Integer getIsBuy() {
+        return isBuy;
+    }
+
+    public void setIsBuy(Integer isBuy) {
+        this.isBuy = isBuy;
     }
 }

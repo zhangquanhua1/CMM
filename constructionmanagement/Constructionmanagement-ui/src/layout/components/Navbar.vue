@@ -19,7 +19,7 @@
 <!--          <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />-->
 <!--        </el-tooltip>-->
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+<!--        <screenfull id="screenfull" class="right-menu-item hover-effect" />-->
 
 <!--        <el-tooltip content="布局大小" effect="dark" placement="bottom">-->
 <!--          <size-select id="size-select" class="right-menu-item hover-effect" />-->
@@ -36,9 +36,9 @@
           <router-link to="/user/profile">
             <el-dropdown-item>个人中心</el-dropdown-item>
           </router-link>
-          <el-dropdown-item @click.native="setting = true">
-            <span>布局设置</span>
-          </el-dropdown-item>
+<!--          <el-dropdown-item @click.native="setting = true">-->
+<!--            <span>布局设置</span>-->
+<!--          </el-dropdown-item>-->
           <el-dropdown-item divided @click.native="logout">
             <span>退出登录</span>
           </el-dropdown-item>

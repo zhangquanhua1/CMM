@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>constructionmanagement-admin</artifactId>
-
     <description>
         web服务入口
     </description>

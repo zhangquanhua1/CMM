@@ -4,135 +4,161 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
 import com.ConstructionManagement.common.config.LongJsonDeserializer;
 import com.ConstructionManagement.common.config.LongJsonSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Data;
 
 /**
  * am_tower_machine_param
  * @author
  */
-@Data
+
 public class AmTowerMachineParam  implements Serializable {
+
     private static final long serialVersionUID = 1L;
     /**
      * 序号
      */
+    @Excel(name = "id", isColumnHidden = true, needMerge = true)
     private Long id;
     /**
      * 塔机型号
      */
+    @Excel(name = "设备型号", width = 20, needMerge = true)
     private String towerMachineModel;
     /**
      * 塔机名称
      */
+    @Excel(name = "设备名称", width = 20, needMerge = true)
     private String towerMachineName;
 
     /**
      * 设备类别
      */
+    @Excel(name = "设备类别", width = 20, needMerge = true)
     private String towerMachineType;
 
     /**
      * 厂家
      */
+    @Excel(name = "厂家", width = 20, needMerge = true)
     private String vender;
 
     /**
      * 额定起重力距
      */
+    @Excel(name = "额定起重力矩",suffix="KN", width = 20, needMerge = true)
     private Long ratedLiftingDistance;
 
     /**
      * 最大起重量
      */
+    @Excel(name = "最大起重量",suffix="T", width = 20, needMerge = true)
     private Double maximumLiftingWeight;
 
     /**
      * 最大幅度额定起重量
      */
+    @Excel(name = "最大幅度额定起重量",suffix="T", width = 20, needMerge = true)
     private Double maximumRatedWeight;
 
     /**
      * 最大起重量工作幅度
      */
+    @Excel(name = "最大起重量工作幅度", width = 20, needMerge = true)
     private Integer maximumStartingWeightWorkingRange;
 
     /**
      * 最大工作幅度
      */
+    @Excel(name = "最大工作幅度", width = 20, needMerge = true)
     private Integer maximumRangeWork;
 
     /**
      * 最大起升高度
      */
+    @Excel(name = "最大起升高度",suffix = "米", width = 20, needMerge = true)
     private Integer maximumHeightLift;
 
     /**
      * 起升速度
      */
+    @Excel(name = "起升速度",suffix = "m/min", width = 20, needMerge = true)
     private Integer upDownSpeed;
 
     /**
      * 变幅速度
      */
+    @Excel(name = "变幅速度",suffix = "m/min", width = 20, needMerge = true)
     private Integer variableAmplitudeSpeed;
 
     /**
      * 回转速度
      */
+    @Excel(name = "回转速度",suffix = "m/min", width = 20, needMerge = true)
     private Integer swivellingSpeed;
 
     /**
      * 顶升速度
      */
+    @Excel(name = "顶升速度",suffix = "m/min", width = 20, needMerge = true)
     private Integer upSpeed;
 
     /**
      * 塔机自重
      */
+    @Excel(name = "设备自重",suffix = "T", width = 20, needMerge = true)
     private Double towerMachineWeight;
 
     /**
      * 平衡重量
      */
+    @Excel(name = "平衡重量",suffix = "T", width = 20, needMerge = true)
     private Double balanceWeight;
 
     /**
      * 工作电压
      */
+    @Excel(name = "工作电压",suffix = "V", width = 20, needMerge = true)
     private Integer workingVoltage;
 
     /**
      * 装机总容量
      */
+    @Excel(name = "装机总容量", width = 20, needMerge = true)
     private Integer totalInstalledCapacity;
 
     /**
      * 电机功率
      */
+    @Excel(name = "电机功率",suffix = "kw", width = 20, needMerge = true)
     private Integer motorPower;
 
     /**
      * 变频器功率
      */
+    @Excel(name = "变频器功率",suffix = "kw", width = 20, needMerge = true)
     private Integer frequencyConverterPower;
 
     /**
      * 标准节规格
      */
+    @Excel(name = "标准节规格", width = 20, needMerge = true)
     private String standardSectionSpecifications;
 
     /**
      * 附墙框规格
      */
+    @Excel(name = "附墙框规格", width = 20, needMerge = true)
     private String attachedWallFrameSpecifications;
 
     /**
      * 规格归类
      */
+    @Excel(name = "规格归类", width = 20, needMerge = true)
     private String specificationClassification;
 
     /**
@@ -176,7 +202,15 @@ public class AmTowerMachineParam  implements Serializable {
     /**
      * 部件
      */
+    //@ExcelCollection(name = "部件信息")
     private List<AmTowerMachineParamPart> amTowerMachineParamParts;
+
+    /**
+     * 绑定的部件导出
+     */
+    @ExcelCollection(name = "部件信息")
+    private List<AmTowerMachinePartExport> partsExport;
+
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -444,5 +478,13 @@ public class AmTowerMachineParam  implements Serializable {
 
     public void setAmTowerMachineParamParts(List<AmTowerMachineParamPart> amTowerMachineParamParts) {
         this.amTowerMachineParamParts = amTowerMachineParamParts;
+    }
+
+    public List<AmTowerMachinePartExport> getPartsExport() {
+        return partsExport;
+    }
+
+    public void setPartsExport(List<AmTowerMachinePartExport> partsExport) {
+        this.partsExport = partsExport;
     }
 }

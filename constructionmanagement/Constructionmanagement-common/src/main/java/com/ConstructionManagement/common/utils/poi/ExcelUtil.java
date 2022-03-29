@@ -188,6 +188,7 @@ public class ExcelUtil<T>
             Cell titleCell = titleRow.createCell(0);
             titleCell.setCellStyle(styles.get("title"));
             titleCell.setCellValue(title);
+            //合并标题所在的行
             sheet.addMergedRegion(new CellRangeAddress(titleRow.getRowNum(), titleRow.getRowNum(), titleRow.getRowNum(),
                     this.fields.size() - 1));
         }
@@ -224,6 +225,7 @@ public class ExcelUtil<T>
      * @param is 输入流
      * @return 转换后集合
      */
+    //先求出标题在excel表中的位置存为一个map，通过map可以找出对应类的字段在excle表中的位置，遍历每一行设置值
     public List<T> importExcel(String sheetName, InputStream is, int titleNum) throws Exception
     {
         this.type = Type.IMPORT;
@@ -259,6 +261,7 @@ public class ExcelUtil<T>
                 Cell cell = heard.getCell(i);
                 if (StringUtils.isNotNull(cell))
                 {
+                    //得到单元格的值
                     String value = this.getCellValue(heard, i).toString();
                     cellMap.put(value, i);
                 }
@@ -269,16 +272,20 @@ public class ExcelUtil<T>
             }
             // 有数据时才处理 得到类的所有field.
             List<Object[]> fields = this.getFields();
+            //存储类的字段对应表格的位置
             Map<Integer, Object[]> fieldsMap = new HashMap<Integer, Object[]>();
+            //遍历类的所有字段获取它们在表格中对应的位置，即在第几列
             for (Object[] objects : fields)
             {
                 Excel attr = (Excel) objects[1];
+                //获取该字段所在的列位置
                 Integer column = cellMap.get(attr.name());
                 if (column != null)
                 {
                     fieldsMap.put(column, objects);
                 }
             }
+
             for (int i = titleNum + 1; i <= rows; i++)
             {
                 // 从第2行开始取数据,默认第一行是表头.
@@ -291,12 +298,14 @@ public class ExcelUtil<T>
                 T entity = null;
                 for (Map.Entry<Integer, Object[]> entry : fieldsMap.entrySet())
                 {
+                    //获取该行的指定列的位置的值
                     Object val = this.getCellValue(row, entry.getKey());
 
                     // 如果不存在实例则新建.
                     entity = (entity == null ? clazz.newInstance() : entity);
-                    // 从map中得到对应列的field.
+                    // 从map中得到对应列的field.  类的字段名称
                     Field field = (Field) entry.getValue()[0];
+                    //类字段上的注解
                     Excel attr = (Excel) entry.getValue()[1];
                     // 取得类型,并根据对象类型设置值.
                     Class<?> fieldType = field.getType();
@@ -355,25 +364,40 @@ public class ExcelUtil<T>
                     {
                         val = Convert.toBool(val, false);
                     }
+
                     if (StringUtils.isNotNull(fieldType))
                     {
+                        //返回类的字段名称
                         String propertyName = field.getName();
+
                         if (StringUtils.isNotEmpty(attr.targetAttr()))
                         {
                             propertyName = field.getName() + "." + attr.targetAttr();
                         }
+                        /**
+                         * 读取内容转表达式 (如: 0=男,1=女,2=未知)
+                         */
                         else if (StringUtils.isNotEmpty(attr.readConverterExp()))
                         {
                             val = reverseByExp(Convert.toStr(val), attr.readConverterExp(), attr.separator());
                         }
+                        /**
+                         * 如果是字典类型，请设置字典的type值 (如: sys_user_sex)
+                         */
                         else if (StringUtils.isNotEmpty(attr.dictType()))
                         {
                             val = reverseDictByExp(Convert.toStr(val), attr.dictType(), attr.separator());
                         }
+                        /**
+                         * 自定义数据处理器
+                         */
                         else if (!attr.handler().equals(ExcelHandlerAdapter.class))
                         {
                             val = dataFormatHandlerAdapter(val, attr);
                         }
+                        /**
+                         * 类型（0数字 1字符串 2图像）
+                         */
                         else if (ColumnType.IMAGE == attr.cellType() && StringUtils.isNotEmpty(pictures))
                         {
                             PictureData image = pictures.get(row.getRowNum() + "_" + entry.getKey());
@@ -387,9 +411,11 @@ public class ExcelUtil<T>
                                 val = FileUtils.writeImportBytes(data);
                             }
                         }
+                       //利用反射调用方法设置对象的属性值
                         ReflectUtils.invokeSetter(entity, propertyName, val);
                     }
                 }
+                //设置完表格对应类的字段属性添加到list
                 list.add(entity);
             }
         }
@@ -563,6 +589,7 @@ public class ExcelUtil<T>
         int sheetNo = Math.max(1, (int) Math.ceil(list.size() * 1.0 / sheetSize));
         for (int index = 0; index < sheetNo; index++)
         {
+            //创建excel表
             createSheet(sheetNo, index);
 
             // 产生一行
@@ -574,6 +601,7 @@ public class ExcelUtil<T>
                 Excel excel = (Excel) os[1];
                 this.createCell(excel, row, column++);
             }
+            //导出填充数据
             if (Type.EXPORT.equals(type))
             {
                 fillExcelData(index, row);
@@ -590,10 +618,14 @@ public class ExcelUtil<T>
      */
     public void fillExcelData(int index, Row row)
     {
+        log.info("fillExcelData index"+index);
         int startNo = index * sheetSize;
+        log.info("fillExcelData startNo"+startNo);
         int endNo = Math.min(startNo + sheetSize, list.size());
+        log.info("fillExcelData endNo"+endNo);
         for (int i = startNo; i < endNo; i++)
         {
+            log.info("i + 1 + rownum - startNo"+(i + 1 + rownum - startNo));
             row = sheet.createRow(i + 1 + rownum - startNo);
             // 得到导出对象.
             T vo = (T) list.get(i);
@@ -813,14 +845,17 @@ public class ExcelUtil<T>
                 String readConverterExp = attr.readConverterExp();
                 String separator = attr.separator();
                 String dictType = attr.dictType();
+                //日期格式转化
                 if (StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotNull(value))
                 {
                     cell.setCellValue(DateUtils.parseDateToStr(dateFormat, (Date) value));
                 }
+                // 解析导出值 例如 0=男,1=女,2=未知
                 else if (StringUtils.isNotEmpty(readConverterExp) && StringUtils.isNotNull(value))
                 {
                     cell.setCellValue(convertByExp(Convert.toStr(value), readConverterExp, separator));
                 }
+                //解析字典值
                 else if (StringUtils.isNotEmpty(dictType) && StringUtils.isNotNull(value))
                 {
                     cell.setCellValue(convertDictByExp(Convert.toStr(value), dictType, separator));
@@ -835,7 +870,7 @@ public class ExcelUtil<T>
                 }
                 else
                 {
-                    // 设置列类型
+                    // 设置列类型 设置其他类型的值 String、图片、浮点数
                     setCellVo(value, attr, cell);
                 }
                 addStatisticsData(column, Convert.toStr(value), attr);
@@ -1166,17 +1201,21 @@ public class ExcelUtil<T>
     {
         List<Object[]> fields = new ArrayList<Object[]>();
         List<Field> tempFields = new ArrayList<>();
+        //获取父类的所有字段
         tempFields.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));
+        //获取所有字段
         tempFields.addAll(Arrays.asList(clazz.getDeclaredFields()));
         for (Field field : tempFields)
         {
-            // 单注解
+            // 单注解 有@Excel注解返回true
             if (field.isAnnotationPresent(Excel.class))
             {
+                //getAnnotation 如果存在该注释，则返回指定类型的该元素的注释，否则为空。
                 Excel attr = field.getAnnotation(Excel.class);
                 if (attr != null && (attr.type() == Type.ALL || attr.type() == type))
                 {
                     field.setAccessible(true);
+                    //字段+注解
                     fields.add(new Object[] { field, attr });
                 }
             }

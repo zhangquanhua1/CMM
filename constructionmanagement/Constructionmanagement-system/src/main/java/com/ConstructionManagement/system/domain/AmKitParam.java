@@ -1,43 +1,52 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+
+
 import java.io.Serializable;
-import lombok.Data;
+
 
 /**
  * am_kit_param
  * @author
  */
-@Data
 public class AmKitParam implements Serializable {
+   @Excel(name = "id",isColumnHidden = true)
     private Long id;
 
     /**
      * 零配件名称
      */
+    @Excel(name="配件名称",width = 20)
     private String kitName;
 
     /**
      * 代码
      */
+    @Excel(name="配件代码",width = 20)
     private String kitCode;
 
     /**
      * 型号
      */
+    @Excel(name="配件型号",width = 20)
     private String kitModel;
 
     /**
      * 技术参数
      */
+    @Excel(name="技术参数",width = 20)
     private String technicalParam;
 
     /**
      * 适用配件类型
      */
+    @Excel(name="适用部件类别",width = 20)
     private String applicableKitType;
     /**
      * 计量单位
      */
+    @Excel(name="计量单位",width = 20)
     private String measurementUnit;
 
     public String getMeasurementUnit() {

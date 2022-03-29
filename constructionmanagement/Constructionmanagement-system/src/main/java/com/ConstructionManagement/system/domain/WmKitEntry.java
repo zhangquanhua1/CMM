@@ -2,109 +2,132 @@ package com.ConstructionManagement.system.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
+
+import com.ConstructionManagement.common.annotation.Excel;
+
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Pattern;
 
 /**
  * wm_kit_entry
  * @author
  */
-@Data
 public class WmKitEntry implements Serializable {
     private Long id;
 
     /**
      * 零配件名称
      */
+    @Excel(name = "配件名称")
     private String kitName;
 
     /**
      * 产品编号
      */
+    @Excel(name="产品编号")
     private Long productNum;
 
     /**
      * 生产厂家
      */
+    @Excel(name="生产厂家")
     private String vender;
 
     /**
      * 零配件类别
      */
+    @Excel(name="使用部件类别")
     private String kitType;
 
     /**
      * 所属设备
      */
+    @Excel(name="所属设备")
     private String equipment;
 
     /**
      * 资产总计
      */
+    @Excel(name="资产总计")
     private Double totalAssets;
 
     /**
      * 产权单位
      */
+    @Excel(name="产权单位")
     private String rightsUnit;
 
     /**
      * 配件属性
      */
+    @Excel(name="配件属性")
     private String kitProperties;
 
     /**
      * 配件规格
      */
+    @Excel(name="配件规格")
     private String kitStandard;
 
     /**
      * 臂长(米)
      */
+    @Excel(name="臂长",suffix = "米")
     private Integer brachium;
 
     /**
      * 折旧率(%)
      */
+    @Excel(name="折旧率",suffix="%")
     private Integer depreciationRate;
 
     /**
      * 设备型号
      */
+    @Excel(name="设备型号")
     private String unitType;
 
     /**
      * 计量单位
      */
+    @Excel(name="计量单位")
     private String measurementUnit;
 
     /**
      * 标准节高度(米)
      */
+    @Excel(name="标准节高度",suffix = "米")
     private Double standardSectionHeight;
 
     /**
      * 配件型号
      */
+    @Excel(name="配件型号")
     private String kitModel;
 
     /**
      * 配件代码
      */
+    @Excel(name="配件代码")
     private String kitCode;
 
     /**
      * 数量
      */
+    @Excel(name="数量")
     private Long amount;
 
     /**
      * 单价
      */
+    @Excel(name="单价")
     private Double singlePrice;
 
     /**
      * 是否整机配件 0否 1是
      */
+    @Excel(name="是否整机配件",readConverterExp = "0=否,1=是")
     private Integer wholeMachineAccessories;
 
     /**
@@ -145,21 +168,25 @@ public class WmKitEntry implements Serializable {
     /**
      * 采购日期
      */
+    @Excel(name="采购日期",dateFormat = "yyyy-MM-dd", type = Excel.Type.ALL)
     private Date purchaseDate;
 
     /**
      * 报废日期
      */
+    @Excel(name="报废日期",dateFormat = "yyyy-MM-dd", type = Excel.Type.ALL)
     private Date retireDate;
 
     /**
      * 确认状态 0 未确认 1 确认 2 反确认
      */
+    @Excel(name="确认状态",readConverterExp = "0=未确认,1=确认,2=反确认", type = Excel.Type.EXPORT)
     private Integer status;
 
     /**
      * 所属仓库
      */
+    @Excel(name = "所属仓库")
     private String warehouse;
 
     /**
@@ -170,56 +197,71 @@ public class WmKitEntry implements Serializable {
     /**
      * 防坠器编号
      */
+    @Excel(name = "防坠器编号")
     private String protectorNum;
 
     /**
      * 防坠器规格
      */
+    @Excel(name = "防坠器规格")
     private String standard;
 
     /**
      * 防坠器型号
      */
+    @Excel(name = "防坠器型号")
     private String model;
 
     /**
      * 防坠器出厂日期
      */
+    @Excel(name="防坠器出厂日期",dateFormat = "yyyy-MM-dd", type = Excel.Type.ALL)
     private Date productDate;
 
     /**
      * 防坠器检测日期
      */
+    @Excel(name="防坠器检测日期",dateFormat = "yyyy-MM-dd", type = Excel.Type.ALL)
     private Date checkDate;
 
     /**
      * 录入批次号
      */
+    @Excel(name = "录入批次号")
     private String batchNumber;
 
     /**
      * 供应商
      */
+    @Excel(name = "供应商")
     private String supplierId;
 
     /**
      * 经办人
      */
+    @Excel(name = "经办人")
     private String practiName;
 
     /**
      * 供应商联系地址
      */
+    @Excel(name = "供应商联系地址")
     private String supplierAdd;
 
     /**
      * 供应商联系电话
      */
+    @Excel(name = "供应商联系电话")
+    @Length(min=11,max=11)
+    @Pattern(regexp = "^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\\d{8}$",message = "手机号非法")
     private String supplierTel;
 
     /**
      * 经办人员电话
      */
+    @Length(min=11,max=11)
+    @Pattern(regexp = "^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\\d{8}$",message = "手机号非法")
+    @Excel(name = "经办人员电话")
     private String mobile;
 
     /**

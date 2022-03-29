@@ -11,7 +11,13 @@ public interface WmEquipmentEntryMapper {
 
     List<WmEquipmentEntry> selectBySelective(WmEquipmentEntry record);
 
+    WmEquipmentEntry selectById(Long id);
+
     int updateByPrimaryKeySelective(WmEquipmentEntry record);
-    int confirmByIds(Long []ids);
-    int AntiConfirmByIds(Long []ids);
+
+    int confirmByIds(Long[] ids);
+
+    int confirmById(Long id);
+
+    int AntiConfirmByIds(Long[] ids);
 }

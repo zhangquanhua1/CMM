@@ -12,6 +12,7 @@ import java.util.List;
 public class AmKitParamServiceImpl implements IAmKitParamService {
     @Autowired
     AmKitParamMapper amKitParamMapper;
+
     @Override
     public int deleteById(Long id) {
         return amKitParamMapper.deleteById(id);
@@ -20,6 +21,11 @@ public class AmKitParamServiceImpl implements IAmKitParamService {
     @Override
     public int deleteByIds(Long[] ids) {
         return amKitParamMapper.deleteByIds(ids);
+    }
+
+    @Override
+    public AmKitParam selectByPrimaryKey(Long id) {
+        return amKitParamMapper.selectByPrimaryKey(id);
     }
 
     @Override

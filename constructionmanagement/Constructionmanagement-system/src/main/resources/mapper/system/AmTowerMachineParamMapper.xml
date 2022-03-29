@@ -66,7 +66,7 @@
             </if>
         </where>
     </select>
-    <select id="selectByParam" resultType="com.ConstructionManagement.system.domain.AmTowerMachineParam">
+    <select id="selectByParam" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from am_tower_machine_param where
         tower_machine_model=#{arg0} and tower_machine_type=#{arg1}
     </select>

@@ -38,7 +38,7 @@ export default {
   },
   data() {
     return {
-      title: '建筑机械管理系统',
+      title: '建筑机械资产管理系统',
       //logo.png
       logo: logoImg
     }

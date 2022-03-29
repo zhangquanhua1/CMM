@@ -8,6 +8,13 @@ export function listKitEntry(query) {
     params: query
   })
 }
+//通过id 查询
+export function listKitById(id) {
+  return request({
+    url: '/inventory/kitEntry/'+id,
+    method: 'get',
+  })
+}
 // 查询
 export function getProtector() {
   return request({
@@ -34,13 +41,14 @@ export function updateKitEntry(data) {
   })
 }
 // 零配件信息确认
-export function kitInforConfirm(ids) {
+export function kitInforConfirm(data) {
   return request({
     url: '/inventory/kitEntry/confirm',
-    method: 'put',
-    data: ids
+    method: 'post',
+    data:data
   })
 }
+
 // 零配件信息反确认
 export function kitAntiConfirm(ids) {
   return request({

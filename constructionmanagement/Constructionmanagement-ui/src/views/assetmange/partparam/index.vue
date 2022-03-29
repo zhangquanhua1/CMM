@@ -66,7 +66,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
+          v-hasPermi="['asset:manage:partparam:export']"
         >导出
         </el-button>
       </el-col>
@@ -196,101 +196,17 @@
       </div>
     </el-dialog>
     <!--    详情弹窗-->
-    <el-dialog :title="title" :visible.sync="openDetail" width="40%"  class="spec-dialog" append-to-body>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              部件名称: {{ partParamDetail.partName }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              部件代码: {{ partParamDetail.partCode }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              部件型号: {{ partParamDetail.partModel }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              计量单位: {{ partParamDetail.measurementUnit }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row >
-          <ul class="list-group">
-            <li class="list-group-item">
-              适用设备类型: {{ partParamDetail.applicableDeviceType }}
-            </li>
-          </ul>
-      </el-row>
-      <el-row >
-        <ul class="list-group">
-          <li class="list-group-item">
-            备注: {{ partParamDetail.remark }}
-          </li>
-        </ul>
-      </el-row>
-
-      <el-row v-if="kits==undefined||kits.length==0">
-        <ul class="list-group">
-          <li class="list-group-item">
-            配件 ：暂时无配件信息
-          </li>
-        </ul>
-      </el-row>
-      <div v-else>
-        <br/> <br/>
-          <el-col :span="8" :xs="100">
-                配件名称
-          </el-col>
-          <el-col :span="8" :xs="100">
-                单位
-          </el-col>
-          <el-col :span="8" :xs="100">
-                数量
-          </el-col>
-      <el-row  v-for="kit in this.kits">
-        <el-col :span="8" >
-          <ul class="list-group">
-            <li class="list-group-item">
-             {{ kit.amKitParam.kitName }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="8" >
-          <ul class="list-group">
-            <li class="list-group-item">
-              {{ kit.amKitParam.measurementUnit}}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="8" >
-          <ul class="list-group">
-            <li class="list-group-item">
-             {{ kit.kitCount}}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
+    <!--    详情弹窗-->
+    <el-drawer
+      title="部件参数详情"
+      size="60%"
+      :visible.sync="openDetail"
+      :with-header="true"
+    >
+      <div style="margin-left: 10px">
+        <PartParamDeatil :detail="this.partParamDetail" :kits-list="this.kits">/</PartParamDeatil>
       </div>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 <style lang="scss">
@@ -302,9 +218,11 @@
 </style>
 <script>
 import {listPartParam,getKit,addPartParam,delPartParam,updatePartParam,getKitS } from '@/api/towerparam/partparam'
+import PartParamDeatil  from './PartParamDeatil'
 export default {
   name: 'partparam',
   // dicts: ['sys_normal_disable'],
+  components: {PartParamDeatil},
   data() {
     return {
       // 遮罩层
@@ -544,7 +462,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download()
+      this.download('/asset/partparam/export', {
+        ...this.queryParams
+      }, `partparam_${new Date().getTime()}.xlsx`)
     }
   }
 }

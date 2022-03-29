@@ -56,7 +56,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
+          v-hasPermi="['asset:manage:elevatorparam:export']"
         >导出
         </el-button>
       </el-col>
@@ -261,323 +261,16 @@
       </div>
     </el-dialog>
     <!--    详情弹窗-->
-    <el-dialog :title="title" :visible.sync="openDetail" width="40%" class="spec-dialog" append-to-body>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              生产厂家: {{ elevatorParamDetail.vender }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              底笼尺寸: {{ elevatorParamDetail.bottomCageSize }} m
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              吊笼内空尺寸: {{ elevatorParamDetail.cageSize }} m
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              吊笼重量: {{ elevatorParamDetail.cageWeight }} kg
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              标准节: {{ elevatorParamDetail.standardKnot }} m
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              标准节重量: {{ elevatorParamDetail.standardSectionWeight }} kg
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              最大高度: {{ elevatorParamDetail.maxHeight }} m
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              额定载荷: {{ elevatorParamDetail.specifiedLoad }} kg
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              额定乘员: {{ elevatorParamDetail.ratedOccupant }} 人
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              起升速度: {{ elevatorParamDetail.upDownSpeed }} m/min
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              总功率: {{ elevatorParamDetail.totalPower }} KW
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              额定电压: {{ elevatorParamDetail.ratedVoltage }} v
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              额定电流: {{ elevatorParamDetail.ratedCurrent }} A
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              减速机速比: {{ elevatorParamDetail.reduceSpeedRatio }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              限速器制动力矩: {{ elevatorParamDetail.speedLimiterBrakeTorque }} KN
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              制动速度: {{ elevatorParamDetail.retroSpeed }} m/min
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              防坠器: {{ elevatorParamDetail.protectorId }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              附着要求: {{ elevatorParamDetail.attachmentRequirements }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              基础要求: {{ elevatorParamDetail.basicRequirements }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              供电要求: {{ elevatorParamDetail.supplyPowerRequirements }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <ul class="list-group">
-          <li class="list-group-item">
-            备注: {{ elevatorParamDetail.remark }}
-          </li>
-        </ul>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入人: {{ elevatorParamDetail.insertPerson }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入时间: {{ parseTime(elevatorParamDetail.insertDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入人部门: {{getDeptName(elevatorParamDetail.insertPersonDepartId)  }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item" >
-              更新人部门: {{ getDeptName(elevatorParamDetail.updatePersonDepartId) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              更新人: {{ elevatorParamDetail.updatePerson }}
-            </li>
-          </ul>
-        </el-col>
-        <el-col :span="12" :xs="100">
-          <ul class="list-group">
-            <li class="list-group-item">
-              录入时间: {{ parseTime(elevatorParamDetail.updateDate) }}
-            </li>
-          </ul>
-        </el-col>
-      </el-row>
-
-      <el-row v-if="kits==undefined||kits.length==0">
-        <ul class="list-group">
-          <li class="list-group-item">
-            配件 ：暂时无配件信息
-          </li>
-        </ul>
-      </el-row>
-      <div v-else>
-        <br/> <br/>
-        <el-col :span="8" :xs="100">
-          配件名称
-        </el-col>
-        <el-col :span="8" :xs="100">
-          单位
-        </el-col>
-        <el-col :span="8" :xs="100">
-          数量
-        </el-col>
-        <el-row v-for="kit in this.kits">
-          <el-col :span="8" :xs="100">
-            <ul class="list-group">
-              <li class="list-group-item">
-                {{ kit.amKitParam.kitName }}.
-              </li>
-            </ul>
-          </el-col>
-          <el-col :span="8" :xs="100">
-            <ul class="list-group">
-              <li class="list-group-item">
-                {{ kit.amKitParam.measurementUnit }}.
-              </li>
-            </ul>
-          </el-col>
-          <el-col :span="8" :xs="100">
-            <ul class="list-group">
-              <li class="list-group-item">
-                {{ kit.kitCount }}.
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
+    <el-drawer
+      title="电梯参数详情"
+      size="60%"
+      :visible.sync="openDetail"
+      :with-header="true"
+    >
+      <div style="margin-left: 10px">
+        <elepDeatail :detail="this.elevatorParamDetail" :kits="this.kits" :parts="this.Parts">/</elepDeatail>
       </div>
-      <el-row v-if="Parts==undefined||Parts.length==0">
-        <ul class="list-group">
-          <li class="list-group-item">
-            部件 ：暂时无部件信息
-          </li>
-        </ul>
-      </el-row>
-      <div v-else>
-        <br/><br/>
-        <el-row>
-          <el-col :span="6" :xs="100">
-            部件名称
-          </el-col>
-          <el-col :span="6" :xs="100">
-            部件型号
-          </el-col>
-<!--          <el-col :span="6" :xs="100">-->
-<!--            部件类别-->
-<!--          </el-col>-->
-          <el-col :span="6" :xs="100">
-            数量:
-          </el-col>
-        </el-row>
-        <el-row v-for="part in this.Parts">
-          <el-col :span="6" :xs="100">
-            <ul class="list-group">
-              <li class="list-group-item">
-                {{ part.amPartParam.partName }}.
-              </li>
-            </ul>
-          </el-col>
-          <el-col :span="6" :xs="100">
-            <ul class="list-group">
-              <li class="list-group-item">
-                {{ part.amPartParam.partModel }}.
-              </li>
-            </ul>
-          </el-col>
-<!--          <el-col :span="6" :xs="100">-->
-<!--            <ul class="list-group">-->
-<!--              <li class="list-group-item">-->
-<!--                {{ part.partType }}.-->
-<!--              </li>-->
-<!--            </ul>-->
-<!--          </el-col>-->
-          <el-col :span="6" :xs="100">
-            <ul class="list-group">
-              <li class="list-group-item">
-                {{ part.partCount }}.
-              </li>
-            </ul>
-          </el-col>
-        </el-row>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-      </div>
-    </el-dialog>
+    </el-drawer>
   </div>
 </template>
 <style lang="scss">
@@ -598,10 +291,12 @@ import {
 } from '@/api/towerparam/elevatorparam'
 import { getUsePart } from '@/api/towerparam/towermachineparam'
 import { treeselect } from '@/api/system/dept'
+import elepDeatail  from './elepDeatail'
 
 export default {
   name: 'elevatorparam',
   // dicts: ['sys_normal_disable'],
+  components: {elepDeatail},
   data() {
     return {
       // 遮罩层
@@ -934,7 +629,9 @@ export default {
 
     /** 导出按钮操作 */
     handleExport() {
-      this.download()
+      this.download('/asset/elevatorparam/export', {
+        ...this.queryParams
+      }, `elevatorparam_${new Date().getTime()}.xlsx`)
     }
   }
 }

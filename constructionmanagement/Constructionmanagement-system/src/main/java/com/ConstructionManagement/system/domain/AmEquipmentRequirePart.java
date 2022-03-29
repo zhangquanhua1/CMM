@@ -1,48 +1,60 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+
+import javax.validation.constraints.Min;
 import java.io.Serializable;
-import lombok.Data;
+
 
 /**
  * am_equipment_require_part
  * @author
  */
-@Data
-public class AmEquipmentRequirePart implements Serializable {
-    private Long id;
 
+public class AmEquipmentRequirePart implements Serializable {
+   // @Excel(name = "id", isColumnHidden = true, needMerge = true)
+    private Long id;
+   // @Excel(name = "equipmentId", isColumnHidden = true, needMerge = true)
     private Long equipmentId;
 
     /**
      * 部件名称
      */
+    @Excel(name = "部件名称", width = 20, needMerge = true)
     private String partName;
 
     /**
      * 部件类型
      */
+    @Excel(name = "部件类别", width = 20, needMerge = true)
     private String partType;
 
     /**
      * 部件代码
      */
+    @Excel(name = "部件代码", width = 20, needMerge = true)
     private String partCode;
 
     /**
      * 部件型号
      */
+    @Excel(name = "部件型号", width = 20, needMerge = true)
     private String partModel;
 
     /**
      * 计量单位
      */
+    @Excel(name = "计量单位", width = 20, needMerge = true)
     private String measurementUnit;
 
     /**
      * 适用设备类型
      */
+    @Excel(name = "设用设备类型", width = 20, needMerge = true)
     private String applicableDeviceType;
     //部件数量
+    @Excel(name = "部件数量", width = 20, needMerge = true)
+    @Min(0)
     private Integer partCount;
 
     public Integer getPartCount() {

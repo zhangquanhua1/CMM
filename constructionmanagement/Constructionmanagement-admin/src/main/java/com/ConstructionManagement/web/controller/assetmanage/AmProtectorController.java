@@ -7,13 +7,17 @@ import com.ConstructionManagement.common.core.page.TableDataInfo;
 import com.ConstructionManagement.common.enums.BusinessType;
 import com.ConstructionManagement.system.domain.AmKitParam;
 import com.ConstructionManagement.system.domain.AmProtector;
+import com.ConstructionManagement.system.domain.WmPartEntry;
+import com.ConstructionManagement.system.domain.WmPartEntryKit;
 import com.ConstructionManagement.system.service.IAmKitParamService;
 import com.ConstructionManagement.system.service.IAmProtectorService;
+import com.ConstructionManagement.web.controller.ExportUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -72,5 +76,13 @@ public class AmProtectorController extends BaseController {
     {
         int result=iAmPartParamService.updateByPrimaryKeySelective(amProtector);
         return toAjax(result);
+    }
+
+    @Log(title = "防坠器参数导出", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('asset:manage:protector:export')")
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, AmProtector wwh) {
+        List<AmProtector> list = iAmPartParamService.selectBySelective(wwh);
+        new ExportUtil().outPut(response,"防坠器参数表",list,AmProtector.class);
     }
 }

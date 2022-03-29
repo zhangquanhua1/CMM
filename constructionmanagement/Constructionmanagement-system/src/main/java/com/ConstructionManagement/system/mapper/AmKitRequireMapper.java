@@ -13,5 +13,6 @@ public interface AmKitRequireMapper {
 
     int updateByPrimaryKeySelective(AmKitRequire record);
 
+    int isBuyIds(Long ids[]);
 
 }

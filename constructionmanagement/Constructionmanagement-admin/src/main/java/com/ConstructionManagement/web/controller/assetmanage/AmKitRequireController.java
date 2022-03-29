@@ -3,15 +3,19 @@ package com.ConstructionManagement.web.controller.assetmanage;
 import com.ConstructionManagement.common.annotation.Log;
 import com.ConstructionManagement.common.core.controller.BaseController;
 import com.ConstructionManagement.common.core.domain.AjaxResult;
+import com.ConstructionManagement.common.core.domain.entity.SysUser;
 import com.ConstructionManagement.common.core.page.TableDataInfo;
 import com.ConstructionManagement.common.enums.BusinessType;
+import com.ConstructionManagement.common.utils.poi.ExcelUtil;
 import com.ConstructionManagement.system.domain.AmKitRequire;
 import com.ConstructionManagement.system.service.IAmKitRequireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +39,25 @@ public class AmKitRequireController extends BaseController {
         return getDataTable(amKitRequires);
     }
 
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitrequire:isBuy')")
+    @GetMapping("/listPass")
+    public TableDataInfo listPass(AmKitRequire amKitRequire) {
+        startPage();
+        amKitRequire.setState(1);
+        List<AmKitRequire> amKitRequires = iAmKitRequireService.selectBySelective(amKitRequire);
+        return getDataTable(amKitRequires);
+    }
+    /**
+     * 配件已采购
+     */
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitrequire:isBuy')")
+    @Log(title = "零配件需求", businessType = BusinessType.UPDATE)
+    @PostMapping("/{Ids}")
+    public AjaxResult isBuy(@PathVariable Long[] Ids)
+    {
+        int result=iAmKitRequireService.isBuyIds(Ids);
+        return toAjax(result);
+    }
     /**
      * 删除
      */
@@ -77,4 +100,45 @@ public class AmKitRequireController extends BaseController {
         int result=iAmKitRequireService.updateByPrimaryKeySelective(amKitRequire);
         return toAjax(result);
     }
+
+    @Log(title = "配件需求", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitrequire:export')")
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, AmKitRequire wwh)
+    {
+        List<AmKitRequire> list = iAmKitRequireService.selectBySelective(wwh);
+        ExcelUtil<AmKitRequire> util = new ExcelUtil<>(AmKitRequire.class);
+        util.exportExcel(response, list, "配件需求表");
+    }
+
+    @Log(title = "配件采购", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitrequire:export')")
+    @PostMapping("/exportBuy")
+    public void exportBuy(HttpServletResponse response, AmKitRequire wwh)
+    {
+        wwh.setState(1);
+        List<AmKitRequire> list = iAmKitRequireService.selectBySelective(wwh);
+        ExcelUtil<AmKitRequire> util = new ExcelUtil<>(AmKitRequire.class);
+        util.exportExcel(response, list, "配件采购表");
+    }
+
+    @Log(title = "配件需求", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitrequire:import')")
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<AmKitRequire> util = new ExcelUtil<AmKitRequire>(AmKitRequire.class);
+        List<AmKitRequire> list = util.importExcel(file.getInputStream());
+        String operName = getUsername();
+        String message = iAmKitRequireService.importData(list, updateSupport, operName);
+        return AjaxResult.success(message);
+    }
+
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<AmKitRequire> util = new ExcelUtil<AmKitRequire>(AmKitRequire.class);
+        util.importTemplateExcel(response, "配件需求导入样例表");
+    }
+
 }

@@ -1,13 +1,13 @@
 package com.ConstructionManagement.system.domain;
 
 import java.io.Serializable;
-import lombok.Data;
+
 
 /**
  * am_elevator_param_kit
  * @author
  */
-@Data
+
 public class AmElevatorParamKit implements Serializable {
     private Long id;
 

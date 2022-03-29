@@ -11,4 +11,6 @@ public interface WmEquipmentEntryKitMapper {
     int insertSelective(WmEquipmentEntryKit record);
 
     List<WmEquipmentEntryKit> selectByEquipmentId(Long equimentId);
+
+    WmEquipmentEntryKit selectById(Long id);
 }

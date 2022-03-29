@@ -56,7 +56,7 @@
     </el-form>
     <!--  底部  -->
     <div class="el-login-footer">
-      <span>Copyright © 2021-2022  All Rights Reserved.</span>
+      <span>Copyright © 2022-2022  All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -162,7 +162,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
+  background-image: url("../assets/images/login-background.jpeg");
   background-size: cover;
 }
 .title {

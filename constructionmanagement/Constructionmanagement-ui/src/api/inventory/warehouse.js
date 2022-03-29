@@ -32,3 +32,12 @@ export function delWarehouse(postId) {
     method: 'delete'
   })
 }
+
+// 导出
+export function exportWarehouse(data) {
+  return request({
+    url: '/asset/warehouse/export',
+    method: 'post',
+    data:data
+  })
+}

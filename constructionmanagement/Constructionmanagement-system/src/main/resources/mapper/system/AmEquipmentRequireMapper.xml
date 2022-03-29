@@ -24,12 +24,13 @@
     <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
     <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="isBuy" jdbcType="INTEGER" property="isBuy" />
   </resultMap>
   <sql id="Base_Column_List">
     id, vender, equipment_number, equipment_name, standard_model, equipment_type, equipment_count,
     rights_unit, belong_warehouse, project_address, project_date, init_date, demand_sponsors,
     procurement_causes, `state`, audit_advice,insert_person, insert_person_depart_id, update_person,
-    update_person_depart_id, insert_date, update_date
+    update_person_depart_id, insert_date, update_date,isBuy
   </sql>
   <select id="selectBySelective" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -65,6 +66,7 @@
       </if>
     </where>
   </select>
+
   <delete id="deleteByIds" parameterType="java.lang.Long">
     delete from am_equipment_require
     where id in
@@ -273,5 +275,12 @@
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="isBuyIds" parameterType="java.lang.Long">
+    update am_equipment_require set isBuy=1
+    where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
   </update>
 </mapper>

@@ -12,6 +12,7 @@ public interface IAmTowerMachineParamPartService {
 
 
     int insertSelective(AmTowerMachineParamPart record);
+
     List<AmTowerMachineParamPart> selectByPid(Long pid);
 
 }

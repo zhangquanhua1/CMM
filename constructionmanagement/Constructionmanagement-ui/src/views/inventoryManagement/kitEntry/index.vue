@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="产品编号" prop="productNum">
         <el-input
           v-model="queryParams.productNum"
@@ -19,16 +19,16 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="零配件名称" label-width="auto" prop="kitName">
+      <el-form-item label="配件名称"  prop="kitName">
         <el-input
           v-model="queryParams.kitName"
-          placeholder="请输入零配件名称"
+          placeholder="请输入配件名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="适用部件类别" label-width="auto" prop="kitType">
+      <el-form-item label="适用部件类别"  prop="kitType">
         <el-input
           v-model="queryParams.kitType"
           placeholder="请输入适用部件类别"
@@ -116,12 +116,23 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+          type="info"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImport"
+          v-hasPermi="['inventory:manage:kitentry:import']"
+        >导入</el-button>
+      </el-col>
+
+      <el-col :span="1.5">
+        <el-button
           type="warning"
           plain
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
+          v-hasPermi="['inventory:manage:kitentry:export']"
         >导出
         </el-button>
       </el-col>
@@ -135,7 +146,7 @@
         width="50"
       >
       </el-table-column>
-      <el-table-column label="零配件名称" align="center" prop="kitName"/>
+      <el-table-column label="配件名称" align="center" prop="kitName"/>
       <el-table-column label="产品编号" align="center" prop="productNum"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="适用部件类别" align="center" prop="kitType"/>
@@ -201,11 +212,11 @@
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-collapse v-model="activeNames">
-          <el-collapse-item title="零配件基本信息" name="1">
+          <el-collapse-item title="配件基本信息" name="1">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="零配件名称" prop="kitName">
-                  <el-input v-model="form.kitName" placeholder="请输入零配件名称"/>
+                <el-form-item label="配件名称" prop="kitName">
+                  <el-input v-model="form.kitName" placeholder="请输入配件名称"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -511,7 +522,7 @@
           <el-collapse v-model="activeNames">
             <el-collapse-item title="配件基本信息" name="1">
               <el-row>
-                <el-col :span="4" class="col_title">零配件名称：</el-col>
+                <el-col :span="4" class="col_title">配件名称：</el-col>
                 <el-col :span="4">{{ Detail.kitName != null ? Detail.kitName : '-' }}</el-col>
                 <el-col :span="4" class="col_title">产品编号：</el-col>
                 <el-col :span="4">{{ Detail.productNum != null ? Detail.productNum : '-' }}</el-col>
@@ -519,7 +530,7 @@
                 <el-col :span="4">{{ Detail.vender != null ? Detail.vender : '-' }}</el-col>
               </el-row>
               <el-row>
-                <el-col :span="4" class="col_title">零配件类别：</el-col>
+                <el-col :span="4" class="col_title">配件类别：</el-col>
                 <el-col :span="4">{{ Detail.kitType != null ? Detail.kitType : '-' }}</el-col>
                 <el-col :span="4" class="col_title">所属设备：</el-col>
                 <el-col :span="4">{{ Detail.equipment != null ? Detail.equipment : '-' }}</el-col>
@@ -644,14 +655,39 @@
         </div>
       </div>
     </el-drawer>
+
+    <!--    导入对话框-->
+    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="upload.headers"
+        :action="upload.url + '?updateSupport=' + upload.updateSupport"
+        :disabled="upload.isUploading"
+        :on-progress="handleFileUploadProgress"
+        :on-success="handleFileSuccess"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <div class="el-upload__tip" slot="tip">
+            <el-checkbox v-model="upload.updateSupport" /> 是否更新已经存在的数据
+          </div>
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
-.spec-dialog .el-dialog__body {
-  padding: 3px 30px;
-  height: 500px;
-  overflow: auto;
-}
 </style>
 <script>
 import {
@@ -663,6 +699,7 @@ import {
 import { getEquipmentModel } from '@/api/towerparam/partrequire'
 import { getAllUseWH } from '@/api/towerparam/equipmentrequire'
 import { treeselect } from '@/api/system/dept'
+import { getToken } from '@/utils/auth'
 
 export default {
   name: 'kitEntry',
@@ -724,6 +761,23 @@ export default {
       warehouses: [],
       // 所属部门ID字典
       depart_idOptions: [],
+
+      // 导入参数
+      upload: {
+        // 是否显示弹出层（用户导入）
+        open: false,
+        // 弹出层标题（用户导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 是否更新已经存在的用户数据
+        updateSupport: 0,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/inventory/kitEntry/importData"
+      },
+
       // 表单校验
       rules: {
         productNum: [
@@ -969,8 +1023,38 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download()
+      this.download('/inventory/kitEntry/export', {
+        ...this.queryParams
+      }, `kitEntry_${new Date().getTime()}.xlsx`)
+    },
+
+    /** 导入按钮操作 */
+    handleImport() {
+      this.upload.title = "配件录入导入";
+      this.upload.open = true;
+    },
+    /** 下载模板操作 */
+    importTemplate() {
+      this.download('/inventory/kitEntry/importTemplate', {
+      }, `kitEntry_template_${new Date().getTime()}.xlsx`)
+    },
+    // 文件上传中处理
+    handleFileUploadProgress(event, file, fileList) {
+      this.upload.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccess(response, file, fileList) {
+      this.upload.open = false;
+      this.upload.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert(response.msg, "导入结果", { dangerouslyUseHTMLString: true });
+      this.getList();
+    },
+    // 提交上传文件
+    submitFileForm() {
+      this.$refs.upload.submit();
     }
+
   }
 }
 </script>

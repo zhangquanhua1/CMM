@@ -25,4 +25,9 @@ public class WmEquipmentEntryPartServiceImpl implements IWmEquipmentEntryPartSer
     public List<WmEquipmentEntryPart> selectByEquipmentId(Long equimentId) {
         return weep.selectByEquipmentId(equimentId);
     }
+
+    @Override
+    public WmEquipmentEntryPart selectById(Long id) {
+        return weep.selectById(id);
+    }
 }

@@ -1,35 +1,42 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
+
 
 /** 防坠器
  * am_protector
  * @author
  */
-@Data
+
 public class AmProtector implements Serializable {
+    @Excel(name = "id",isColumnHidden = true,needMerge = true)
     private Long id;
 
     /**
      * 防坠器规格
      */
+    @Excel(name = "防坠器规格",width = 20,needMerge = true)
     private String standard;
 
     /**
      * 防坠器型号
      */
+    @Excel(name = "防坠器型号",width = 20,needMerge = true)
     private String model;
 
     /**
      * 防坠器出厂日期
      */
+    @Excel(name = "防坠器出厂日期", exportFormat = "yyyy-MM-dd", width = 20, needMerge = true)
     private Date productDate;
 
     /**
      * 防坠器检测日期
      */
+    @Excel(name = "防坠器检测日期", exportFormat = "yyyy-MM-dd", width = 20, needMerge = true)
     private Date checkDate;
 
     private static final long serialVersionUID = 1L;

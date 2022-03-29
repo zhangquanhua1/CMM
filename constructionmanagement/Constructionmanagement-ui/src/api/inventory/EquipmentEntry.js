@@ -8,6 +8,27 @@ export function listEquipmentEntry(query) {
     params: query
   })
 }
+//根据id查询设备详情
+export function SelectById(id) {
+  return request({
+    url: '/inventory/equipmentEntry/'+id,
+    method: 'get',
+  })
+}
+//根据配件id查询设备绑定的配件详情
+export function SelectKitById(id) {
+  return request({
+    url: '/inventory/equipmentEntry/kit/'+id,
+    method: 'get',
+  })
+}
+//根据部件id查询设备绑定的部件的详情
+export function SelectPartById(id) {
+  return request({
+    url: '/inventory/equipmentEntry/part/'+id,
+    method: 'get',
+  })
+}
 //获取所有可用的仓库
 export function getAllUseWH() {
   return request({
@@ -49,15 +70,15 @@ export function updateEquipmentEntry(data) {
   })
 }
 
-// 零配件信息确认
-export function equipmentInforConfirm(ids) {
+// 信息确认
+export function equipmentInforConfirm(data) {
   return request({
     url: '/inventory/equipmentEntry/confirm',
     method: 'put',
-    data: ids
+    data: data
   })
 }
-// 零配件信息反确认
+// 信息反确认
 export function equipmentAntiConfirm(ids) {
   return request({
     url: '/inventory/equipmentEntry/AntiConfirm',

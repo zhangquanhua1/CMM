@@ -10,6 +10,7 @@
       <id column="id" jdbcType="BIGINT" property="id" />
       <result column="part_name" jdbcType="VARCHAR" property="partName" />
       <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+      <result column="part_type" jdbcType="VARCHAR" property="part_type" />
       <result column="part_model" jdbcType="VARCHAR" property="partModel" />
       <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
       <result column="applicable_device_type" jdbcType="VARCHAR" property="applicableDeviceType" />
@@ -24,6 +25,7 @@
     from am_elevator_param_part aep,am_part_param app
     where aep.part_id = app.id and elevator_id = #{elevatorId,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteByPid" parameterType="java.lang.Long">
     delete from am_elevator_param_part
     where elevator_id = #{elevatorId,jdbcType=BIGINT}

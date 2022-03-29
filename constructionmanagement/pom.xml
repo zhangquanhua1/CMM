@@ -7,9 +7,7 @@
     <groupId>com.constructionmanagement</groupId>
     <artifactId>constructionmanagement</artifactId>
     <version>3.7.0</version>
-
     <name>constructionmanagement</name>
-    <url>http://www.constructionmanagement.vip</url>
     <description>建筑机械管理系统</description>
 
     <properties>
@@ -199,6 +197,14 @@
                 <version>${constructionmanagement.version}</version>
             </dependency>
 
+            <!--热部署依赖-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <optional>true</optional>
+                <!--不添加版本号，Maven编译时可能会出现 org.springframework.boot:spring-boot-devtools:unknown-->
+                <version>2.1.7.RELEASE</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -221,6 +227,14 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork> <!--重要-->
                 </configuration>
             </plugin>
         </plugins>

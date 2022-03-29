@@ -10,6 +10,7 @@
       <id column="id" jdbcType="BIGINT" property="id" />
       <result column="part_name" jdbcType="VARCHAR" property="partName" />
       <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+      <result column="part_type" jdbcType="VARCHAR" property="part_type" />
       <result column="part_model" jdbcType="VARCHAR" property="partModel" />
       <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
       <result column="applicable_device_type" jdbcType="VARCHAR" property="applicableDeviceType" />
@@ -26,7 +27,7 @@
     where pid = #{pid,jdbcType=BIGINT}
   </delete>
   <select id="selectByPid" resultMap="BaseResultMap">
-    select app.*,atm.part_count,atm.part_id from am_tower_machine_param_part atm,am_part_param app where atm.part_id=app.id and  pid=#{pid}
+    select app.*,atm.* from am_tower_machine_param_part atm,am_part_param app where atm.part_id=app.id and  pid=#{pid}
   </select>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.AmTowerMachineParamPart" useGeneratedKeys="true">
     insert into am_tower_machine_param_part

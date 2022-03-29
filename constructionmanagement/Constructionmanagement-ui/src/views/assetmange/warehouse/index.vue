@@ -296,6 +296,9 @@ export default {
         depart_id: [
           { required: true, message: '所属部门不能为空', trigger: 'blur' }
         ],
+        contractNum:[{
+          pattern:"^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,3,5-8])|(18[0-9])|166|198|199|(147))\\d{8}$",message:"手机号格式不正确",trigger:'blur'
+        }]
       }
     };
   },
@@ -358,8 +361,6 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      console.log("this.queryParams.type = " + this.queryParams.type)
-      console.log("this.queryParams.depart_id = " + this.queryParams.depart_id)
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -370,7 +371,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.code)
+      this.ids = selection.map(item => item.id)
       this.single = selection.length!==1
       this.multiple = !selection.length
     },
@@ -409,8 +410,8 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const ids = row.code || this.ids;
-      this.$confirm('是否确认删除仓库维护编号为"' + ids + '"的数据项?', "警告", {
+      const ids = row.id || this.ids;
+      this.$confirm('是否确认删除', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -423,16 +424,9 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      const queryParams = this.queryParams;
-      this.$confirm('是否确认导出所有仓库维护数据项?', "警告", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(function() {
-       // return exportWarehouse(queryParams);
-      }).then(response => {
-        //this.download(response.msg);
-      })
+      this.download('/asset/warehouse/export', {
+        ...this.queryParams
+      }, `warehouse_${new Date().getTime()}.xlsx`)
     }
   }
 };

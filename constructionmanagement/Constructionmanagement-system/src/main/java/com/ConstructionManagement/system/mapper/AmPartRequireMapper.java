@@ -11,5 +11,5 @@ public interface AmPartRequireMapper {
     List<AmPartRequire> selectBySelective(AmPartRequire record);
 
     int updateByPrimaryKeySelective(AmPartRequire record);
-
+    int isBuyIds(Long ids[]);
 }

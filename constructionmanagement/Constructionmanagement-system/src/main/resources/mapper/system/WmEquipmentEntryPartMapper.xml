@@ -22,7 +22,12 @@
     from wm_equipment_entry_part
     where equipment_id = #{equipmentId,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByEquipmentId" parameterType="java.lang.Long">
+    <select id="selectById" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from wm_equipment_entry_part where id=#{id}
+    </select>
+    <delete id="deleteByEquipmentId" parameterType="java.lang.Long">
     delete from wm_equipment_entry_part
     where equipment_id = #{equipmentId,jdbcType=BIGINT}
   </delete>

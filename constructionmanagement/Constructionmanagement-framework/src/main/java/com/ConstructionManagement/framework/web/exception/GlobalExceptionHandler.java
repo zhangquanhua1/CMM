@@ -54,7 +54,8 @@ public class GlobalExceptionHandler
     @ExceptionHandler(ServiceException.class)
     public AjaxResult handleServiceException(ServiceException e, HttpServletRequest request)
     {
-        log.error(e.getMessage(), e);
+        log.error("业务异常"+e.getMessage(), e);
+
         Integer code = e.getCode();
         return StringUtils.isNotNull(code) ? AjaxResult.error(code, e.getMessage()) : AjaxResult.error(e.getMessage());
     }
@@ -67,7 +68,12 @@ public class GlobalExceptionHandler
     {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生未知异常.", requestURI, e);
-        return AjaxResult.error(e.getMessage());
+        if(e.getMessage().contains("foreign key"))
+            return AjaxResult.error("有设备或部件引用，删除失败");
+        if(e.getMessage().contains("Required request body is missing"))
+            return AjaxResult.error("操作失败");
+        //return AjaxResult.error(e.getMessage());
+        return AjaxResult.error("操作失败");
     }
 
     /**

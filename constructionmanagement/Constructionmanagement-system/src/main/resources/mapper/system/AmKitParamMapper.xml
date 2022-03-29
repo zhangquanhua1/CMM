@@ -122,5 +122,8 @@
             </if>
         </where>
   </select>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from  am_kit_param where id=#{id}
+    </select>
 
 </mapper>

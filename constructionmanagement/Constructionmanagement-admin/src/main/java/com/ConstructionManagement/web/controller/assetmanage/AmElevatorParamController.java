@@ -10,11 +10,15 @@ import com.ConstructionManagement.system.service.IAmElevatorParamKitService;
 import com.ConstructionManagement.system.service.IAmElevatorParamPartService;
 import com.ConstructionManagement.system.service.IAmElevatorParamService;
 import com.ConstructionManagement.system.service.IAmPartParamKitService;
+import com.ConstructionManagement.web.controller.ExportUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/asset/elevatorparam")
 public class AmElevatorParamController extends BaseController {
+    Logger logger = LoggerFactory.getLogger(AmElevatorParamController.class);
     @Autowired
     IAmElevatorParamService iAmElevatorParamService;
     @Autowired
@@ -125,6 +130,53 @@ public class AmElevatorParamController extends BaseController {
     }
 
 
+    @Log(title = "电梯参数导出", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('asset:manage:elevatorparam:export')")
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, AmElevatorParam wwh) {
+        List<AmElevatorParam> list = iAmElevatorParamService.selectBySelective(wwh);
+        if (list != null && list.size() > 0 && !list.isEmpty()) {
+            for(AmElevatorParam atmp:list){
+                List<AmElevatorParamPart> parts=iAmElevatorParamPartService.selectByPid(atmp.getId());
+                List<AmTowerMachinePartExport> partsExport=new ArrayList<AmTowerMachinePartExport>();
+                //把根据设备id选出的部件构造成要导出的AmTowerMachinePartExport
+                if(parts!=null&&parts.size() > 0 && !parts.isEmpty()) {
+                    for(AmElevatorParamPart part:parts){
+                        AmTowerMachinePartExport tmp=new AmTowerMachinePartExport();
+                        tmp.setPartName(part.getAmPartParam().getPartName());
+                        tmp.setApplicableDeviceType(part.getAmPartParam().getApplicableDeviceType());
+                        tmp.setPartCode(part.getAmPartParam().getPartCode());
+                        tmp.setPartModel(part.getAmPartParam().getPartModel());
+                        tmp.setPart_type(part.getAmPartParam().getPart_type());
+                        tmp.setMeasurementUnit(part.getAmPartParam().getMeasurementUnit());
+                        tmp.setPartCount(part.getPartCount());
+                        List<AmPartParamKit> kits=iamPartParamKitService.selectByPid(part.getPart_id());
+                        logger.debug("AmElevatorParamController "+part.getAmPartParam().getId());
+                        List<AmTowerMachineKitExport> kitsExport=new ArrayList<AmTowerMachineKitExport>();
+                        //根据部件id查出该部件绑定的配件，把配件构造成要导出的AmTowerMachineKitExport
+                        if(kits!=null&&kits.size() > 0 && !kits.isEmpty()){
+                            for(AmPartParamKit kit:kits) {
+                                AmTowerMachineKitExport tmp2 = new AmTowerMachineKitExport();
+                                tmp2.setKitName(kit.getAmKitParam().getKitName());
+                                tmp2.setKitCode(kit.getAmKitParam().getKitCode());
+                                tmp2.setKitModel(kit.getAmKitParam().getKitModel());
+                                tmp2.setMeasurementUnit(kit.getAmKitParam().getMeasurementUnit());
+                                tmp2.setApplicableKitType(kit.getAmKitParam().getApplicableKitType());
+                                tmp2.setTechnicalParam(kit.getAmKitParam().getTechnicalParam());
+                                tmp2.setKitCount(kit.getKitCount());
+                                kitsExport.add(tmp2);
+                            }
+                        }
+                        tmp.setKits(kitsExport);
+                        partsExport.add(tmp);
+                    }
+                }
+                atmp.setPartsExport(partsExport);
+            }
+
+        }
+        new ExportUtil().outPut(response, "电梯参数表", list, AmElevatorParam.class);
+    }
 
 
 }

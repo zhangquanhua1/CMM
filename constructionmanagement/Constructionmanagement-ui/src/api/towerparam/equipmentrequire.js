@@ -27,7 +27,13 @@ export function getEquipmentParam(model, type) {
     }
   })
 }
-
+// 获取所选设备类型的配件部件
+export function getKitAndPartBySelectiv(pid) {
+  return request({
+    url: '/asset/equipmentrequire/kitandpart2/' + pid,
+    method: 'get'
+  })
+}
 // 获取配件部件
 export function getEquipmentKitAndPart(pid) {
   return request({
@@ -59,5 +65,21 @@ export function delEquipmentRequire(postId) {
   return request({
     url: '/asset/equipmentrequire/' + postId,
     method: 'delete'
+  })
+}
+
+// 查询审核已通过的
+export function listPss(query) {
+  return request({
+    url: '/asset/equipmentrequire/listPass',
+    method: 'get',
+    params: query
+  })
+}
+// 确认已采购
+export function confirmIsBuy(postId) {
+  return request({
+    url: '/asset/equipmentrequire/' + postId,
+    method: 'post'
   })
 }

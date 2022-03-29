@@ -1,48 +1,61 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+
+import javax.validation.constraints.Min;
 import java.io.Serializable;
-import lombok.Data;
+
 
 /**
  * am_equipment_require_kit
  * @author
  */
-@Data
-public class AmEquipmentRequireKit implements Serializable {
-    private Long id;
 
+public class AmEquipmentRequireKit implements Serializable {
+
+   // @Excel(name = "id", isColumnHidden = true, needMerge = true)
+    private Long id;
+  //  @Excel(name = "equimentId", isColumnHidden = true, needMerge = true)
     private Long equimentId;
 
     /**
      * 零配件名称
      */
+    @Excel(name = "配件名称", width = 20, needMerge = true)
     private String kitName;
 
     /**
      * 代码
      */
+    @Excel(name = "配件代码", width = 20, needMerge = true)
     private String kitCode;
 
     /**
      * 型号
      */
+    @Excel(name = "配件型号", width = 20, needMerge = true)
     private String kitModel;
 
     /**
      * 技术参数
      */
+    @Excel(name = "技术参数", width = 20, needMerge = true)
     private String technicalParam;
 
     /**
      * 适用配件类型
      */
+    @Excel(name = "适用部件类别", width = 20, needMerge = true)
     private String applicableKitType;
 
     /**
      * 计量单位
      */
+    @Excel(name = "计量单位", width = 20, needMerge = true)
     private String measurementUnit;
     //配件数量
+    @Excel(name = "配件数量", width = 20, needMerge = true)
+    @Min(0)
     private Integer kitCount;
 
     public Integer getKitCount() {

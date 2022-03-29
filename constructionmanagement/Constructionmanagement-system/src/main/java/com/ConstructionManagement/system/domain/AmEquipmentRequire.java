@@ -1,87 +1,123 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
+import cn.afterturn.easypoi.handler.inter.IExcelDataModel;
+import cn.afterturn.easypoi.handler.inter.IExcelModel;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.List;
 
-import lombok.Data;
 
 /**
  * am_equipment_require
+ *
  * @author
  */
-@Data
-public class AmEquipmentRequire implements Serializable {
+
+public class AmEquipmentRequire implements Serializable, IExcelDataModel, IExcelModel {
+    /**
+     * 行号
+     */
+    private int rowNum;
+
+    /**
+     * 错误消息
+     */
+    private String errorMsg;
+   // @Excel(name = "id", isColumnHidden = true, needMerge = true)
     private Long id;
 
     /**
      * 生产厂家
      */
+    @Excel(name = "生产厂家", width = 20, needMerge = true)
     private String vender;
 
     /**
      * 设备编号
      */
+    @Excel(name = "产品编号", width = 20, needMerge = true)
+    @NotNull(message = "产品编号不能为空")
+    @Length(min = 0, max = 50, message = "设备编号的长度不能超过50个字符")
     private String equipmentNumber;
 
     /**
      * 设备名称
      */
+    @Excel(name = "设备名称", width = 20, needMerge = true)
     private String equipmentName;
 
     /**
      * 设备型号
      */
+    @Excel(name = "设备型号", width = 20, needMerge = true)
     private String standardModel;
 
     /**
      * 设备类别
      */
+    @Excel(name = "设备类别", width = 20, needMerge = true)
     private String equipmentType;
 
     /**
      * 设备数量
      */
+    @Excel(name = "设备数量", width = 20, needMerge = true)
+    @Min(0)
     private Long equipmentCount;
 
     /**
      * 产权单位
      */
+    @Excel(name = "产权单位", width = 20, needMerge = true)
     private String rightsUnit;
 
     /**
      * 归属仓库
      */
+    @Excel(name = "归属仓库", width = 20, needMerge = true)
     private String belongWarehouse;
 
     /**
      * 项目地址
      */
+    @Excel(name = "项目地址", width = 20, needMerge = true)
     private String projectAddress;
 
     /**
      * 项目日期
      */
+    @Excel(name = "项目日期", exportFormat = "yyyy-MM-dd", width = 20, needMerge = true)
     private Date projectDate;
 
     /**
      * 发起日期
      */
+    @Excel(name = "发起日期", exportFormat = "yyyy-MM-dd", width = 20, needMerge = true)
     private Date initDate;
 
     /**
      * 需求发起人
      */
+    @Excel(name = "需求发起人", width = 20, needMerge = true)
     private String demandSponsors;
 
     /**
      * 采购原因
      */
+    @Excel(name = "采购原因", width = 20, needMerge = true)
     private String procurementCauses;
 
     /**
      * 审核状态 0代表未审核 1 审核 通过 其他审核未通过
      */
+    @Excel(name = "审核状态", replace = {"未审核_0", "通过_1", "未通过_2"}, width = 20, needMerge = true)
     private Integer state;
 
     /**
@@ -93,25 +129,11 @@ public class AmEquipmentRequire implements Serializable {
      */
     private List<AmTowerMachineParamPart> amTowerMachineParamParts;
 
-    public List<AmEquipmentRequireKit> getAmEquipmentRequireKits() {
-        return amEquipmentRequireKits;
-    }
-
-    public void setAmEquipmentRequireKits(List<AmEquipmentRequireKit> amEquipmentRequireKits) {
-        this.amEquipmentRequireKits = amEquipmentRequireKits;
-    }
-
-    public List<AmEquipmentRequirePart> getAmEquipmentRequireParts() {
-        return amEquipmentRequireParts;
-    }
-
-    public void setAmEquipmentRequireParts(List<AmEquipmentRequirePart> amEquipmentRequireParts) {
-        this.amEquipmentRequireParts = amEquipmentRequireParts;
-    }
-
     //设备需求配件
+    @ExcelCollection(name = "配件清单")
     private List<AmEquipmentRequireKit> amEquipmentRequireKits;
     //设备需求部件
+    @ExcelCollection(name = "部件清单")
     private List<AmEquipmentRequirePart> amEquipmentRequireParts;
 
     /**
@@ -148,8 +170,56 @@ public class AmEquipmentRequire implements Serializable {
      * 更新时间
      */
     private Date updateDate;
-
+    /**
+     * 0 未购 1 已购
+     */
+    @Excel(name = "是否已采购", replace = {"待采购_0", "已采购_1"}, width = 20, needMerge = true)
+    private Integer isBuy;
     private static final long serialVersionUID = 1L;
+
+    public List<AmEquipmentRequireKit> getAmEquipmentRequireKits() {
+        return amEquipmentRequireKits;
+    }
+
+    public void setAmEquipmentRequireKits(List<AmEquipmentRequireKit> amEquipmentRequireKits) {
+        this.amEquipmentRequireKits = amEquipmentRequireKits;
+    }
+
+    public List<AmEquipmentRequirePart> getAmEquipmentRequireParts() {
+        return amEquipmentRequireParts;
+    }
+
+    public void setAmEquipmentRequireParts(List<AmEquipmentRequirePart> amEquipmentRequireParts) {
+        this.amEquipmentRequireParts = amEquipmentRequireParts;
+    }
+
+    @Override
+    public Integer getRowNum() {
+        return rowNum;
+    }
+
+    @Override
+    public void setRowNum(Integer rowNum) {
+        this.rowNum = rowNum;
+    }
+
+    @Override
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    @Override
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public Integer getIsBuy() {
+        return isBuy;
+    }
+
+    public void setIsBuy(Integer isBuy) {
+        this.isBuy = isBuy;
+    }
 
     public List<AmPartParamKit> getAmPartParamKits() {
         return amPartParamKits;

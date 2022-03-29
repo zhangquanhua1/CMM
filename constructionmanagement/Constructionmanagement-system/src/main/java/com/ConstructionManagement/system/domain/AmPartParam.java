@@ -1,31 +1,38 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
+
 import java.io.Serializable;
 import java.util.List;
 
-import lombok.Data;
+
 
 /**
  * am_part_param
  * @author
  */
-@Data
+
 public class AmPartParam implements Serializable {
+    @Excel(name = "id", isColumnHidden = true, needMerge = true)
     private Long id;
 
     /**
      * 部件名称
      */
+    @Excel(name = "部件名称", width = 20, needMerge = true)
     private String partName;
 
     /**
      * 部件类型
      */
+    @Excel(name = "部件类型", width = 20, needMerge = true)
     private String part_type;
 
     /**
      * 部件代码
      */
+    @Excel(name = "部件代码", width = 20, needMerge = true)
     private String partCode;
 
     public String getPart_type() {
@@ -39,22 +46,28 @@ public class AmPartParam implements Serializable {
     /**
      * 部件型号
      */
+    @Excel(name = "部件型号", width = 20, needMerge = true)
     private String partModel;
 
     /**
      * 计量单位
      */
+    @Excel(name = "计量单位", width = 20, needMerge = true)
     private String measurementUnit;
 
     /**
      * 适用设备类型
      */
+    @Excel(name = "适用设备类型", width = 20, needMerge = true)
     private String applicableDeviceType;
 
     /**
      * 备注
      */
+    @Excel(name = "备注", width = 20, needMerge = true)
     private String remark;
+
+    @ExcelCollection(name = "配件信息")
     private List<AmPartParamKit> amPartParamKits;
 
     public List<AmPartParamKit> getAmPartParamKits() {

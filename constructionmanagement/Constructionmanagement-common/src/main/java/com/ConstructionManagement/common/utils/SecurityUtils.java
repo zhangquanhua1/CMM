@@ -4,9 +4,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.ConstructionManagement.common.constant.HttpStatus;
-import com.ConstructionManagement.common.core.domain.model.LoginUser;
 import com.ConstructionManagement.common.exception.ServiceException;
-
+import com.ConstructionManagement.common.core.domain.model.LoginUser;
 /**
  * 安全服务工具类
  *

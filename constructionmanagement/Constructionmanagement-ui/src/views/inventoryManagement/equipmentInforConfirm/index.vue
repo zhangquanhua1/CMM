@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
       <el-form-item label="设备名称" prop="equipmentTypeName">
         <el-input
           v-model="queryParams.equipmentName"
@@ -180,7 +180,7 @@
     </el-row>
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column type="selection" :selectable="selectInit" width="55" align="center"/>
       <el-table-column
         type="index"
         width="50">
@@ -211,6 +211,7 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.status==0"
             size="mini"
             type="text"
             icon="el-icon-check"
@@ -219,6 +220,7 @@
           >确认
           </el-button>
           <el-button
+            v-if="scope.row.status==0"
             size="mini"
             type="text"
             icon="el-icon-close"
@@ -571,11 +573,7 @@
   </div>
 </template>
 <style lang="scss">
-.spec-dialog .el-dialog__body {
-  padding: 3px 30px;
-  height: 500px;
-  overflow: auto;
-}
+
 </style>
 <script>
 import {
@@ -638,6 +636,8 @@ export default {
       EquipmentDetail: { id: undefined },
       // 所属部门ID字典
       depart_idOptions: [],
+      //选中要确认的数据
+      Items: [],
     }
   },
   created() {
@@ -662,6 +662,7 @@ export default {
       this.open = false
       this.openDetail= false
       this.reset()
+      this.Items = []
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
@@ -691,22 +692,23 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
+      this.Items = selection
       this.single = selection.length != 1
       this.multiple = !selection.length
     },
     /** 多选确认按钮操作 */
     handleConfirmS() {
-      if(this.Detail.id!=null) this.ids.push(this.Detail.id)
-      const postIds=this.ids
+      if(this.Detail.id!=null) this.Items.push(this.Detail)
+      const Its = this.Items
       this.$modal.confirm('是否 确认').then(function() {
-        return equipmentInforConfirm(postIds)
+        return equipmentInforConfirm(Its)
       }).then(() => {
         this.getList()
         this.$modal.msgSuccess('确认 成功')
       }).catch(() => {
-        this.$modal.msgError('确认 失败')
+        this.$modal.msgError('确认 取消')
       })
-      this.ids=[]
+      this.Items = []
     },
     /** 提交按钮 */
     submit: function() {
@@ -730,7 +732,7 @@ export default {
         this.getList()
         this.$modal.msgSuccess('反确认成功')
       }).catch(() => {
-        this.$modal.msgError('反确认 失败')
+        this.$modal.msgError('反确认 取消')
       })
       this.ids=[]
     },
@@ -763,8 +765,18 @@ export default {
     },
     /** 导出按钮操作 */
     handleExport() {
-      this.download()
-    }
+      this.download('/inventory/equipmentEntry/exportConfirm', {
+        ...this.queryParams
+      }, `equipmentEntryConfirm_${new Date().getTime()}.xlsx`)
+    },
+    //判断那些列可选
+    selectInit(row, index) {
+      if (row.status != 0) {    //判断条件
+        return false  //不可勾选
+      } else {
+        return true  //可勾选
+      }
+    },
   }
 }
 </script>

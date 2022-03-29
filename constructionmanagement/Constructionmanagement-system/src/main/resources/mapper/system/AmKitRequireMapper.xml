@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.AmKitRequire">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="kit_name" jdbcType="VARCHAR" property="kitName" />
-    <result column="product_num" jdbcType="BIGINT" property="productNum" />
+    <result column="product_num" jdbcType="VARCHAR" property="productNum" />
     <result column="vender" jdbcType="VARCHAR" property="vender" />
     <result column="kit_type" jdbcType="VARCHAR" property="kitType" />
     <result column="equipment" jdbcType="VARCHAR" property="equipment" />
@@ -32,13 +32,15 @@
     <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
     <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="isBuy" jdbcType="INTEGER" property="isBuy" />
+    <result column="belong_warehouse" jdbcType="VARCHAR" property="belongWarehouse" />
   </resultMap>
   <sql id="Base_Column_List">
     id, kit_name, product_num, vender, kit_type, equipment, total_assets, rights_unit,
     kit_properties, kit_standard, brachium, unit_type, measurement_unit, standard_section_height,
     kit_model, kit_code, amount, single_price, whole_machine_accessories, demand_sponsors,
     init_date, procurement_causes, `state`, audit_advice,insert_person, insert_person_depart_id, update_person,
-    update_person_depart_id, insert_date, update_date
+    update_person_depart_id, insert_date, update_date,isBuy,belong_warehouse
   </sql>
   <select id="selectBySelective" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -59,6 +61,9 @@
       </if>
       <if test="rightsUnit != null">
         and   rights_unit like concat('%', #{rightsUnit}, '%')
+      </if>
+      <if test="state != null">
+        and   `state`=#{state}
       </if>
     </where>
 
@@ -161,14 +166,16 @@
       <if test="auditAdvice != null">
         audit_advice,
       </if>
-
+      <if test="belongWarehouse != null">
+        belong_warehouse,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="kitName != null">
         #{kitName,jdbcType=VARCHAR},
       </if>
       <if test="productNum != null">
-        #{productNum,jdbcType=BIGINT},
+        #{productNum,jdbcType=VARCHAR},
       </if>
       <if test="vender != null">
         #{vender,jdbcType=VARCHAR},
@@ -251,6 +258,9 @@
       <if test="auditAdvice != null">
         #{auditAdvice,jdbcType=VARCHAR},
       </if>
+      <if test="belongWarehouse != null">
+        #{belongWarehouse,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.AmKitRequire">
@@ -260,7 +270,7 @@
         kit_name = #{kitName,jdbcType=VARCHAR},
       </if>
       <if test="productNum != null">
-        product_num = #{productNum,jdbcType=BIGINT},
+        product_num = #{productNum,jdbcType=VARCHAR},
       </if>
       <if test="vender != null">
         vender = #{vender,jdbcType=VARCHAR},
@@ -343,7 +353,18 @@
       <if test="auditAdvice != null">
         audit_advice = #{auditAdvice,jdbcType=VARCHAR},
       </if>
+      <if test="belongWarehouse != null">
+        belong_warehouse = #{belongWarehouse,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="isBuyIds" parameterType="java.lang.Long">
+    update am_kit_require set isBuy=1
+      where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+
   </update>
 </mapper>

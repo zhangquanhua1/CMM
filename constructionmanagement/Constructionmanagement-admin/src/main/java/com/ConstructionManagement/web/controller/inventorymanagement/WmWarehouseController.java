@@ -6,6 +6,8 @@ import com.ConstructionManagement.common.core.domain.AjaxResult;
 import com.ConstructionManagement.common.core.page.TableDataInfo;
 import com.ConstructionManagement.common.core.redis.RedisCache;
 import com.ConstructionManagement.common.enums.BusinessType;
+import com.ConstructionManagement.common.utils.poi.ExcelUtil;
+import com.ConstructionManagement.system.domain.StockOutRecord;
 import com.ConstructionManagement.system.domain.WmWarehouse;
 import com.ConstructionManagement.system.service.IWmWarehouseService;
 import io.lettuce.core.dynamic.annotation.Param;
@@ -14,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -103,5 +106,14 @@ public class WmWarehouseController extends BaseController {
         wwh.setUpdateDate(new Date());
         int result=iwwh.updateByPrimaryKeySelective(wwh);
         return toAjax(result);
+    }
+    @Log(title = "仓库管理", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('inventory:manage:warehouse:export')")
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, WmWarehouse wwh)
+    {
+        List<WmWarehouse> list = iwwh.selectBySelective(wwh);
+        ExcelUtil<WmWarehouse> util = new ExcelUtil<WmWarehouse>(WmWarehouse.class);
+        util.exportExcel(response, list, "仓库维护表");
     }
 }

@@ -9,6 +9,14 @@ export function listKitRequire(query) {
   })
 }
 
+// 查询 已审核通过的配件
+export function listKitPass(query) {
+  return request({
+    url: '/asset/kitrequire/listPass',
+    method: 'get',
+    params: query
+  })
+}
 // 新增
 export function addKitRequire(data) {
   return request({
@@ -33,5 +41,13 @@ export function delKitRequire(postId) {
   return request({
     url: '/asset/kitrequire/' + postId,
     method: 'delete'
+  })
+}
+
+// 确认已采购
+export function confirmIsBuy(postId) {
+  return request({
+    url: '/asset/kitrequire/' + postId,
+    method: 'post'
   })
 }

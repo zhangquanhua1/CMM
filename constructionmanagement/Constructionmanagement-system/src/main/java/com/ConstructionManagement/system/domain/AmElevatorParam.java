@@ -1,97 +1,115 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Data;
 
 /**
  * am_elevator_param
  * @author
  */
-@Data
+
 public class AmElevatorParam implements Serializable {
+    @Excel(name = "id", isColumnHidden = true, needMerge = true)
     private Long id;
 
     /**
      * 厂家
      */
+    @Excel(name = "厂家", width = 20, needMerge = true)
     private String vender;
 
     /**
      * 底笼尺寸【长、宽、高】
      */
+    @Excel(name = "底笼尺寸",suffix = "米", width = 20, needMerge = true)
     private String bottomCageSize;
 
     /**
      * 吊笼内空尺寸【长、宽、高】
      */
+    @Excel(name = "吊笼内尺寸",suffix = "米",width = 20, needMerge = true)
     private String cageSize;
 
     /**
      * 吊笼重量
      */
+    @Excel(name = "吊笼重量", suffix="kg", width = 20, needMerge = true)
     private Double cageWeight;
 
     /**
      * 标准节【长、宽、高】
      */
+    @Excel(name = "标准节", width = 20, needMerge = true)
     private String standardKnot;
 
     /**
      * 标准节重量
      */
+    @Excel(name = "标准节重量",suffix="kg", width = 20, needMerge = true)
     private Double standardSectionWeight;
 
     /**
      * 最大高度
      */
+    @Excel(name = "最大高度", suffix = "米",width = 20, needMerge = true)
     private Double maxHeight;
 
     /**
      * 额定载荷
      */
+    @Excel(name = "额定载荷", width = 20, needMerge = true)
     private Double specifiedLoad;
 
     /**
      * 额定乘员
      */
+    @Excel(name = "额定乘员",suffix = "人",width = 20, needMerge = true)
     private Integer ratedOccupant;
 
     /**
      * 起升速度
      */
+    @Excel(name = "起升速度", suffix = "m/min",width = 20, needMerge = true)
     private Double upDownSpeed;
 
     /**
      * 总功率
      */
+    @Excel(name = "总功率", suffix = "kw", width = 20, needMerge = true)
     private Double totalPower;
 
     /**
      * 额定电压
      */
+    @Excel(name = "额定电压",suffix = "v",width = 20, needMerge = true)
     private Integer ratedVoltage;
 
     /**
      * 额定电流
      */
+    @Excel(name = "额定电流",suffix = "A",width = 20, needMerge = true)
     private Integer ratedCurrent;
 
     /**
      * 减速机速比
      */
+    @Excel(name = "减速机速比", width = 20, needMerge = true)
     private String reduceSpeedRatio;
 
     /**
      * 限速器制动力矩
      */
+    @Excel(name = "限速器制动力矩",suffix="KN", width = 20, needMerge = true)
     private Double speedLimiterBrakeTorque;
 
     /**
      * 制动速度
      */
+    @Excel(name = "制动速度",suffix = "m/min",width = 20, needMerge = true)
     private Double retroSpeed;
 
     /**
@@ -102,16 +120,19 @@ public class AmElevatorParam implements Serializable {
     /**
      * 附着要求
      */
+    @Excel(name = "附着要求", width = 20, needMerge = true)
     private String attachmentRequirements;
 
     /**
      * 基础要求
      */
+    @Excel(name = "基础要求", width = 20, needMerge = true)
     private String basicRequirements;
 
     /**
      * 供电要求
      */
+    @Excel(name = "供电要求", width = 20, needMerge = true)
     private String supplyPowerRequirements;
 
     /**
@@ -152,6 +173,19 @@ public class AmElevatorParam implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<AmElevatorParamKit> amElevatorParamKits;
     private List<AmElevatorParamPart> amElevatorParamParts;
+    /**
+     * 绑定的部件导出
+     */
+    @ExcelCollection(name = "部件信息")
+    private List<AmTowerMachinePartExport> partsExport;
+
+    public List<AmTowerMachinePartExport> getPartsExport() {
+        return partsExport;
+    }
+
+    public void setPartsExport(List<AmTowerMachinePartExport> partsExport) {
+        this.partsExport = partsExport;
+    }
 
     public Long getId() {
         return id;

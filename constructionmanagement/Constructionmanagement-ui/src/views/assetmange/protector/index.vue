@@ -66,7 +66,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
+          v-hasPermi="['asset:manage:protector:export']"
         >导出
         </el-button>
       </el-col>
@@ -313,7 +313,9 @@ export default {
 
     /** 导出按钮操作 */
     handleExport() {
-      this.download()
+      this.download('/asset/protector/export', {
+        ...this.queryParams
+      }, `protector_${new Date().getTime()}.xlsx`)
     }
   }
 }

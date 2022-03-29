@@ -7,11 +7,13 @@ import com.ConstructionManagement.common.core.page.TableDataInfo;
 import com.ConstructionManagement.common.enums.BusinessType;
 import com.ConstructionManagement.system.domain.*;
 import com.ConstructionManagement.system.service.IAmKitParamService;
+import com.ConstructionManagement.web.controller.ExportUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +66,13 @@ public class AmKitParamController extends BaseController {
     {
         int result=iamKitParamService.updateByPrimaryKeySelective(amKitParam);
         return toAjax(result);
+    }
+    @Log(title = "零件参数导出", businessType = BusinessType.EXPORT)
+    @PreAuthorize("@ss.hasPermi('asset:manage:kitparam:export')")
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, AmKitParam wwh) {
+        List<AmKitParam> list = iamKitParamService.selectBySelective(wwh);
+        new ExportUtil().outPut(response,"零件参数表",list,AmKitParam.class);
     }
 
 }

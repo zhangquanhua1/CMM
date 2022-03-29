@@ -1,54 +1,62 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelTarget;
+
+import javax.validation.constraints.Min;
 import java.io.Serializable;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
 
 /**
  * wm_equipment_entry_kit
  *
  * @author
  */
-@Data
-@Getter
-@Setter
+@ExcelTarget("WmEquipmentEntry")
 public class WmEquipmentEntryKit implements Serializable {
+   // @Excel(name = "id",isColumnHidden = true)
     private Long id;
-
+   // @Excel(name = "equimentId",isColumnHidden = true)
     private Long equimentId;
 
     /**
      * 零配件名称
      */
+    @Excel(name = "配件名称", width = 20)
     private String kitName;
 
     /**
      * 代码
      */
+    @Excel(name = "配件代码", width = 20)
     private String kitCode;
 
     /**
      * 型号
      */
+    @Excel(name = "配件型号", width = 20)
     private String kitModel;
 
     /**
      * 技术参数
      */
+    @Excel(name = "技术参数", width = 20)
     private String technicalParam;
 
     /**
      * 适用配件类型
      */
+    @Excel(name = "适用部件类别", width = 20)
     private String applicableKitType;
 
     /**
      * 计量单位
      */
+    @Excel(name = "计量单位", width = 20)
     private String measurementUnit;
-
+    @Excel(name = "配件数量", width = 20)
+    @Min(value=0,message="配件数量必须为数字")
     private Integer kitCount;
 
     private static final long serialVersionUID = 1L;

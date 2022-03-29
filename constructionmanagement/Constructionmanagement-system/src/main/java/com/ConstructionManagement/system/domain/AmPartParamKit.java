@@ -1,21 +1,29 @@
 package com.ConstructionManagement.system.domain;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
+
 import java.io.Serializable;
-import lombok.Data;
+
 
 /**
  * am_part_param_kit
  * @author
  */
-@Data
+
 public class AmPartParamKit implements Serializable {
+    @Excel(name = "id", isColumnHidden = true)
     private Long id;
     //部件id
+    @Excel(name = "pid", isColumnHidden = true)
     private Long pid;
     //配件id
+    @Excel(name = "kid", isColumnHidden = true)
     private Long kid;
     //配件数量
+    @Excel(name = "配件数量", width = 20)
     private Integer kitCount;
+    @ExcelEntity
     AmKitParam amKitParam;
 
     public AmKitParam getAmKitParam() {
