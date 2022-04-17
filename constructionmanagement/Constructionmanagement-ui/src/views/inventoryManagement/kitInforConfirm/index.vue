@@ -28,19 +28,19 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="配件型号" prop="kitModel">
+      <el-form-item label="零件型号" prop="kitModel">
         <el-input
           v-model="queryParams.kitModel"
-          placeholder="请输入配件型号"
+          placeholder="请输入零件型号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="配件代码" prop="kitCode">
+      <el-form-item label="零件代码" prop="kitCode">
         <el-input
           v-model="queryParams.kitCode"
-          placeholder="请输入配件代码"
+          placeholder="请输入零件代码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -127,12 +127,12 @@
         width="50"
       >
       </el-table-column>
-      <el-table-column label="零配件名称" align="center" prop="kitName"/>
+      <el-table-column label="零件名称" align="center" prop="kitName"/>
       <el-table-column label="产品编号" align="center" prop="productNum"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="适用部件类别" align="center" prop="kitType"/>
-      <el-table-column label="配件型号" align="center" prop="kitModel"/>
-      <el-table-column label="配件代码" align="center" prop="kitCode"/>
+      <el-table-column label="零件型号" align="center" prop="kitModel"/>
+      <el-table-column label="零件代码" align="center" prop="kitCode"/>
       <el-table-column label="采购日期" align="center" prop="purchaseDate">
         <template slot-scope="scope">
           <span>{{ parseTime2(scope.row.purchaseDate) }}</span>
@@ -202,9 +202,9 @@
       <div style="margin-left: 10px">
         <div>
           <el-collapse v-model="activeNames">
-            <el-collapse-item title="配件基本信息" name="1">
+            <el-collapse-item title="零件基本信息" name="1">
               <el-row>
-                <el-col :span="4" class="col_title">零配件名称：</el-col>
+                <el-col :span="4" class="col_title">零件名称：</el-col>
                 <el-col :span="4">{{ Detail.kitName != null ? Detail.kitName : '-' }}</el-col>
                 <el-col :span="4" class="col_title">产品编号：</el-col>
                 <el-col :span="4">{{ Detail.productNum != null ? Detail.productNum : '-' }}</el-col>
@@ -222,9 +222,9 @@
               <el-row>
                 <el-col :span="4" class="col_title">产权单位：</el-col>
                 <el-col :span="4">{{ Detail.rightsUnit != null ? Detail.rightsUnit : '-' }}</el-col>
-                <el-col :span="4" class="col_title">配件属性：</el-col>
+                <el-col :span="4" class="col_title">零件属性：</el-col>
                 <el-col :span="4">{{ Detail.kitProperties != null ? Detail.kitProperties : '-' }}</el-col>
-                <el-col :span="4" class="col_title">配件规格：</el-col>
+                <el-col :span="4" class="col_title">零件规格：</el-col>
                 <el-col :span="4">{{ Detail.kitStandard != null ? Detail.kitStandard : '-' }}</el-col>
               </el-row>
               <el-row>
@@ -241,11 +241,11 @@
                 <el-col :span="4" class="col_title">标准节高度：</el-col>
                 <el-col :span="4">{{ Detail.standardSectionHeight != null ? Detail.standardSectionHeight : '-' }}米
                 </el-col>
-                <el-col :span="4" class="col_title">配件型号：</el-col>
+                <el-col :span="4" class="col_title">零件型号：</el-col>
                 <el-col :span="4">{{ Detail.kitModel != null ? Detail.kitModel : '-' }}</el-col>
               </el-row>
               <el-row>
-                <el-col :span="4" class="col_title">配件代码：</el-col>
+                <el-col :span="4" class="col_title">零件代码：</el-col>
                 <el-col :span="4">{{ Detail.kitCode != null ? Detail.kitCode : '-' }}</el-col>
                 <el-col :span="4" class="col_title">数量：</el-col>
                 <el-col :span="4">{{ Detail.amount != null ? Detail.amount : '-' }}</el-col>
@@ -360,6 +360,7 @@ import {
   , kitAntiConfirm
 } from '@/api/inventory/KitEntry'
 import { treeselect } from '@/api/system/dept'
+import { checkRole } from '@/utils/permission'
 
 export default {
   name: 'kitInforConfirm',
@@ -515,14 +516,14 @@ export default {
     /**行确认操作*/
     handleConfirm(row) {
       this.getTreeselect()
-      this.Detail = row
+      this.Detail = JSON.parse(JSON.stringify(row))
       this.openDetail = true
       this.title = '信息确认'
     },
-    /**行确认操作*/
+    /**行反确认操作*/
     handleAntiConfirm(row) {
       this.getTreeselect()
-      this.Detail = row
+      this.Detail = JSON.parse(JSON.stringify(row))
       this.openDetail = true
       this.title = '信息反确认'
     },
@@ -538,6 +539,9 @@ export default {
 
     //判断那些列可选
     selectInit(row, index) {
+      var roles=["admin"]
+      if(checkRole(roles))
+        return true
       if (row.status != 0) {    //判断条件
         return false  //不可勾选
       } else {

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.InventoryMapper">
+    <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.Inventory">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="model" jdbcType="VARCHAR" property="model" />
+        <result column="amount" jdbcType="BIGINT" property="amount" />
+        <result column="belong_warehouse" jdbcType="VARCHAR" property="belongWarehouse" />
+        <result column="type_id" jdbcType="BIGINT" property="typeId" />
+        <result column="pid" jdbcType="BIGINT" property="pid" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        id
+        , `name`, `type`, model, amount, belong_warehouse, type_id,pid
+    </sql>
+    <select id="selectBySelective" parameterType="com.ConstructionManagement.system.domain.Inventory"
+        resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from inventory
+        <where>
+            <if test="name != null">
+                and `name` like concat('', #{name}, '%')
+            </if>
+            <if test="type != null">
+                and `type` =#{type}
+            </if>
+            <if test="model != null">
+                and model like concat('', #{model}, '%')
+            </if>
+            <if test="belongWarehouse != null">
+                and belong_warehouse=#{belongWarehouse}
+            </if>
+            and amount>0
+        </where>
+    </select>
+    <select id="selectByParam" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from inventory
+        <where>
+            <if test="param1 != null">
+                and `name`= #{param1}
+            </if>
+            <if test="param2 != null">
+                and `type` in
+                <foreach collection="param2" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            <if test="param3 != null">
+                and model=#{param3}
+            </if>
+            and amount>0
+        </where>
+
+    </select>
+    <delete id="deleteByIds" parameterType="java.lang.Long">
+        delete from inventory
+        where id in
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+        parameterType="com.ConstructionManagement.system.domain.Inventory" useGeneratedKeys="true">
+        insert into inventory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="type != null">
+                `type`,
+            </if>
+            <if test="model != null">
+                model,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="belongWarehouse != null">
+                belong_warehouse,
+            </if>
+            <if test="typeId != null">
+                type_id,
+            </if>
+            <if test="pid != null">
+                pid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="model != null">
+                #{model,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=BIGINT},
+            </if>
+            <if test="belongWarehouse != null">
+                #{belongWarehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                #{typeId,jdbcType=BIGINT},
+            </if>
+            <if test="pid != null">
+                #{pid,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.Inventory">
+        update inventory
+        <set>
+            <if test="name != null">
+                `name` = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                `type` = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="model != null">
+                model = #{model,jdbcType=VARCHAR},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=BIGINT},
+            </if>
+            <if test="belongWarehouse != null">
+                belong_warehouse = #{belongWarehouse,jdbcType=VARCHAR},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId,jdbcType=BIGINT},
+            </if>
+            <if test="pid != null">
+                pid = #{pid,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="outStock">
+        update inventory
+        <set>
+            <if test="param2 != null and param2>0">
+                amount =amount- #{param2,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{param1,jdbcType=BIGINT}
+    </update>
+
+</mapper>

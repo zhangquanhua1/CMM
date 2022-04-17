@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.WmPartEntryMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.WmPartEntry">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_num" jdbcType="VARCHAR" property="productNum" />
+    <result column="vender" jdbcType="VARCHAR" property="vender" />
+    <result column="part_type" jdbcType="VARCHAR" property="partType" />
+    <result column="equipment" jdbcType="VARCHAR" property="equipment" />
+    <result column="total_assets" jdbcType="DOUBLE" property="totalAssets" />
+    <result column="rights_unit" jdbcType="VARCHAR" property="rightsUnit" />
+    <result column="kit_properties" jdbcType="VARCHAR" property="kitProperties" />
+    <result column="part_name" jdbcType="VARCHAR" property="partName" />
+    <result column="kit_standard" jdbcType="VARCHAR" property="kitStandard" />
+    <result column="brachium" jdbcType="INTEGER" property="brachium" />
+    <result column="unit_type" jdbcType="VARCHAR" property="unitType" />
+    <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
+    <result column="standard_section_height" jdbcType="DOUBLE" property="standardSectionHeight" />
+    <result column="part_model" jdbcType="VARCHAR" property="partModel" />
+    <result column="part_code" jdbcType="VARCHAR" property="partCode" />
+    <result column="amount" jdbcType="BIGINT" property="amount" />
+    <result column="single_price" jdbcType="DOUBLE" property="singlePrice" />
+    <result column="whole_machine_accessories" jdbcType="INTEGER" property="wholeMachineAccessories" />
+    <result column="demand_sponsors" jdbcType="VARCHAR" property="demandSponsors" />
+    <result column="procurement_causes" jdbcType="VARCHAR" property="procurementCauses" />
+    <result column="insert_person" jdbcType="VARCHAR" property="insertPerson" />
+    <result column="insert_person_depart_id" jdbcType="BIGINT" property="insertPersonDepartId" />
+    <result column="update_person" jdbcType="VARCHAR" property="updatePerson" />
+    <result column="update_person_depart_id" jdbcType="BIGINT" property="updatePersonDepartId" />
+    <result column="insert_date" jdbcType="TIMESTAMP" property="insertDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="belong_warehouse" jdbcType="VARCHAR" property="belongWarehouse" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="supplier_id" jdbcType="VARCHAR" property="supplierId" />
+    <result column="practi_name" jdbcType="VARCHAR" property="practiName" />
+    <result column="supplier_add" jdbcType="VARCHAR" property="supplierAdd" />
+    <result column="supplier_tel" jdbcType="VARCHAR" property="supplierTel" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="enclosure" jdbcType="VARCHAR" property="enclosure" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_num, vender, part_type, equipment, total_assets, rights_unit, kit_properties,
+    part_name, kit_standard, brachium, unit_type, measurement_unit, standard_section_height,
+    part_model, part_code, amount, single_price, whole_machine_accessories, demand_sponsors,
+    procurement_causes, insert_person, insert_person_depart_id, update_person, update_person_depart_id,
+    insert_date, update_date, belong_warehouse, `status`, batch_number, supplier_id,
+    practi_name, supplier_add, supplier_tel, mobile, enclosure
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from wm_part_entry
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from wm_part_entry
+    <where>
+      <if test="partName != null">
+        and   part_name like concat('', #{partName}, '%')
+      </if>
+      <if test="partType != null">
+        and   part_type like concat('', #{partType}, '%')
+      </if>
+      <if test="equipment != null">
+        and   equipment like concat('', #{equipment}, '%')
+      </if>
+      <if test="partModel != null">
+        and   part_model like concat('', #{partModel}, '%')
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from wm_part_entry
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByIds">
+    delete from wm_part_entry
+    where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.system.domain.WmPartEntry" useGeneratedKeys="true">
+    insert into wm_part_entry
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productNum != null">
+        product_num,
+      </if>
+      <if test="vender != null">
+        vender,
+      </if>
+      <if test="partType != null">
+        part_type,
+      </if>
+      <if test="equipment != null">
+        equipment,
+      </if>
+      <if test="totalAssets != null">
+        total_assets,
+      </if>
+      <if test="rightsUnit != null">
+        rights_unit,
+      </if>
+      <if test="kitProperties != null">
+        kit_properties,
+      </if>
+      <if test="partName != null">
+        part_name,
+      </if>
+      <if test="kitStandard != null">
+        kit_standard,
+      </if>
+      <if test="brachium != null">
+        brachium,
+      </if>
+      <if test="unitType != null">
+        unit_type,
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit,
+      </if>
+      <if test="standardSectionHeight != null">
+        standard_section_height,
+      </if>
+      <if test="partModel != null">
+        part_model,
+      </if>
+      <if test="partCode != null">
+        part_code,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="singlePrice != null">
+        single_price,
+      </if>
+      <if test="wholeMachineAccessories != null">
+        whole_machine_accessories,
+      </if>
+      <if test="demandSponsors != null">
+        demand_sponsors,
+      </if>
+      <if test="procurementCauses != null">
+        procurement_causes,
+      </if>
+      <if test="insertPerson != null">
+        insert_person,
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id,
+      </if>
+      <if test="updatePerson != null">
+        update_person,
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id,
+      </if>
+      <if test="insertDate != null">
+        insert_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="belongWarehouse != null">
+        belong_warehouse,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="batchNumber != null">
+        batch_number,
+      </if>
+      <if test="supplierId != null">
+        supplier_id,
+      </if>
+      <if test="practiName != null">
+        practi_name,
+      </if>
+      <if test="supplierAdd != null">
+        supplier_add,
+      </if>
+      <if test="supplierTel != null">
+        supplier_tel,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="enclosure != null">
+        enclosure,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productNum != null">
+        #{productNum,jdbcType=VARCHAR},
+      </if>
+      <if test="vender != null">
+        #{vender,jdbcType=VARCHAR},
+      </if>
+      <if test="partType != null">
+        #{partType,jdbcType=VARCHAR},
+      </if>
+      <if test="equipment != null">
+        #{equipment,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAssets != null">
+        #{totalAssets,jdbcType=DOUBLE},
+      </if>
+      <if test="rightsUnit != null">
+        #{rightsUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="kitProperties != null">
+        #{kitProperties,jdbcType=VARCHAR},
+      </if>
+      <if test="partName != null">
+        #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="kitStandard != null">
+        #{kitStandard,jdbcType=VARCHAR},
+      </if>
+      <if test="brachium != null">
+        #{brachium,jdbcType=INTEGER},
+      </if>
+      <if test="unitType != null">
+        #{unitType,jdbcType=VARCHAR},
+      </if>
+      <if test="measurementUnit != null">
+        #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="standardSectionHeight != null">
+        #{standardSectionHeight,jdbcType=DOUBLE},
+      </if>
+      <if test="partModel != null">
+        #{partModel,jdbcType=VARCHAR},
+      </if>
+      <if test="partCode != null">
+        #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="singlePrice != null">
+        #{singlePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="wholeMachineAccessories != null">
+        #{wholeMachineAccessories,jdbcType=INTEGER},
+      </if>
+      <if test="demandSponsors != null">
+        #{demandSponsors,jdbcType=VARCHAR},
+      </if>
+      <if test="procurementCauses != null">
+        #{procurementCauses,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPerson != null">
+        #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="belongWarehouse != null">
+        #{belongWarehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="batchNumber != null">
+        #{batchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null">
+        #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="practiName != null">
+        #{practiName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAdd != null">
+        #{supplierAdd,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierTel != null">
+        #{supplierTel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="enclosure != null">
+        #{enclosure,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.WmPartEntry">
+    update wm_part_entry
+    <set>
+      <if test="productNum != null">
+        product_num = #{productNum,jdbcType=VARCHAR},
+      </if>
+      <if test="vender != null">
+        vender = #{vender,jdbcType=VARCHAR},
+      </if>
+      <if test="partType != null">
+        part_type = #{partType,jdbcType=VARCHAR},
+      </if>
+      <if test="equipment != null">
+        equipment = #{equipment,jdbcType=VARCHAR},
+      </if>
+      <if test="totalAssets != null">
+        total_assets = #{totalAssets,jdbcType=DOUBLE},
+      </if>
+      <if test="rightsUnit != null">
+        rights_unit = #{rightsUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="kitProperties != null">
+        kit_properties = #{kitProperties,jdbcType=VARCHAR},
+      </if>
+      <if test="partName != null">
+        part_name = #{partName,jdbcType=VARCHAR},
+      </if>
+      <if test="kitStandard != null">
+        kit_standard = #{kitStandard,jdbcType=VARCHAR},
+      </if>
+      <if test="brachium != null">
+        brachium = #{brachium,jdbcType=INTEGER},
+      </if>
+      <if test="unitType != null">
+        unit_type = #{unitType,jdbcType=VARCHAR},
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit = #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="standardSectionHeight != null">
+        standard_section_height = #{standardSectionHeight,jdbcType=DOUBLE},
+      </if>
+      <if test="partModel != null">
+        part_model = #{partModel,jdbcType=VARCHAR},
+      </if>
+      <if test="partCode != null">
+        part_code = #{partCode,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="singlePrice != null">
+        single_price = #{singlePrice,jdbcType=DOUBLE},
+      </if>
+      <if test="wholeMachineAccessories != null">
+        whole_machine_accessories = #{wholeMachineAccessories,jdbcType=INTEGER},
+      </if>
+      <if test="demandSponsors != null">
+        demand_sponsors = #{demandSponsors,jdbcType=VARCHAR},
+      </if>
+      <if test="procurementCauses != null">
+        procurement_causes = #{procurementCauses,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPerson != null">
+        insert_person = #{insertPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="insertPersonDepartId != null">
+        insert_person_depart_id = #{insertPersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="updatePerson != null">
+        update_person = #{updatePerson,jdbcType=VARCHAR},
+      </if>
+      <if test="updatePersonDepartId != null">
+        update_person_depart_id = #{updatePersonDepartId,jdbcType=BIGINT},
+      </if>
+      <if test="insertDate != null">
+        insert_date = #{insertDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="belongWarehouse != null">
+        belong_warehouse = #{belongWarehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="batchNumber != null">
+        batch_number = #{batchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null">
+        supplier_id = #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="practiName != null">
+        practi_name = #{practiName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAdd != null">
+        supplier_add = #{supplierAdd,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierTel != null">
+        supplier_tel = #{supplierTel,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="enclosure != null">
+        enclosure = #{enclosure,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="confirmByIds">
+    update wm_part_entry set  status =1
+    where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </update>
+  <update id="confirmById">
+    update wm_part_entry set  status =1
+    where id=#{id}
+  </update>
+  <update id="AntiConfirmByIds">
+    update wm_part_entry set  status =2
+    where id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </update>
+</mapper>

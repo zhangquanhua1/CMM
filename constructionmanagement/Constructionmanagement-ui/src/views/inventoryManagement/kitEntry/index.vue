@@ -19,10 +19,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="配件名称"  prop="kitName">
+      <el-form-item label="零件名称"  prop="kitName">
         <el-input
           v-model="queryParams.kitName"
-          placeholder="请输入配件名称"
+          placeholder="请输入零件名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -46,19 +46,19 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="配件型号" prop="kitModel">
+      <el-form-item label="零件型号" prop="kitModel">
         <el-input
           v-model="queryParams.kitModel"
-          placeholder="请输入配件型号"
+          placeholder="请输入零件型号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="配件代码" prop="kitCode">
+      <el-form-item label="零件代码" prop="kitCode">
         <el-input
           v-model="queryParams.kitCode"
-          placeholder="请输入配件代码"
+          placeholder="请输入零件代码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -140,18 +140,18 @@
     </el-row>
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column type="selection" :selectable="selectInit" width="55" align="center"/>
       <el-table-column
         type="index"
         width="50"
       >
       </el-table-column>
-      <el-table-column label="配件名称" align="center" prop="kitName"/>
+      <el-table-column label="零件名称" align="center" prop="kitName"/>
       <el-table-column label="产品编号" align="center" prop="productNum"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="适用部件类别" align="center" prop="kitType"/>
-      <el-table-column label="配件型号" align="center" prop="kitModel"/>
-      <el-table-column label="配件代码" align="center" prop="kitCode"/>
+      <el-table-column label="零件型号" align="center" prop="kitModel"/>
+      <el-table-column label="零件代码" align="center" prop="kitCode"/>
       <el-table-column label="采购日期" align="center" prop="purchaseDate">
         <template slot-scope="scope">
           <span>{{ parseTime2(scope.row.purchaseDate) }}</span>
@@ -212,11 +212,11 @@
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-collapse v-model="activeNames">
-          <el-collapse-item title="配件基本信息" name="1">
+          <el-collapse-item title="零件基本信息" name="1">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="配件名称" prop="kitName">
-                  <el-input v-model="form.kitName" placeholder="请输入配件名称"/>
+                <el-form-item label="零件名称" prop="kitName">
+                  <el-input v-model="form.kitName" placeholder="请输入零件名称"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -270,13 +270,13 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="配件属性" prop="kitProperties">
-                  <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>
+                <el-form-item label="零件属性" prop="kitProperties">
+                  <el-input v-model="form.kitProperties" placeholder="请输入零件属性"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="配件规格" prop="kitStandard">
-                  <el-input v-model="form.kitStandard" placeholder="请输入配件规格"/>
+                <el-form-item label="零件规格" prop="kitStandard">
+                  <el-input v-model="form.kitStandard" placeholder="请输入零件规格"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -322,15 +322,15 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="配件型号" prop="kitModel">
-                  <el-input v-model="form.kitModel" placeholder="请输入配件型号"/>
+                <el-form-item label="零件型号" prop="kitModel">
+                  <el-input v-model="form.kitModel" placeholder="请输入零件型号"/>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="配件代码" prop="kitCode">
-                  <el-input v-model="form.kitCode" placeholder="请输入配件代码"/>
+                <el-form-item label="零件代码" prop="kitCode">
+                  <el-input v-model="form.kitCode" placeholder="请输入零件代码"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -512,7 +512,7 @@
     <!--    详情弹窗-->
     <!--    <el-dialog :title="title" :visible.sync="openDetail" width="40%" class="spec-dialog" append-to-body>-->
     <el-drawer
-      title="配件详情"
+      title="零件详情"
       size="60%"
       :visible.sync="openDetail"
       :with-header="true"
@@ -520,9 +520,9 @@
       <div style="margin-left: 10px">
         <div>
           <el-collapse v-model="activeNames">
-            <el-collapse-item title="配件基本信息" name="1">
+            <el-collapse-item title="零件基本信息" name="1">
               <el-row>
-                <el-col :span="4" class="col_title">配件名称：</el-col>
+                <el-col :span="4" class="col_title">零件名称：</el-col>
                 <el-col :span="4">{{ Detail.kitName != null ? Detail.kitName : '-' }}</el-col>
                 <el-col :span="4" class="col_title">产品编号：</el-col>
                 <el-col :span="4">{{ Detail.productNum != null ? Detail.productNum : '-' }}</el-col>
@@ -530,7 +530,7 @@
                 <el-col :span="4">{{ Detail.vender != null ? Detail.vender : '-' }}</el-col>
               </el-row>
               <el-row>
-                <el-col :span="4" class="col_title">配件类别：</el-col>
+                <el-col :span="4" class="col_title">零件类别：</el-col>
                 <el-col :span="4">{{ Detail.kitType != null ? Detail.kitType : '-' }}</el-col>
                 <el-col :span="4" class="col_title">所属设备：</el-col>
                 <el-col :span="4">{{ Detail.equipment != null ? Detail.equipment : '-' }}</el-col>
@@ -540,9 +540,9 @@
               <el-row>
                 <el-col :span="4" class="col_title">产权单位：</el-col>
                 <el-col :span="4">{{ Detail.rightsUnit != null ? Detail.rightsUnit : '-' }}</el-col>
-                <el-col :span="4" class="col_title">配件属性：</el-col>
+                <el-col :span="4" class="col_title">零件属性：</el-col>
                 <el-col :span="4">{{ Detail.kitProperties != null ? Detail.kitProperties : '-' }}</el-col>
-                <el-col :span="4" class="col_title">配件规格：</el-col>
+                <el-col :span="4" class="col_title">零件规格：</el-col>
                 <el-col :span="4">{{ Detail.kitStandard != null ? Detail.kitStandard : '-' }}</el-col>
               </el-row>
               <el-row>
@@ -559,11 +559,11 @@
                 <el-col :span="4" class="col_title">标准节高度：</el-col>
                 <el-col :span="4">{{ Detail.standardSectionHeight != null ? Detail.standardSectionHeight : '-' }}米
                 </el-col>
-                <el-col :span="4" class="col_title">配件型号：</el-col>
+                <el-col :span="4" class="col_title">零件型号：</el-col>
                 <el-col :span="4">{{ Detail.kitModel != null ? Detail.kitModel : '-' }}</el-col>
               </el-row>
               <el-row>
-                <el-col :span="4" class="col_title">配件代码：</el-col>
+                <el-col :span="4" class="col_title">零件代码：</el-col>
                 <el-col :span="4">{{ Detail.kitCode != null ? Detail.kitCode : '-' }}</el-col>
                 <el-col :span="4" class="col_title">数量：</el-col>
                 <el-col :span="4">{{ Detail.amount != null ? Detail.amount : '-' }}</el-col>
@@ -700,6 +700,7 @@ import { getEquipmentModel } from '@/api/towerparam/partrequire'
 import { getAllUseWH } from '@/api/towerparam/equipmentrequire'
 import { treeselect } from '@/api/system/dept'
 import { getToken } from '@/utils/auth'
+import { checkRole } from '@/utils/permission'
 
 export default {
   name: 'kitEntry',
@@ -975,7 +976,7 @@ export default {
         console.log('this.protectors' + res.data)
       })
       this.reset()
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.open = true
       this.title = '修改'
     },
@@ -1030,7 +1031,7 @@ export default {
 
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "配件录入导入";
+      this.upload.title = "零件录入导入";
       this.upload.open = true;
     },
     /** 下载模板操作 */
@@ -1053,7 +1054,18 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
-    }
+    },
+    //判断那些列可选
+    selectInit(row, index) {
+      var roles=["admin"]
+      if(checkRole(roles))
+        return true
+      if (row.status != 0) {    //判断条件
+        return false  //不可勾选
+      } else {
+        return true  //可勾选
+      }
+    },
 
   }
 }

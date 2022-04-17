@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="100px">
-      <el-form-item label="配件名称" prop="kitName">
+      <el-form-item label="零件名称" prop="kitName">
         <el-input
           v-model="queryParams.kitName"
-          placeholder="请输入配件名称"
+          placeholder="请输入零件名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -107,7 +107,7 @@
         width="50"
       >
       </el-table-column>
-      <el-table-column label="配件名称" align="center" prop="kitName"/>
+      <el-table-column label="零件名称" align="center" prop="kitName"/>
       <el-table-column label="产品编号" align="center" prop="productNum"/>
       <el-table-column label="生产厂家" align="center" prop="vender"/>
       <el-table-column label="归属仓库" align="center" prop="belongWarehouse"/>
@@ -188,8 +188,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="配件名称" prop="kitName">
-              <el-input v-model.number="form.kitName" placeholder="请输入配件名称"/>
+            <el-form-item label="零件名称" prop="kitName">
+              <el-input v-model.number="form.kitName" placeholder="请输入零件名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -241,13 +241,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="配件属性" prop="kitProperties">
-              <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>
+            <el-form-item label="零件属性" prop="kitProperties">
+              <el-input v-model="form.kitProperties" placeholder="请输入零件属性"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="配件规格" prop="kitStandard">
-              <el-input v-model="form.kitStandard" placeholder="请输入配件规格"/>
+            <el-form-item label="零件规格" prop="kitStandard">
+              <el-input v-model="form.kitStandard" placeholder="请输入零件规格"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -282,13 +282,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="配件型号" prop="kitModel">
-              <el-input v-model="form.kitModel" placeholder="请输入配件型号"/>
+            <el-form-item label="零件型号" prop="kitModel">
+              <el-input v-model="form.kitModel" placeholder="请输入零件型号"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="配件代码" prop="kitCode">
-              <el-input v-model="form.kitCode" placeholder="请输入配件代码"/>
+            <el-form-item label="零件代码" prop="kitCode">
+              <el-input v-model="form.kitCode" placeholder="请输入零件代码"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -353,7 +353,7 @@
     >
       <div style="margin-left: 10px">
           <el-row>
-            <el-col :span="4" class="col_title">配件名称：</el-col>
+            <el-col :span="4" class="col_title">零件名称：</el-col>
             <el-col :span="4">{{ Detail.kitName != null ? Detail.kitName : '-' }}</el-col>
             <el-col :span="4" class="col_title">产品编号：</el-col>
             <el-col :span="4">{{ Detail.productNum != null ? Detail.productNum : '-' }}</el-col>
@@ -371,9 +371,9 @@
           <el-row>
             <el-col :span="4" class="col_title">产权单位：</el-col>
             <el-col :span="4">{{ Detail.rightsUnit != null ? Detail.rightsUnit : '-' }}</el-col>
-            <el-col :span="4" class="col_title">配件属性：</el-col>
+            <el-col :span="4" class="col_title">零件属性：</el-col>
             <el-col :span="4">{{ Detail.kitProperties != null ? Detail.kitProperties : '-' }}</el-col>
-            <el-col :span="4" class="col_title">配件规格：</el-col>
+            <el-col :span="4" class="col_title">零件规格：</el-col>
             <el-col :span="4">{{ Detail.kitStandard != null ? Detail.kitStandard : '-' }}</el-col>
           </el-row>
           <el-row>
@@ -389,11 +389,11 @@
             <el-col :span="4" class="col_title">标准节高度：</el-col>
             <el-col :span="4">{{ Detail.standardSectionHeight != null ? Detail.standardSectionHeight : '-' }}米
             </el-col>
-            <el-col :span="4" class="col_title">配件型号：</el-col>
+            <el-col :span="4" class="col_title">零件型号：</el-col>
             <el-col :span="4">{{ Detail.kitModel != null ? Detail.kitModel : '-' }}</el-col>
           </el-row>
           <el-row>
-            <el-col :span="4" class="col_title">配件代码：</el-col>
+            <el-col :span="4" class="col_title">零件代码：</el-col>
             <el-col :span="4">{{ Detail.kitCode != null ? Detail.kitCode : '-' }}</el-col>
             <el-col :span="4" class="col_title">数量：</el-col>
             <el-col :span="4">{{ Detail.amount != null ? Detail.amount : '-' }}</el-col>
@@ -499,6 +499,7 @@ import { listKitRequire, addKitRequire, delKitRequire, updateKitRequire } from '
 import { treeselect } from '@/api/system/dept'
 import { getAllUseWH } from '@/api/towerparam/equipmentrequire'
 import { getToken } from '@/utils/auth'
+import { checkRole } from '@/utils/permission'
 
 export default {
   name: 'kitrequire',
@@ -685,7 +686,7 @@ export default {
     handleUpdate(row) {
       this.getUsedWH()
       this.reset()
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.open = true
       this.title = '修改'
     },
@@ -735,7 +736,8 @@ export default {
       this.title = '详情'
     },
     handleAudit(row) {
-      this.form = row
+      //this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.openAudit = true
       this.title = '审核'
     },
@@ -751,6 +753,9 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
+      var roles=["admin"]
+      if(checkRole(roles))
+        return true
       if (row.state != 0) {    //判断条件
         return false  //不可勾选
       } else {
@@ -765,7 +770,7 @@ export default {
     },
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "配件需求导入";
+      this.upload.title = "零件需求导入";
       this.upload.open = true;
     },
     /** 下载模板操作 */

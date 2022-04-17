@@ -132,7 +132,7 @@ public class AmEquipmentRequireController extends BaseController {
     /**
      * 获取部件 配件
      */
-    @PreAuthorize("@ss.hasPermi('inventory:manage:equipmentrequire:add') or @ss.hasPermi('inventory:manage:equipmententry:edit')")
+    @PreAuthorize("@ss.hasPermi('asset:manage:equipmentrequire:list')")
     @GetMapping("/kitandpart/{pid}")
     public AjaxResult getlist(@PathVariable Long pid) {
         if (pid <= 0 || pid == null) return AjaxResult.error("不存在配件、部件");

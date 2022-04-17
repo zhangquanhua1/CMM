@@ -193,7 +193,7 @@
     </el-row>
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center"/>
+      <el-table-column type="selection" :selectable="selectInit" width="55" align="center"/>
       <el-table-column
         type="index"
         width="50"
@@ -211,6 +211,15 @@
       <el-table-column label="录入日期" align="center" prop="insertDate">
         <template slot-scope="scope">
           <span>{{ parseTime2(scope.row.insertDate) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" align="center" prop="status" :filters="[{ text: '未确认', value: 0 },
+      { text: '确认', value: 1 },{ text: '反确认', value: 2 }]"
+                       :filter-method="filterState">
+        <template slot-scope="scope">
+          <el-tag :type="'primary'" v-if="scope.row.status==0" >未确认</el-tag>
+          <el-tag :type="'success'" v-else-if="scope.row.status==1">确认</el-tag>
+          <el-tag :type="'danger'"v-else>反确认</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -747,7 +756,7 @@
               </el-table-column>
             </el-table>
           </el-collapse-item>
-          <el-collapse-item title="配件清单" name="4">
+          <el-collapse-item title="零件清单" name="4">
 
             <el-row :gutter="10" class="mb8">
               <el-col :span="1.5">
@@ -770,21 +779,21 @@
             >
               <el-table-column
                 prop=""
-                label="配件名称"
+                label="零件名称"
                 width="180"
               >
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitName" placeholder="请输入配件名称"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitName" placeholder="请输入零件名称"></el-input>
                   <span v-else>{{ scope.row.kitName }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件型号" align="center" prop="">
+              <el-table-column label="零件型号" align="center" prop="">
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitModel" placeholder="请输入配件型号"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitModel" placeholder="请输入零件型号"></el-input>
                   <span v-else>{{ scope.row.kitModel }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件代码" align="center" prop="">
+              <el-table-column label="零件代码" align="center" prop="">
                 <template slot-scope="scope">
                   <el-input v-if="isEditKit" v-model="scope.row.kitCode" placeholder="请输入配件代码"></el-input>
                   <span v-else>{{ scope.row.kitCode }}</span>
@@ -1139,20 +1148,20 @@
               </el-table-column>
             </el-table>
           </el-collapse-item>
-          <el-collapse-item title="配件清单" name="4">
+          <el-collapse-item title="零件清单" name="4">
             <el-table
               :data="EquipmentKitsList"
               style="width: 100%"
             >
               <el-table-column
                 prop="kitName"
-                label="零配件名称"
+                label="零件名称"
                 width="180"
               >
               </el-table-column>
-              <el-table-column label="配件型号" align="center" prop="kitModel">
+              <el-table-column label="零件型号" align="center" prop="kitModel">
               </el-table-column>
-              <el-table-column label="配件代码" align="center" prop="kitCode">
+              <el-table-column label="零件代码" align="center" prop="kitCode">
               </el-table-column>
               <el-table-column label="技术参数" align="center" prop="technicalParam">
               </el-table-column>
@@ -1222,6 +1231,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { getEquipmentParam } from '@/api/towerparam/equipmentrequire'
 import { getToken } from '@/utils/auth'
+import { checkRole } from '@/utils/permission'
 
 export default {
   name: 'equipmentEntry',
@@ -1510,7 +1520,7 @@ export default {
         this.EquipmentPartsList = response.data.wmEquipmentEntryParts
       })
       this.reset()
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.open = true
       this.title = '修改'
     },
@@ -1662,7 +1672,21 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
-    }
+    },
+    //判断那些列可选
+    selectInit(row, index) {
+      var roles=["admin"]
+      if(checkRole(roles))
+        return true
+      if (row.status != 0) {    //判断条件
+        return false  //不可勾选
+      } else {
+        return true  //可勾选
+      }
+    },
+    filterState(value,row){
+      return row.status === value;
+    },
 
   },
   watch: {

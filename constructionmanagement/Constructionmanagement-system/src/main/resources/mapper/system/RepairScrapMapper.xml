@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.RepairScrapMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.RepairScrap">
+    <id column="repair_id" jdbcType="BIGINT" property="repairId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="apply_type" jdbcType="INTEGER" property="applyType" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="measurement_unit" jdbcType="VARCHAR" property="measurementUnit" />
+    <result column="applicant" jdbcType="VARCHAR" property="applicant" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="audit_advice" jdbcType="VARCHAR" property="auditAdvice" />
+    <result column="apply_date" jdbcType="TIMESTAMP" property="applyDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    repair_id, `name`, model, `type`, apply_type, amount, measurement_unit, applicant,
+    reason, `status`, audit_advice, apply_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from repair_scrap
+    where repair_id = #{repairId,jdbcType=BIGINT}
+  </select>
+  <select id="selectBySelective" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from repair_scrap
+    <where>
+      <if test="name != null">
+        and `name` like concat('', #{name}, '%')
+      </if>
+      <if test="type != null">
+        and `type` like concat('', #{type}, '%')
+      </if>
+      <if test="model != null">
+        and model like concat('', #{model}, '%')
+      </if>
+      <if test="applyType != null">
+        and apply_type=#{applyType}
+      </if>
+    </where>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from repair_scrap
+    where repair_id = #{repairId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByIds">
+    delete from repair_scrap
+    where repair_id in
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+
+  </delete>
+  <insert id="insertSelective" keyColumn="repair_id" keyProperty="repairId" parameterType="com.ConstructionManagement.system.domain.RepairScrap" useGeneratedKeys="true">
+    insert into repair_scrap
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        `name`,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="type != null">
+        `type`,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit,
+      </if>
+      <if test="applicant != null">
+        applicant,
+      </if>
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="auditAdvice != null">
+        audit_advice,
+      </if>
+      <if test="applyDate != null">
+        apply_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="applyType != null">
+        #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="measurementUnit != null">
+        #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="applicant != null">
+        #{applicant,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="auditAdvice != null">
+        #{auditAdvice,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDate != null">
+        #{applyDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.system.domain.RepairScrap">
+    update repair_scrap
+    <set>
+      <if test="name != null">
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        `type` = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=INTEGER},
+      </if>
+      <if test="measurementUnit != null">
+        measurement_unit = #{measurementUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="applicant != null">
+        applicant = #{applicant,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="auditAdvice != null">
+        audit_advice = #{auditAdvice,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDate != null">
+        apply_date = #{applyDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where repair_id = #{repairId,jdbcType=BIGINT}
+  </update>
+</mapper>

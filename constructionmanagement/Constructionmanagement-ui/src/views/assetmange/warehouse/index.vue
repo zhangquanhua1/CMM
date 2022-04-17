@@ -83,7 +83,7 @@
           size="mini"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['ainventory:manage:warehouse:remove']"
+          v-hasPermi="['inventory:manage:warehouse:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -384,7 +384,8 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
        this.reset()
-        this.form =row;
+       this.reset()
+        this.form =JSON.parse(JSON.stringify(row))
         this.open = true;
         this.title = "修改仓库维护";
     },

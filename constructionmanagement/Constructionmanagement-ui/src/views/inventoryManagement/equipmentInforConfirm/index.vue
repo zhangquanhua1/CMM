@@ -172,7 +172,7 @@
           icon="el-icon-download"
           size="mini"
           @click="handleExport"
-          v-hasPermi="['system:post:export']"
+          v-hasPermi="['inventory:manage:equipmententry:export']"
         >导出
         </el-button>
       </el-col>
@@ -582,6 +582,7 @@ import {
 } from '@/api/inventory/EquipmentEntry'
 import { getEquipmentParam } from '@/api/towerparam/equipmentrequire'
 import { treeselect } from '@/api/system/dept'
+import { checkRole } from '@/utils/permission'
 export default {
   name: 'equipmentEntryInforConfirm',
   // dicts: ['sys_normal_disable'],
@@ -750,13 +751,13 @@ export default {
     },
     /**行确认操作*/
     handleConfirm(row){
-      this.Detail = row
+      this.Detail = JSON.parse(JSON.stringify(row))
       this.openDetail = true
       this.title = '信息确认'
     },
     /**行确认操作*/
     handleAntiConfirm(row){
-      this.Detail = row
+      this.Detail =JSON.parse(JSON.stringify(row))
       this.openDetail = true
       this.title = '信息反确认'
     },
@@ -771,6 +772,9 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
+      var roles=["admin"]
+      if(checkRole(roles))
+        return true
       if (row.status != 0) {    //判断条件
         return false  //不可勾选
       } else {

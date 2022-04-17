@@ -49,9 +49,9 @@
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/register'">立即注册</router-link>
-        </div>
+<!--        <div style="float: right;" v-if="register">-->
+<!--          <router-link class="link-type" :to="'/register'">立即注册</router-link>-->
+<!--        </div>-->
       </el-form-item>
     </el-form>
     <!--  底部  -->
@@ -110,7 +110,7 @@ export default {
   methods: {
     getCode() {
       getCodeImg().then(res => {
-        this.captchaOnOff = res.captchaOnOff === undefined ? true : res.captchaOnOff;
+        this.captchaOnOff = res.captchaOnOff === undefined ? false : res.captchaOnOff;
         if (this.captchaOnOff) {
           this.codeUrl = "data:image/gif;base64," + res.img;
           this.loginForm.uuid = res.uuid;
@@ -162,7 +162,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpeg");
+  background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
 }
 .title {

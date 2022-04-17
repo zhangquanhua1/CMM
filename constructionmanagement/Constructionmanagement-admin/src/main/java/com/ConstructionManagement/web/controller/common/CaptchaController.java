@@ -42,6 +42,8 @@ public class CaptchaController
     //验证码类型
     @Value("${ruoyi.captchaType}")
     private String captchaType;
+    @Value("${ruoyi.captchaOnOff}")
+    private boolean captchaOnOff;
     /**
      * 生成验证码
      */
@@ -50,9 +52,9 @@ public class CaptchaController
     {
         AjaxResult ajax = AjaxResult.success();
         //获取验证码的开关是否开启
-//        boolean captchaOnOff = configService.selectCaptchaOnOff();
-        boolean captchaOnOff = false;
-        ajax.put("captchaOnOff", captchaOnOff);
+////        boolean captchaOnOff = configService.selectCaptchaOnOff();
+//        boolean captchaOnOff = false;
+//        ajax.put("captchaOnOff", captchaOnOff);
         if (!captchaOnOff)
         {
             return ajax;

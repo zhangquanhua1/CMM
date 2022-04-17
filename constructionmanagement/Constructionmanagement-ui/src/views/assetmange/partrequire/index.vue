@@ -263,8 +263,8 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="配件属性" prop="kitProperties">
-                  <el-input v-model="form.kitProperties" placeholder="请输入配件属性"/>
+                <el-form-item label="零件属性" prop="kitProperties">
+                  <el-input v-model="form.kitProperties" placeholder="请输入零件属性"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -273,8 +273,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="配件规格" prop="kitStandard">
-                  <el-input v-model="form.kitStandard" placeholder="请输入配件规格"/>
+                <el-form-item label="零件规格" prop="kitStandard">
+                  <el-input v-model="form.kitStandard" placeholder="请输入零件规格"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -364,7 +364,7 @@
               </el-col>
             </el-row>
           </el-collapse-item>
-          <el-collapse-item title="配件清单" name="2">
+          <el-collapse-item title="零件清单" name="2">
             <el-row :gutter="10" class="mb8">
               <el-col :span="1.5">
                 <el-button
@@ -386,23 +386,23 @@
             >
               <el-table-column
                 prop=""
-                label="配件名称"
+                label="零件名称"
                 width="180"
               >
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitName" placeholder="请输入配件名称"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitName" placeholder="请输入零件名称"></el-input>
                   <span v-else>{{ scope.row.kitName }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件型号" align="center" prop="">
+              <el-table-column label="零件型号" align="center" prop="">
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitModel" placeholder="请输入配件型号"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitModel" placeholder="请输入零件型号"></el-input>
                   <span v-else>{{ scope.row.kitModel }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件代码" align="center" prop="">
+              <el-table-column label="零件代码" align="center" prop="">
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitCode" placeholder="请输入配件代码"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitCode" placeholder="请输入零件代码"></el-input>
                   <span v-else>{{ scope.row.kitCode }}</span>
                 </template>
               </el-table-column>
@@ -550,6 +550,7 @@ import { treeselect } from '@/api/system/dept'
 import { getEquipmentParam, getKitAndPartBySelectiv } from '@/api/towerparam/equipmentrequire'
 import PartRequireDetail from './PartRequireDetail'
 import { getToken } from '@/utils/auth'
+import { checkRole } from '@/utils/permission'
 export default {
   name: 'partrequire',
   // dicts: ['sys_normal_disable'],
@@ -762,7 +763,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       getPartRequireKit(row.id).then((res) => {
         this.KitsList = res.data
       })
@@ -809,7 +810,7 @@ export default {
       this.title = '详情'
     },
     handleAudit(row) {
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.openAudit = true
       this.title = '审核'
     },
@@ -826,6 +827,9 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
+      var roles=["admin"]
+      if(checkRole(roles))
+        return true
       if (row.state != 0) {    //判断条件
         return false  //不可勾选
       } else {

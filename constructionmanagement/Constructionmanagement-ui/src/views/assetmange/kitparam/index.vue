@@ -4,7 +4,7 @@
       <el-form-item label="名称" prop="kitName">
         <el-input
           v-model="queryParams.kitName"
-          placeholder="请输入配件名称"
+          placeholder="请输入零件名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -13,7 +13,7 @@
       <el-form-item label="代码" prop="kitCode">
         <el-input
           v-model="queryParams.kitCode"
-          placeholder="请输入配件代码"
+          placeholder="请输入零件代码"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -22,7 +22,7 @@
       <el-form-item label="型号" prop="kitModel">
         <el-input
           v-model="queryParams.kitModel"
-          placeholder="请输入配件型号"
+          placeholder="请输入零件型号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -79,7 +79,7 @@
         type="index"
         width="50">
       </el-table-column>
-      <el-table-column label="零配件名称" align="center" prop="kitName"/>
+      <el-table-column label="零件名称" align="center" prop="kitName"/>
       <el-table-column label="代码" align="center" prop="kitCode"/>
       <el-table-column label="型号" align="center" prop="kitModel"/>
       <el-table-column label="适用部件类型" align="center" prop="applicableKitType"/>
@@ -118,16 +118,16 @@
     <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 
-        <el-form-item label="零配件名称" prop="kitName">
-          <el-input v-model="form.kitName" placeholder="请输入零配件名称"/>
+        <el-form-item label="零件名称" prop="kitName">
+          <el-input v-model="form.kitName" placeholder="请输入零件名称"/>
         </el-form-item>
 
         <el-form-item label="代码" prop="kitCode">
-          <el-input v-model="form.kitCode" placeholder="请输入零配件代码"/>
+          <el-input v-model="form.kitCode" placeholder="请输入零件代码"/>
         </el-form-item>
 
         <el-form-item label="型号" prop="kitModel">
-          <el-input v-model="form.kitModel" placeholder="请输入零配件型号"/>
+          <el-input v-model="form.kitModel" placeholder="请输入零件型号"/>
         </el-form-item>
 
         <el-form-item label="适用部件件类型" prop="applicableKitType">
@@ -224,10 +224,10 @@ export default {
       // 表单校验
       rules: {
         kitCode: [
-          { required: true, message: '配件代码不能为空', trigger: 'blur' }
+          { required: true, message: '零件代码不能为空', trigger: 'blur' }
         ],
         kitName: [
-          { required: true, message: '配件名称不能为空', trigger: 'blur' }
+          { required: true, message: '零件名称不能为空', trigger: 'blur' }
         ],
 
       },
@@ -315,7 +315,7 @@ export default {
     /** 删除按钮操作 */
     handleDelete(row) {
       const postIds = row.id || this.ids
-      this.$modal.confirm('是否确认删除该配件参数？').then(function() {
+      this.$modal.confirm('是否确认删除该零件参数？').then(function() {
         return delKitParam(postIds)
       }).then(() => {
         this.getList()

@@ -548,7 +548,7 @@
               </el-table-column>
             </el-table>
           </el-collapse-item>
-          <el-collapse-item title="配件清单" name="4">
+          <el-collapse-item title="零件清单" name="4">
             <el-row :gutter="10" class="mb8">
               <el-col :span="1.5">
                 <el-button
@@ -570,23 +570,23 @@
             >
               <el-table-column
                 prop=""
-                label="配件名称"
+                label="零件名称"
                 width="180"
               >
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitName" placeholder="请输入配件名称"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitName" placeholder="请输入零件名称"></el-input>
                   <span v-else>{{ scope.row.kitName }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件型号" align="center" prop="">
+              <el-table-column label="零件型号" align="center" prop="">
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitModel" placeholder="请输入配件型号"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitModel" placeholder="请输入零件型号"></el-input>
                   <span v-else>{{ scope.row.kitModel }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="配件代码" align="center" prop="">
+              <el-table-column label="零件代码" align="center" prop="">
                 <template slot-scope="scope">
-                  <el-input v-if="isEditKit" v-model="scope.row.kitCode" placeholder="请输入配件代码"></el-input>
+                  <el-input v-if="isEditKit" v-model="scope.row.kitCode" placeholder="请输入零件代码"></el-input>
                   <span v-else>{{ scope.row.kitCode }}</span>
                 </template>
               </el-table-column>
@@ -874,20 +874,20 @@
               </el-table-column>
             </el-table>
           </el-collapse-item>
-          <el-collapse-item title="配件清单" name="4">
+          <el-collapse-item title="零件清单" name="4">
             <el-table
               :data="DetailKits"
               style="width: 100%"
             >
               <el-table-column
                 prop="kitName"
-                label="零配件名称"
+                label="零件名称"
                 width="180"
               >
               </el-table-column>
-              <el-table-column label="配件型号" align="center" prop="kitModel">
+              <el-table-column label="零件型号" align="center" prop="kitModel">
               </el-table-column>
-              <el-table-column label="配件代码" align="center" prop="kitCode">
+              <el-table-column label="零件代码" align="center" prop="kitCode">
               </el-table-column>
               <el-table-column label="技术参数" align="center" prop="technicalParam">
               </el-table-column>
@@ -991,6 +991,7 @@ import {
 } from '@/api/towerparam/equipmentrequire'
 import { treeselect } from '@/api/system/dept'
 import { getToken } from '@/utils/auth'
+import { checkRole } from '@/utils/permission'
 
 export default {
   name: 'equipmentTyperequire',
@@ -1204,7 +1205,7 @@ export default {
         this.EquipmentPartsList = res.data.amEquipmentRequireParts
       })
       this.reset()
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.open = true
       this.title = '修改'
     },
@@ -1262,7 +1263,7 @@ export default {
       this.title = '详情'
     },
     handleAudit(row) {
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.openAudit = true
       this.title = '审核'
     },
@@ -1330,7 +1331,7 @@ export default {
       this.isEditKit = false
       this.mainTableKey2 = Math.random()
     },
-    // 新增配件
+    // 新增零件
     addKitRow() {
       this.EquipmentKitsList.push({
           pid: new Date().getTime(),
@@ -1347,6 +1348,9 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
+      var roles=["admin"]
+      if(checkRole(roles))
+        return true
       if (row.state!=0) {    //判断条件
         return false  //不可勾选
       } else {
