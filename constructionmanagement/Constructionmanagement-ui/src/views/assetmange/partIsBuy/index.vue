@@ -226,11 +226,15 @@ export default {
       Detail: {},
       // 所属部门ID字典
       depart_idOptions: [],
-      // 表单校验
+      //部件类别
+      applicableKitTypeS: [],
     }
   },
   created() {
     this.getList()
+    this.getDicts('parts_type').then(response => {
+      this.applicableKitTypeS = response.data
+    })
   },
   methods: {
     /** 查询列表 */

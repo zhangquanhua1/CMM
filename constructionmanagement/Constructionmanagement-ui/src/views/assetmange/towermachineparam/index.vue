@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="厂家" prop="vender">
+      <el-form-item label="厂家" prop="vender" label-width="68px">
         <el-input
           v-model="queryParams.vender"
           placeholder="请输入厂家名字"
@@ -10,7 +10,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="设备型号" prop="towerMachineModel">
+      <el-form-item label="设备型号" prop="towerMachineModel" label-width="68px">
         <el-input
           v-model="queryParams.towerMachineModel"
           placeholder="请输入设备型号"
@@ -19,10 +19,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="设备名称" prop="towerMachineName">
+      <el-form-item label="设备名称" prop="towerMachineName" label-width="68px">
         <el-input
           v-model="queryParams.towerMachineName"
-          placeholder="请输入设备型号"
+          placeholder="请输入设备名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -95,11 +95,11 @@
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column
-        type="index"
-        width="50"
-      >
-      </el-table-column>
+<!--      <el-table-column-->
+<!--        type="index"-->
+<!--        width="50"-->
+<!--      >-->
+<!--      </el-table-column>-->
       <el-table-column label="设备名称" align="center" prop="towerMachineName"/>
       <el-table-column label="设备型号" align="center" prop="towerMachineModel"/>
       <el-table-column label="厂家" align="center" prop="vender"/>
@@ -141,7 +141,7 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1200px" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1200px" :close-on-click-modal="false" v-dialog-drag append-to-body>
       <el-steps :active="active" finish-status="success">
         <el-step title="设备信息录入"></el-step>
         <el-step title="部件绑定"></el-step>
@@ -314,7 +314,7 @@
     </el-dialog>
     <!--    详情弹窗-->
     <el-drawer
-      title="部件参数详情"
+      title="设备参数详情"
       size="60%"
       :visible.sync="openDetail"
       :with-header="true"
@@ -416,113 +416,113 @@ export default {
         ratedLiftingDistance: [{
           type: 'number', message: '额定起重力距必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|10000)$/,
-          message: '额定起重力距范围在0-10000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '额定起重力距范围在0-999',
           trigger: 'blur'
         }],
         maximumLiftingWeight: [{
           type: 'number', message: '最大起重量必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '最大起重量范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '最大起重量范围在0-999',
           trigger: 'blur'
         }],
         maximumRatedWeight: [{
           type: 'number', message: '最大幅度额定起重量必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '最大幅度额定起重量范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '最大幅度额定起重量范围在0-999',
           trigger: 'blur'
         }],
         maximumStartingWeightWorkingRange: [{
           type: 'number', message: '最大起重量工作幅度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '最大起重量工作幅度范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '最大起重量工作幅度范围在0-999',
           trigger: 'blur'
         }],
         maximumRangeWork: [{
           type: 'number', message: '最大工作幅度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '最大工作幅度范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '最大工作幅度范围在0-999',
           trigger: 'blur'
         }],
         maximumHeightLift: [{
           type: 'number', message: '最大起升高度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|10000)$/,
-          message: '最大起升高度范围在0-10000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '最大起升高度范围在0-999',
           trigger: 'blur'
         }],
         upDownSpeed: [{
           type: 'number', message: '起升速度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '起升速度范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '起升速度范围在0-999',
           trigger: 'blur'
         }],
         variableAmplitudeSpeed: [{
           type: 'number', message: '变幅速度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '变幅速度范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '变幅速度范围在0-999',
           trigger: 'blur'
         }],
         swivellingSpeed: [{
           type: 'number', message: '回转速度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '回转速度范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '回转速度范围在0-999',
           trigger: 'blur'
         }],
         upSpeed: [{
           type: 'number', message: '顶升速度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '顶升速度范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '顶升速度范围在0-999',
           trigger: 'blur'
         }],
         towerMachineWeight: [{
           type: 'number', message: '塔机自重必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '塔机自重范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '塔机自重范围在0-999',
           trigger: 'blur'
         }],
         balanceWeight: [{
           type: 'number', message: '平衡重量必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '平衡重量范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '平衡重量范围在0-999',
           trigger: 'blur'
         }],
         workingVoltage: [{
           type: 'number', message: '工作电压必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '工作电压范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '工作电压范围在0-999',
           trigger: 'blur'
         }],
         totalInstalledCapacity: [{
           type: 'number', message: '装机总容量必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '装机总容量范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '装机总容量范围在0-999',
           trigger: 'blur'
         }],
         motorPower: [{
           type: 'number', message: '电机功率必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '电机功率范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '电机功率范围在0-999',
           trigger: 'blur'
         }],
         frequencyConverterPower: [{
           type: 'number', message: '变频器功率必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '变频器功率范围在0-1000',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '变频器功率范围在0-999',
           trigger: 'blur'
         }]
       }
@@ -647,11 +647,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      this.form = row
-      // getKitAndPart(row.id).then((res) => {
-      //   this.paramsKit = res.data.amTowerMachineParamkits
-      //   this.paramsPart = res.data.amTowerMachineParamParts
-      // })
+      this.form = JSON.parse(JSON.stringify(row))
       this.form.amTowerMachineParamParts = this.paramsPart
       this.open = true
       this.title = '修改'

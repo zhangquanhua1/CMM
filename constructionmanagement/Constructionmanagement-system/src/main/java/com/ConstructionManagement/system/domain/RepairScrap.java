@@ -78,8 +78,19 @@ public class RepairScrap implements Serializable {
      */
     @Excel(name="申请日期",dateFormat = "yyyy-MM-dd", type = Excel.Type.EXPORT)
     private Date applyDate;
-
+    /**
+     * 附件
+     */
+    private String enclosure;
     private static final long serialVersionUID = 1L;
+
+    public String getEnclosure() {
+        return enclosure;
+    }
+
+    public void setEnclosure(String enclosure) {
+        this.enclosure = enclosure;
+    }
 
     public Long getRepairId() {
         return repairId;

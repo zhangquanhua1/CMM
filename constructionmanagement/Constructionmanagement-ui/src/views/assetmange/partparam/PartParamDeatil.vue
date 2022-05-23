@@ -55,7 +55,10 @@ export default {
   name: 'partParamDetail',
   props: {
     Detail: {},
-    KitsList:[]
+    KitsList:{
+      type :Array,
+      default:() =>[]
+    },
   },
   data() {
     return {

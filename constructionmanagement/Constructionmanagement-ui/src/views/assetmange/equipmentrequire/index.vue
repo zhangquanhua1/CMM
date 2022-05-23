@@ -129,7 +129,8 @@
           size="mini"
           @click="handleImport"
           v-hasPermi="['asset:manage:equipmentrequire:import']"
-        >导入</el-button>
+        >导入
+        </el-button>
       </el-col>
 
       <el-col :span="1.5">
@@ -147,7 +148,7 @@
     </el-row>
     <!--显示表格-->
     <el-table v-loading="loading" :data="postList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" :selectable='selectInit' width="55" align="center"/>
+      <el-table-column type="selection" :selectable="selectInit" width="55" align="center"/>
       <el-table-column
         type="index"
         width="50"
@@ -216,6 +217,13 @@
             @click="handleDetail(scope.row)"
           >设备详情
           </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-more"
+            @click="checkProgress(scope.row)"
+          >查看进度
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -227,7 +235,9 @@
       @pagination="getList"
     />
     <!-- 添加 -->
-    <el-dialog :title="title" :visible.sync="open" width="1200px"  :close-on-click-modal = "false" v-dialog-drag class="spec-dialog" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1200px" :close-on-click-modal="false" v-dialog-drag
+               class="spec-dialog" append-to-body
+    >
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-collapse v-model="activeNames" accordion>
           <el-collapse-item title="设备信息" name="1">
@@ -329,7 +339,7 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="需求发起人" prop="demandSponsors">
+                <el-form-item label="需求发起人" label-width="100px" prop="demandSponsors">
                   <el-input v-model="form.demandSponsors" placeholder="请输入需求发起人"/>
                 </el-form-item>
               </el-col>
@@ -341,7 +351,7 @@
             </el-row>
           </el-collapse-item>
           <el-collapse-item title="设备参数" name="2">
-            <div v-if="EquipmentDetail!=null&&EquipmentDetail!=undefined">
+            <div v-if="EquipmentDetail!=null&&EquipmentDetail!=undefined&&form.standardModel">
               <el-row>
                 <el-col :span="4" class="col_title">设备名称：</el-col>
                 <el-col :span="4">
@@ -658,7 +668,7 @@
       :with-header="true"
     >
       <div style="margin-left: 10px">
-        <el-collapse v-model="activeNames" accordion>
+        <el-collapse v-model="activeNames">
           <el-collapse-item title="设备信息" name="1">
             <el-row>
               <el-col :span="4" class="col_title">设备名称：</el-col>
@@ -939,10 +949,14 @@
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
           <div class="el-upload__tip" slot="tip">
-            <el-checkbox v-model="upload.updateSupport" /> 是否更新已经存在的数据
+            <el-checkbox v-model="upload.updateSupport"/>
+            是否更新已经存在的数据
           </div>
           <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;"
+                   @click="importTemplate"
+          >下载模板
+          </el-link>
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
@@ -950,7 +964,29 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
-
+    <el-dialog :title="title" :visible.sync="openProgress" @close="cancel" width="20%" height="200px"
+               class="spec-dialog"
+               append-to-body
+    >
+      <div class="block">
+        <el-timeline>
+          <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :icon="activity.icon"
+            :type="activity.type"
+            :color="activity.color"
+            :size="activity.size"
+            :timestamp="activity.timestamp"
+          >
+            {{ activity.content }}
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -992,6 +1028,7 @@ import {
 import { treeselect } from '@/api/system/dept'
 import { getToken } from '@/utils/auth'
 import { checkRole } from '@/utils/permission'
+import { parseTime } from '@/utils/ruoyi'
 
 export default {
   name: 'equipmentTyperequire',
@@ -1078,15 +1115,15 @@ export default {
         // 是否显示弹出层（用户导入）
         open: false,
         // 弹出层标题（用户导入）
-        title: "",
+        title: '',
         // 是否禁用上传
         isUploading: false,
         // 是否更新已经存在的用户数据
         updateSupport: 0,
         // 设置上传的请求头部
-        headers: { Authorization: "Bearer " + getToken() },
+        headers: { Authorization: 'Bearer ' + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/asset/equipmentrequire/importData"
+        url: process.env.VUE_APP_BASE_API + '/asset/equipmentrequire/importData'
       },
       // 表单校验
       rules: {
@@ -1096,7 +1133,10 @@ export default {
         equipmentCount: [{
           type: 'number', message: '设备数量必须为数字值', trigger: 'blur'
         }]
-      }
+      },
+      //查看进度
+      openProgress: false,
+      activities: []
     }
   },
   created() {
@@ -1127,8 +1167,9 @@ export default {
       this.openDetail = false
       this.openAudit = false
       this.EquipmentKitsList = []
-      this.EquipmentPartsList = [],
-        this.reset()
+      this.EquipmentPartsList = []
+      this.openProgress = false
+      this.reset()
     },
     //获取可用的仓库
     getUsedWH() {
@@ -1253,12 +1294,13 @@ export default {
         this.DetailKits = res.data.amEquipmentRequireKits
         this.DetailParts = res.data.amEquipmentRequireParts
       })
-      if(row.standardModel==undefined&&row.standardModel==null&&row.equipmentType!=undefined&&row.equipmentType!=null) {
+      if (row.standardModel == undefined && row.standardModel == null && row.equipmentType != undefined && row.equipmentType != null) {
         getEquipmentParam(row.standardModel, row.equipmentType).then(response => {
           this.EquipmentDetail = response.data
         })
-      }else
-        this.EquipmentDetail=undefined
+      } else {
+        this.EquipmentDetail = undefined
+      }
       this.drawer = true
       this.title = '详情'
     },
@@ -1268,6 +1310,7 @@ export default {
       this.title = '审核'
     },
     submitAudit() {
+      this.form.auditDate = new Date()
       updateEquipmentRequire(this.form).then(response => {
         this.$modal.msgSuccess('修改成功')
         this.openAudit = false
@@ -1348,10 +1391,11 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
-      var roles=["admin"]
-      if(checkRole(roles))
+      var roles = ['admin']
+      if (checkRole(roles)) {
         return true
-      if (row.state!=0) {    //判断条件
+      }
+      if (row.state != 0) {    //判断条件
         return false  //不可勾选
       } else {
         return true  //可勾选
@@ -1366,29 +1410,73 @@ export default {
 
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "设备需求导入";
-      this.upload.open = true;
+      this.upload.title = '设备需求导入'
+      this.upload.open = true
     },
     /** 下载模板操作 */
     importTemplate() {
-      this.download('/asset/equipmentrequire/importTemplate', {
-      }, `equipmentrequire_template_${new Date().getTime()}.xlsx`)
+      this.download('/asset/equipmentrequire/importTemplate', {}, `equipmentrequire_template_${new Date().getTime()}.xlsx`)
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {
-      this.upload.isUploading = true;
+      this.upload.isUploading = true
     },
     // 文件上传成功处理
     handleFileSuccess(response, file, fileList) {
-      this.upload.open = false;
-      this.upload.isUploading = false;
-      this.$refs.upload.clearFiles();
-      this.$alert(response.msg, "导入结果", { dangerouslyUseHTMLString: true });
-      this.getList();
+      this.upload.open = false
+      this.upload.isUploading = false
+      this.$refs.upload.clearFiles()
+      this.$alert(response.msg, '导入结果', { dangerouslyUseHTMLString: true })
+      this.getList()
     },
     // 提交上传文件
     submitFileForm() {
-      this.$refs.upload.submit();
+      this.$refs.upload.submit()
+    },
+    checkProgress(row) {
+      this.title = '查看部件需求申请进度'
+      this.openProgress = true
+      this.activities = [{
+        content: '待审核',
+        timestamp: '',
+        size: 'large',
+        type: 'success'
+      },
+        {
+          content: '审核结果',
+          timestamp: '',
+          color: '',
+          type: ''
+        },
+        {
+          content: '待采购',
+          timestamp: '',
+          color: '',
+          type: ''
+        }, {
+          content: '已采购',
+          timestamp: '',
+          size: 'large',
+          type: ''
+        }]
+      if (row.state == 1 && row.isBuy == 1) {
+        this.activities[1].content = '审核通过'
+        this.activities[1].type = 'success'
+        this.activities[1].timestamp = parseTime(row.auditDate)
+        this.activities[2].type = 'success'
+        this.activities[3].type = 'success'
+        this.activities[3].timestamp = parseTime(row.buyDate)
+      } else if (row.state == 1) {
+        this.activities[1].content = '审核通过'
+        this.activities[1].type = 'success'
+        this.activities[1].timestamp = parseTime(row.auditDate)
+        this.activities[2].type = 'success'
+      } else if (row.state == 2) {
+        this.activities[1].content = '审核不通过'
+        this.activities[1].type = 'danger'
+        this.activities[1].timestamp = parseTime(row.auditDate)
+      }
+
     }
 
   },

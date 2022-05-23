@@ -45,14 +45,14 @@ public class OutStockApply implements Serializable, IExcelDataModel, IExcelModel
      * 型号
      */
     @Excel(name = "型号",width = 20)
-    @NotNull(message="型号不能为空")
+   // @NotNull(message="型号不能为空")
     private String model;
 
     /**
      * 申请发货数量
      */
     @Excel(name = "申请发货数量",width = 30)
-    @Min(value=0,message="发货数量最小为0")
+   // @Min(value=0,message="发货数量最小为0")
     private Long amount;
 
     /**
@@ -66,7 +66,7 @@ public class OutStockApply implements Serializable, IExcelDataModel, IExcelModel
      */
     @Excel(name = "申请人",width = 30)
     @Length(max =20)
-    @NotNull(message="申请人不能为空")
+    //@NotNull(message="申请人不能为空")
     private String applicant;
 
     /**
@@ -74,8 +74,19 @@ public class OutStockApply implements Serializable, IExcelDataModel, IExcelModel
      */
     @Excel(name = "是否出库",replace={"否_0","是_1"})
     private Integer status;
-
+    /**
+     * 申请原因
+     */
+    private String reasons;
     private static final long serialVersionUID = 1L;
+
+    public String getReasons() {
+        return reasons;
+    }
+
+    public void setReasons(String reasons) {
+        this.reasons = reasons;
+    }
 
     public Long getId() {
         return id;

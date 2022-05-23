@@ -24,6 +24,9 @@ import com.ConstructionManagement.framework.config.threadpoolconfig.AsyncFactory
 import com.ConstructionManagement.system.service.ISysConfigService;
 import com.ConstructionManagement.system.service.ISysUserService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 登录校验方法
  *
@@ -56,7 +59,7 @@ public class SysLoginService
      * @param uuid 唯一标识
      * @return 结果
      */
-    public String login(String username, String password, String code, String uuid)
+    public Map<String,String> login(String username, String password, String code, String uuid)
     {
         boolean captchaOnOff = configService.selectCaptchaOnOff();
         // 验证码开关
@@ -92,7 +95,10 @@ public class SysLoginService
 
         recordLoginInfo(loginUser.getUserId());
         // 生成token
-        return tokenService.createToken(loginUser);
+        HashMap<String, String> resultMap = new HashMap<>();
+        resultMap.put("token", tokenService.createToken(loginUser));
+        resultMap.put("userId", String.valueOf(loginUser.getUserId()));
+        return resultMap;
     }
 
     /**

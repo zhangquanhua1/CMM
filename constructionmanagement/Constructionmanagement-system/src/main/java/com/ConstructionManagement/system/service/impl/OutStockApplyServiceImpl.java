@@ -50,6 +50,11 @@ public class OutStockApplyServiceImpl implements IOutStockApplyService {
     }
 
     @Override
+    public int insertBatch(List<OutStockApply> lists) {
+        return os.insertBatch(lists);
+    }
+
+    @Override
     public String importData(ExcelImportResult<OutStockApply> result, Boolean isUpdateSupport, String operName) {
         int successNum = 0;
         int failureNum = 0;
@@ -57,16 +62,18 @@ public class OutStockApplyServiceImpl implements IOutStockApplyService {
         StringBuilder failureMsg = new StringBuilder();
         //校验正确的数据
         List<OutStockApply> Succeslist = result.getList();
-        for (OutStockApply e : Succeslist) {
-            this.insertSelective(e);
-            successNum++;
-            successMsg.append("<br/>" + successNum + "、名称 " + e.getName()+" 、型号"+e.getModel() + " 导入成功");
-        }
-        if(result.isVerifyFail()){
+        int successResult=this.insertBatch(Succeslist);
+        successMsg.append("<br/>" + "共" +successResult+ "条数据导入成功");
+//        for (OutStockApply e : Succeslist) {
+//            this.insertSelective(e);
+//            successNum++;
+//            successMsg.append("<br/>" + successNum + "、名称 " + e.getName() + " 、型号" + e.getModel() + " 导入成功");
+//        }
+        if (result.isVerifyFail()) {
             //失败的数据
             List<OutStockApply> failList = result.getFailList();
-            for(OutStockApply fail:failList){
-                failureMsg.append("<br/>" + "第"+(fail.getRowNum()+1)+"行，"+fail.getErrorMsg());
+            for (OutStockApply fail : failList) {
+                failureMsg.append("<br/>" + "第" + (fail.getRowNum() + 1) + "行，" + fail.getErrorMsg());
             }
             failureMsg.insert(0, "共 " + failList.size() + " 条数据导入失败，错误如下：");
             throw new ServiceException(failureMsg.toString());

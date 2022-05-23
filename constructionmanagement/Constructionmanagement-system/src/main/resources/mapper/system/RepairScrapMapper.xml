@@ -14,10 +14,11 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="audit_advice" jdbcType="VARCHAR" property="auditAdvice" />
     <result column="apply_date" jdbcType="TIMESTAMP" property="applyDate" />
+    <result column="enclosure" jdbcType="VARCHAR" property="enclosure" />
   </resultMap>
   <sql id="Base_Column_List">
     repair_id, `name`, model, `type`, apply_type, amount, measurement_unit, applicant,
-    reason, `status`, audit_advice, apply_date
+    reason, `status`, audit_advice, apply_date,enclosure
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -93,6 +94,9 @@
       <if test="applyDate != null">
         apply_date,
       </if>
+      <if test="enclosure != null">
+        enclosure,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="name != null">
@@ -127,6 +131,9 @@
       </if>
       <if test="applyDate != null">
         #{applyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enclosure != null">
+        #{enclosure,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -165,6 +172,9 @@
       </if>
       <if test="applyDate != null">
         apply_date = #{applyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enclosure != null">
+        enclosure=#{enclosure,jdbcType=VARCHAR},
       </if>
     </set>
     where repair_id = #{repairId,jdbcType=BIGINT}

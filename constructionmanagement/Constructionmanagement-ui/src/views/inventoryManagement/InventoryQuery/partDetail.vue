@@ -61,6 +61,17 @@
 
 
       </el-collapse-item>
+      <div v-else style="margin-left: 50%">
+        <el-row>
+          <el-col :sm="12" :lg="6">
+            <el-result icon="info" title="信息提示" >
+              <template slot="extra">
+                <h2 >暂无更多详细信息</h2>
+              </template>
+            </el-result>
+          </el-col>
+        </el-row>
+      </div>
     </el-collapse>
   </div>
 </template>
@@ -87,6 +98,8 @@ export default {
   },
   methods: {
     getPartInfo(id) {
+      if(id==null||id==undefined||id=='')
+        return
       listPartById(id).then(response => {
         this.Detail = response.data
       })

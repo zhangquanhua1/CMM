@@ -66,6 +66,7 @@ public class WmKitEntryController extends BaseController {
     @PreAuthorize("@ss.hasPermi('inventory:manage:kitentry:list')")
     @GetMapping("/{id}")
     public AjaxResult selectById(@PathVariable Long id) {
+        if(id==null) return AjaxResult.success("参数为空");
         WmKitEntry result = ke.selectById(id);
         return AjaxResult.success(result);
     }

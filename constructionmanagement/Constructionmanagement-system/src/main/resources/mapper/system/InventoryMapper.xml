@@ -57,6 +57,13 @@
         </where>
 
     </select>
+    <select id="selectByIds" resultMap="BaseResultMap" >
+        select <include refid="Base_Column_List"/>  from inventory
+        where id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
     <delete id="deleteByIds" parameterType="java.lang.Long">
         delete from inventory
         where id in

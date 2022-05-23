@@ -84,7 +84,7 @@
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
     <el-table v-loading="loading" :data="DataList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" :selectable="selectInit"  width="55" align="center"/>
+      <el-table-column type="selection" :selectable="selectInit" width="55" align="center"/>
       <el-table-column
         type="index"
         width="50"
@@ -109,6 +109,7 @@
           <span>{{ parseTime2(scope.row.applyDate) }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="申请原因" align="center" prop="reasons"/>
       <el-table-column label="审核状态" align="center" prop="status" :filters="[{ text: '待审核', value: 0 },
       { text: '已出库', value: 1 },{ text: '拒绝', value: 2 }]"
                        :filter-method="filterState"
@@ -200,8 +201,6 @@
               <el-input v-model="form.applicant" placeholder="请输入申请人"/>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="申请日期">
               <el-date-picker
@@ -212,6 +211,13 @@
                 type="date"
                 placeholder="选择申请日期"
               ></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="申请原因" prop="reasons">
+              <el-input type="textarea" autosize v-model="form.reasons" placeholder="请输入申请原因"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -383,7 +389,8 @@ export default {
         amount: undefined,
         applicant: undefined,
         applyDate: undefined,
-        status: undefined
+        status: undefined,
+        reasons:undefined
       },
         this.resetForm('form')
     },
@@ -505,15 +512,16 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
-      var roles=["admin"]
-      if(checkRole(roles))
+      var roles = ['admin']
+      if (checkRole(roles)) {
         return true
+      }
       if (row.status != 0) {    //判断条件
         return false  //不可勾选
       } else {
         return true  //可勾选
       }
-    },
+    }
   }
 }
 </script>

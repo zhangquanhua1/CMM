@@ -33,13 +33,15 @@
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="isBuy" jdbcType="INTEGER" property="isBuy" />
     <result column="belong_warehouse" jdbcType="VARCHAR" property="belongWarehouse" />
+    <result column="audit_date" jdbcType="TIMESTAMP" property="auditDate" />
+    <result column="buy_date" jdbcType="TIMESTAMP" property="buyDate" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_num, vender, part_type, equipment, total_assets, rights_unit, kit_properties,
     part_name, kit_standard, brachium, unit_type, measurement_unit, standard_section_height,
     part_model, part_code, amount, single_price, whole_machine_accessories, demand_sponsors,
     procurement_causes,`state`, audit_advice,insert_person, insert_person_depart_id, update_person, update_person_depart_id,
-    insert_date, update_date,isBuy,belong_warehouse
+    insert_date, update_date,isBuy,belong_warehouse,audit_date,buy_date
   </sql>
   <select id="selectBySelective" parameterType="com.ConstructionManagement.system.domain.AmPartRequire" resultMap="BaseResultMap">
     select
@@ -66,6 +68,9 @@
       </if>
       <if test="insertDate != null">
         and   date_format(insert_date,'%y%m%d') &gt;= date_format(#{insertDate},'%y%m%d')
+      </if>
+      <if test="state != null">
+        and   `state`=#{state}
       </if>
     </where>
   </select>
@@ -348,11 +353,17 @@
       <if test="belongWarehouse != null">
         belong_warehouse = #{belongWarehouse,jdbcType=VARCHAR},
       </if>
+      <if test="auditDate != null">
+        audit_date = #{auditDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="buyDate != null">
+        buy_date = #{buyDate,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="isBuyIds" parameterType="java.lang.Long">
-    update am_part_require set isBuy=1
+    update am_part_require set isBuy=1,buy_date=now()
     where id in
     <foreach collection="array" item="id" open="(" separator="," close=")">
       #{id}

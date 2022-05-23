@@ -175,6 +175,31 @@ public class AmEquipmentRequire implements Serializable, IExcelDataModel, IExcel
      */
     @Excel(name = "是否已采购", replace = {"待采购_0", "已采购_1"}, width = 20, needMerge = true)
     private Integer isBuy;
+
+    /**
+     * 审核时间
+     */
+    private Date auditDate;
+    /**
+     * 采购时间
+     */
+    private Date buyDate;
+
+    public Date getAuditDate() {
+        return auditDate;
+    }
+
+    public void setAuditDate(Date auditDate) {
+        this.auditDate = auditDate;
+    }
+
+    public Date getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
+    }
     private static final long serialVersionUID = 1L;
 
     public List<AmEquipmentRequireKit> getAmEquipmentRequireKits() {

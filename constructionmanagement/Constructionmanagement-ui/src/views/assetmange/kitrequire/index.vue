@@ -29,10 +29,10 @@
         />
       </el-form-item>
 
-      <el-form-item label="所属设备" prop="equipment">
+      <el-form-item label="适用部件类别" prop="equipment">
         <el-input
           v-model="queryParams.equipment"
-          placeholder="请输入所属设备"
+          placeholder="请输入适用部件类别"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -84,7 +84,8 @@
           size="mini"
           @click="handleImport"
           v-hasPermi="['asset:manage:kitrequire:import']"
-        >导入</el-button>
+        >导入
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -173,6 +174,13 @@
             @click="handleDetail(scope.row)"
           >需求详情
           </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-more"
+            @click="checkProgress(scope.row)"
+          >查看进度
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -184,7 +192,7 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1200px" v-dialog-drag append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="1200px" :close-on-click-modal="false" v-dialog-drag append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="8">
@@ -230,7 +238,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="资产总计" prop="totalAssets">
-              <el-input readonly="true" v-model.number="form.totalAssets" placeholder="资产总计"/>
+              <el-input readonly v-model.number="form.totalAssets" placeholder="资产总计"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -257,11 +265,11 @@
               <el-input v-model.number="form.brachium" placeholder="请输入臂长(米)"/>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="设备型号" prop="unitType">
-              <el-input v-model="form.unitType" placeholder="请输入设备型号"/>
-            </el-form-item>
-          </el-col>
+          <!--          <el-col :span="8">-->
+          <!--            <el-form-item label="设备型号" prop="unitType">-->
+          <!--              <el-input v-model="form.unitType" placeholder="请输入设备型号"/>-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
           <el-col :span="8">
             <el-form-item label="计量单位" prop="measurementUnit">
               <el-select v-model="form.measurementUnit" placeholder="请选择计量单位">
@@ -352,92 +360,92 @@
       :with-header="true"
     >
       <div style="margin-left: 10px">
-          <el-row>
-            <el-col :span="4" class="col_title">零件名称：</el-col>
-            <el-col :span="4">{{ Detail.kitName != null ? Detail.kitName : '-' }}</el-col>
-            <el-col :span="4" class="col_title">产品编号：</el-col>
-            <el-col :span="4">{{ Detail.productNum != null ? Detail.productNum : '-' }}</el-col>
-            <el-col :span="4" class="col_title">生产厂家：</el-col>
-            <el-col :span="4">{{ Detail.vender != null ? Detail.vender : '-' }}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">适用部件类别：</el-col>
-            <el-col :span="4">{{ Detail.kitType != null ? Detail.kitType : '-' }}</el-col>
-            <el-col :span="4" class="col_title">所属设备：</el-col>
-            <el-col :span="4">{{ Detail.equipment != null ? Detail.equipment : '-' }}</el-col>
-            <el-col :span="4" class="col_title">资产总计：</el-col>
-            <el-col :span="4">{{ Detail.totalAssets != null ? Detail.totalAssets : '-' }}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">产权单位：</el-col>
-            <el-col :span="4">{{ Detail.rightsUnit != null ? Detail.rightsUnit : '-' }}</el-col>
-            <el-col :span="4" class="col_title">零件属性：</el-col>
-            <el-col :span="4">{{ Detail.kitProperties != null ? Detail.kitProperties : '-' }}</el-col>
-            <el-col :span="4" class="col_title">零件规格：</el-col>
-            <el-col :span="4">{{ Detail.kitStandard != null ? Detail.kitStandard : '-' }}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">臂长：</el-col>
-            <el-col :span="4">{{ Detail.brachium != null ? Detail.brachium : '-' }} 米</el-col>
+        <el-row>
+          <el-col :span="4" class="col_title">零件名称：</el-col>
+          <el-col :span="4">{{ Detail.kitName != null ? Detail.kitName : '-' }}</el-col>
+          <el-col :span="4" class="col_title">产品编号：</el-col>
+          <el-col :span="4">{{ Detail.productNum != null ? Detail.productNum : '-' }}</el-col>
+          <el-col :span="4" class="col_title">生产厂家：</el-col>
+          <el-col :span="4">{{ Detail.vender != null ? Detail.vender : '-' }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">适用部件类别：</el-col>
+          <el-col :span="4">{{ Detail.kitType != null ? Detail.kitType : '-' }}</el-col>
+          <el-col :span="4" class="col_title">所属设备：</el-col>
+          <el-col :span="4">{{ Detail.equipment != null ? Detail.equipment : '-' }}</el-col>
+          <el-col :span="4" class="col_title">资产总计：</el-col>
+          <el-col :span="4">{{ Detail.totalAssets != null ? Detail.totalAssets : '-' }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">产权单位：</el-col>
+          <el-col :span="4">{{ Detail.rightsUnit != null ? Detail.rightsUnit : '-' }}</el-col>
+          <el-col :span="4" class="col_title">零件属性：</el-col>
+          <el-col :span="4">{{ Detail.kitProperties != null ? Detail.kitProperties : '-' }}</el-col>
+          <el-col :span="4" class="col_title">零件规格：</el-col>
+          <el-col :span="4">{{ Detail.kitStandard != null ? Detail.kitStandard : '-' }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">臂长：</el-col>
+          <el-col :span="4">{{ Detail.brachium != null ? Detail.brachium : '-' }} 米</el-col>
 
-            <el-col :span="4" class="col_title">设备型号：</el-col>
-            <el-col :span="4">{{ Detail.unitType != null ? Detail.unitType : '-' }}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">计量单位：</el-col>
-            <el-col :span="4">{{ Detail.measurementUnit != null ? Detail.measurementUnit : '-' }}</el-col>
-            <el-col :span="4" class="col_title">标准节高度：</el-col>
-            <el-col :span="4">{{ Detail.standardSectionHeight != null ? Detail.standardSectionHeight : '-' }}米
-            </el-col>
-            <el-col :span="4" class="col_title">零件型号：</el-col>
-            <el-col :span="4">{{ Detail.kitModel != null ? Detail.kitModel : '-' }}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">零件代码：</el-col>
-            <el-col :span="4">{{ Detail.kitCode != null ? Detail.kitCode : '-' }}</el-col>
-            <el-col :span="4" class="col_title">数量：</el-col>
-            <el-col :span="4">{{ Detail.amount != null ? Detail.amount : '-' }}</el-col>
-            <el-col :span="4" class="col_title">单价：</el-col>
-            <el-col :span="4">{{ Detail.singlePrice != null ? Detail.singlePrice : '-' }}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">归属仓库：</el-col>
-            <el-col :span="4">{{ Detail.belongWarehouse != null ? Detail.belongWarehouse : '-' }}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">是否整机配件：</el-col>
-            <el-col :span="4"
-            ><span v-if="Detail.wholeMachineAccessories>0">是</span>
-              <span v-else>否</span></el-col>
-            <el-col :span="4" class="col_title">发起日期：</el-col>
-            <el-col :span="4">{{ Detail.initDate != null ? parseTime2(Detail.initDate) : '-' }}</el-col>
-            <el-col :span="4" class="col_title">审核状态：</el-col>
-            <el-col :span="4"><span v-if="Detail.state>0">是</span>
-              <span v-else>否</span></el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">录入人：</el-col>
-            <el-col :span="4">{{ Detail.insertPerson != null ? Detail.insertPerson : '-' }}</el-col>
-            <el-col :span="4" class="col_title">录入时间：</el-col>
-            <el-col :span="4">{{ Detail.insertDate != null ? parseTime2(Detail.insertDate) : '-' }}</el-col>
-            <el-col :span="4" class="col_title">录入人部门：</el-col>
-            <el-col :span="4">
-              {{ Detail.insertPersonDepartId != null ? getDeptName(Detail.insertPersonDepartId) : '-' }}
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="4" class="col_title">更新人部门：</el-col>
-            <el-col :span="4">
-              {{ Detail.updatePersonDepartId != null ? getDeptName(Detail.updatePersonDepartId) : '-' }}
-            </el-col>
-            <el-col :span="4" class="col_title">更新人：</el-col>
-            <el-col :span="4">{{ Detail.updatePerson != null ? Detail.updatePerson : '-' }}</el-col>
-            <el-col :span="4" class="col_title">更新时间：</el-col>
-            <el-col :span="4">{{ Detail.updateDate != null ? parseTime2(Detail.updateDate) : '-' }}</el-col>
-          </el-row>
+          <!--            <el-col :span="4" class="col_title">设备型号：</el-col>-->
+          <!--            <el-col :span="4">{{ Detail.unitType != null ? Detail.unitType : '-' }}</el-col>-->
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">计量单位：</el-col>
+          <el-col :span="4">{{ Detail.measurementUnit != null ? Detail.measurementUnit : '-' }}</el-col>
+          <el-col :span="4" class="col_title">标准节高度：</el-col>
+          <el-col :span="4">{{ Detail.standardSectionHeight != null ? Detail.standardSectionHeight : '-' }}米
+          </el-col>
+          <el-col :span="4" class="col_title">零件型号：</el-col>
+          <el-col :span="4">{{ Detail.kitModel != null ? Detail.kitModel : '-' }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">零件代码：</el-col>
+          <el-col :span="4">{{ Detail.kitCode != null ? Detail.kitCode : '-' }}</el-col>
+          <el-col :span="4" class="col_title">数量：</el-col>
+          <el-col :span="4">{{ Detail.amount != null ? Detail.amount : '-' }}</el-col>
+          <el-col :span="4" class="col_title">单价：</el-col>
+          <el-col :span="4">{{ Detail.singlePrice != null ? Detail.singlePrice : '-' }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">归属仓库：</el-col>
+          <el-col :span="4">{{ Detail.belongWarehouse != null ? Detail.belongWarehouse : '-' }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">是否整机配件：</el-col>
+          <el-col :span="4"
+          ><span v-if="Detail.wholeMachineAccessories>0">是</span>
+            <span v-else>否</span></el-col>
+          <el-col :span="4" class="col_title">发起日期：</el-col>
+          <el-col :span="4">{{ Detail.initDate != null ? parseTime2(Detail.initDate) : '-' }}</el-col>
+          <el-col :span="4" class="col_title">审核状态：</el-col>
+          <el-col :span="4"><span v-if="Detail.state>0">是</span>
+            <span v-else>否</span></el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">录入人：</el-col>
+          <el-col :span="4">{{ Detail.insertPerson != null ? Detail.insertPerson : '-' }}</el-col>
+          <el-col :span="4" class="col_title">录入时间：</el-col>
+          <el-col :span="4">{{ Detail.insertDate != null ? parseTime2(Detail.insertDate) : '-' }}</el-col>
+          <el-col :span="4" class="col_title">录入人部门：</el-col>
+          <el-col :span="4">
+            {{ Detail.insertPersonDepartId != null ? getDeptName(Detail.insertPersonDepartId) : '-' }}
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4" class="col_title">更新人部门：</el-col>
+          <el-col :span="4">
+            {{ Detail.updatePersonDepartId != null ? getDeptName(Detail.updatePersonDepartId) : '-' }}
+          </el-col>
+          <el-col :span="4" class="col_title">更新人：</el-col>
+          <el-col :span="4">{{ Detail.updatePerson != null ? Detail.updatePerson : '-' }}</el-col>
+          <el-col :span="4" class="col_title">更新时间：</el-col>
+          <el-col :span="4">{{ Detail.updateDate != null ? parseTime2(Detail.updateDate) : '-' }}</el-col>
+        </el-row>
       </div>
     </el-drawer>
-<!--    审核对话框-->
+    <!--    审核对话框-->
     <el-dialog :title="title" :visible.sync="openAudit" @close="getList" width="25%" class="spec-dialog" append-to-body>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="是否通过" prop="auditAdvice">
@@ -456,8 +464,8 @@
       </div>
     </el-dialog>
 
-<!--    导入对话框-->
-    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+    <!--    导入对话框-->
+    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" :close-on-click-modal="false" append-to-body>
       <el-upload
         ref="upload"
         :limit="1"
@@ -474,15 +482,42 @@
         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
         <div class="el-upload__tip text-center" slot="tip">
           <div class="el-upload__tip" slot="tip">
-            <el-checkbox v-model="upload.updateSupport" /> 是否更新已经存在的数据
+            <el-checkbox v-model="upload.updateSupport"/>
+            是否更新已经存在的数据
           </div>
           <span>仅允许导入xls、xlsx格式文件。</span>
-          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;"
+                   @click="importTemplate"
+          >下载模板
+          </el-link>
         </div>
       </el-upload>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitFileForm">确 定</el-button>
         <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :title="title" :visible.sync="openProgress" @close="cancel" width="20%" height="200px" class="spec-dialog"
+               append-to-body
+    >
+      <div class="block">
+        <el-timeline>
+          <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :icon="activity.icon"
+            :type="activity.type"
+            :color="activity.color"
+            :size="activity.size"
+            :timestamp="activity.timestamp"
+          >
+            {{ activity.content }}
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -500,7 +535,7 @@ import { treeselect } from '@/api/system/dept'
 import { getAllUseWH } from '@/api/towerparam/equipmentrequire'
 import { getToken } from '@/utils/auth'
 import { checkRole } from '@/utils/permission'
-
+import { parseTime } from '@/utils/ruoyi'
 export default {
   name: 'kitrequire',
   // dicts: ['sys_normal_disable'],
@@ -553,15 +588,15 @@ export default {
         // 是否显示弹出层（用户导入）
         open: false,
         // 弹出层标题（用户导入）
-        title: "",
+        title: '',
         // 是否禁用上传
         isUploading: false,
         // 是否更新已经存在的用户数据
         updateSupport: 0,
         // 设置上传的请求头部
-        headers: { Authorization: "Bearer " + getToken() },
+        headers: { Authorization: 'Bearer ' + getToken() },
         // 上传的地址
-        url: process.env.VUE_APP_BASE_API + "/asset/kitrequire/importData"
+        url: process.env.VUE_APP_BASE_API + '/asset/kitrequire/importData'
       },
       // 表单校验
       rules: {
@@ -571,15 +606,15 @@ export default {
         brachium: [{
           type: 'number', message: '臂长必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '臂长范围在0-1000 米',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '臂长范围在0-999 米',
           trigger: 'blur'
         }],
         standardSectionHeight: [{
           type: 'number', message: '标准节高度必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '标准节高度范围在0-1000米',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '标准节高度范围在0-999米',
           trigger: 'blur'
         }],
         amount: [{
@@ -591,7 +626,10 @@ export default {
         totalAssets: [{
           type: 'number', message: '资产总计必须为数字值', trigger: 'blur'
         }]
-      }
+      },
+      //查看进度
+      openProgress: false,
+      activities: []
     }
   },
   created() {
@@ -612,6 +650,7 @@ export default {
         this.total = response.total
         this.loading = false
       })
+
     },
     /** 查询部门下拉树结构 */
     getTreeselect() {
@@ -628,6 +667,8 @@ export default {
       this.open = false
       this.openDetail = false
       this.openAudit = false
+      this.openProgress = false
+      this.activities=[]
       this.reset()
     },
     // 表单重置
@@ -742,6 +783,7 @@ export default {
       this.title = '审核'
     },
     submitAudit() {
+      this.form.auditDate=new Date();
       updateKitRequire(this.form).then(response => {
         this.$modal.msgSuccess('修改成功')
         this.openAudit = false
@@ -753,9 +795,10 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
-      var roles=["admin"]
-      if(checkRole(roles))
+      var roles = ['admin']
+      if (checkRole(roles)) {
         return true
+      }
       if (row.state != 0) {    //判断条件
         return false  //不可勾选
       } else {
@@ -770,31 +813,74 @@ export default {
     },
     /** 导入按钮操作 */
     handleImport() {
-      this.upload.title = "零件需求导入";
-      this.upload.open = true;
+      this.upload.title = '零件需求导入'
+      this.upload.open = true
     },
     /** 下载模板操作 */
     importTemplate() {
-      this.download('/asset/kitrequire/importTemplate', {
-      }, `kitrequire_template_${new Date().getTime()}.xlsx`)
+      this.download('/asset/kitrequire/importTemplate', {}, `kitrequire_template_${new Date().getTime()}.xlsx`)
     },
     // 文件上传中处理
     handleFileUploadProgress(event, file, fileList) {
-      this.upload.isUploading = true;
+      this.upload.isUploading = true
     },
     // 文件上传成功处理
     handleFileSuccess(response, file, fileList) {
-      this.upload.open = false;
-      this.upload.isUploading = false;
-      this.$refs.upload.clearFiles();
-      this.$alert(response.msg, "导入结果", { dangerouslyUseHTMLString: true });
-      this.getList();
+      this.upload.open = false
+      this.upload.isUploading = false
+      this.$refs.upload.clearFiles()
+      this.$alert(response.msg, '导入结果', { dangerouslyUseHTMLString: true })
+      this.getList()
     },
     // 提交上传文件
     submitFileForm() {
-      this.$refs.upload.submit();
-    }
+      this.$refs.upload.submit()
+    },
+    checkProgress(row) {
+      this.title = '查看零件需求申请进度'
+      this.openProgress = true
+      this.activities=[{
+          content: '待审核',
+          timestamp: '',
+          size: 'large',
+          type: 'success'
+        },
+        {
+          content: '审核结果',
+          timestamp: '',
+          color: '',
+          type: ''
+        },
+        {
+          content: '待采购',
+          timestamp: '',
+          color: '',
+          type: ''
+        }, {
+          content: '已采购',
+          timestamp: '',
+          size: 'large',
+          type: ''
+        }]
+      if(row.state==1&&row.isBuy==1){
+        this.activities[1].content="审核通过";
+        this.activities[1].type="success";
+        this.activities[1].timestamp=parseTime(row.auditDate);
+        this.activities[2].type="success";
+        this.activities[3].type="success";
+        this.activities[3].timestamp=parseTime(row.buyDate);
+      }else if(row.state==1){
+        this.activities[1].content="审核通过";
+        this.activities[1].type="success";
+        this.activities[1].timestamp=parseTime(row.auditDate);
+        this.activities[2].type="success";
+      }else if(row.state==2){
+        this.activities[1].content="审核不通过";
+        this.activities[1].type="danger";
+        this.activities[1].timestamp=parseTime(row.auditDate);
+      }
 
+    }
 
   },
   watch: {

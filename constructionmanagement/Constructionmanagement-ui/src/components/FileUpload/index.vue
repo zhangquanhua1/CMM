@@ -50,7 +50,7 @@ export default {
     // 数量限制
     limit: {
       type: Number,
-      default: 5,
+      default: 1,
     },
     // 大小限制(MB)
     fileSize: {
@@ -78,6 +78,7 @@ export default {
         Authorization: "Bearer " + getToken(),
       },
       fileList: [],
+      resultList:'',
     };
   },
   watch: {
@@ -158,6 +159,7 @@ export default {
         this.uploadList = [];
         this.number = 0;
         this.$emit("input", this.listToString(this.fileList));
+        this.resultList=this.listToString(this.fileList)
         this.$modal.closeLoading();
       }
     },
@@ -165,6 +167,7 @@ export default {
     handleDelete(index) {
       this.fileList.splice(index, 1);
       this.$emit("input", this.listToString(this.fileList));
+      this.resultList=this.listToString(this.fileList)
     },
     // 获取文件名称
     getFileName(name) {

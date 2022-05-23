@@ -127,6 +127,18 @@
         </template>
       </el-table-column>
       <el-table-column label="审核意见" align="center" prop="auditAdvice"/>
+      <el-table-column label="附件下载" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button
+            v-if="scope.row.enclosure"
+            size="mini"
+            type="text"
+            icon="el-icon-download"
+            @click="handleDownload(scope.row)"
+          >附件下载
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -167,7 +179,7 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="1200px" class="spec-dialog" :close-on-click-modal="false"
+    <el-dialog :title="title" :visible.sync="open" width="1100px" class="spec-dialog" :close-on-click-modal="false"
                v-dialog-drag v-dialog-drag-width
                v-dialog-drag-height append-to-body
     >
@@ -211,7 +223,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="数量" prop="amount">
-              <el-input v-model.number="form.amount" placeholder="请输入申请发货数量"/>
+              <el-input v-model.number="form.amount" placeholder="请输入数量"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -253,7 +265,13 @@
             </el-form-item>
           </el-col>
         </el-row>
-
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="上传附件">
+              <file-upload ref="file_upload"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -448,10 +466,14 @@ export default {
               this.getList()
             })
           } else {
+            console.log(this.$refs['file_upload'].resultList)
+            this.form.enclosure = this.$refs['file_upload'].resultList
             addRepairScrap(this.form).then(response => {
               this.$modal.msgSuccess('新增成功')
               this.open = false
               this.getList()
+              this.$refs['file_upload'].uploadList = []
+              this.$refs['file_upload'].fileList = []
             })
           }
         }
@@ -483,15 +505,25 @@ export default {
     },
     //判断那些列可选
     selectInit(row, index) {
-      var roles=["admin"]
-      if(checkRole(roles))
+      var roles = ['admin']
+      if (checkRole(roles)) {
         return true
+      }
       if (row.status != 0) {    //判断条件
         return false  //不可勾选
       } else {
         return true  //可勾选
       }
     },
+    handleDownload(row) {
+      console.log('uploadAddress: ' + row.enclosure)
+      let fileAd=[]
+      fileAd=row.enclosure.split(",")
+      fileAd.forEach((v,i)=>{
+        console.log("v"+v)
+        window.open(process.env.VUE_APP_BASE_API+v)
+      })
+    }
   }
 }
 </script>

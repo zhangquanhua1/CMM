@@ -549,7 +549,7 @@
             </el-row>
           </el-collapse-item>
           <el-collapse-item title="设备参数" name="2">
-            <div v-if="EquipmentDetail!=null">
+            <div v-if="EquipmentDetail!=null&&form.standardModel">
               <el-row>
                 <el-col :span="4" class="col_title">设备名称：</el-col>
                 <el-col :span="4">

@@ -196,6 +196,13 @@
             @click="handleDetail(scope.row)"
           >需求详情
           </el-button>
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-more"
+            @click="checkProgress(scope.row)"
+          >查看进度
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -211,7 +218,7 @@
                v-dialog-drag-height append-to-body
     >
       <el-form ref="form" :model="form" :rules="rules" label-width="110px">
-        <el-collapse v-model="activeNames" accordion>
+        <el-collapse v-model="activeNames" >
           <el-collapse-item title="部件信息" name="1">
             <el-row>
               <el-col :span="8">
@@ -526,7 +533,28 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
-
+    <el-dialog :title="title" :visible.sync="openProgress" @close="cancel" width="20%" height="200px" class="spec-dialog"
+               append-to-body
+    >
+      <div class="block">
+        <el-timeline>
+          <el-timeline-item
+            v-for="(activity, index) in activities"
+            :key="index"
+            :icon="activity.icon"
+            :type="activity.type"
+            :color="activity.color"
+            :size="activity.size"
+            :timestamp="activity.timestamp"
+          >
+            {{ activity.content }}
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <style lang="scss">
@@ -551,6 +579,7 @@ import { getEquipmentParam, getKitAndPartBySelectiv } from '@/api/towerparam/equ
 import PartRequireDetail from './PartRequireDetail'
 import { getToken } from '@/utils/auth'
 import { checkRole } from '@/utils/permission'
+import { parseTime } from '@/utils/ruoyi'
 export default {
   name: 'partrequire',
   // dicts: ['sys_normal_disable'],
@@ -638,15 +667,15 @@ export default {
         brachium: [{
           type: 'number', message: '臂长必须为数字值', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '臂长范围在0-1000 米',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '臂长范围在0-999 米',
           trigger: 'blur'
         }],
         standardSectionHeight: [{
           type: 'number', message: '标准节高度', trigger: 'blur'
         }, {
-          pattern: /^(0|[1-9]\d?|1000)$/,
-          message: '标准节高度范围在0-1000米',
+          pattern: /^([0-9]|[1-9]\d|1\d\d|2[0-4]\d|99[0-9])$/,
+          message: '标准节高度范围在0-999米',
           trigger: 'blur'
         }],
         amount: [{
@@ -657,8 +686,12 @@ export default {
         }],
         totalAssets: [{
           type: 'number', message: '资产总计必须为数字值', trigger: 'blur'
-        }]
-      }
+        }],
+
+      },
+      //查看进度
+      openProgress: false,
+      activities: []
     }
   },
   computed: {
@@ -708,6 +741,7 @@ export default {
       this.open = false
       this.openDetail = false
       this.openAudit = false
+      this.openProgress=false
       this.reset()
     },
     // 表单重置
@@ -816,6 +850,7 @@ export default {
     },
     submitAudit() {
       this.form.amPartRequireKits = []
+      this.form.auditDate=new Date();
       updatePartRequire(this.form).then(response => {
         this.$modal.msgSuccess('修改成功')
         this.openAudit = false
@@ -902,6 +937,52 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
+    },
+
+    checkProgress(row) {
+      this.title = '查看部件需求申请进度'
+      this.openProgress = true
+      this.activities=[{
+        content: '待审核',
+        timestamp: '',
+        size: 'large',
+        type: 'success'
+      },
+        {
+          content: '审核结果',
+          timestamp: '',
+          color: '',
+          type: ''
+        },
+        {
+          content: '待采购',
+          timestamp: '',
+          color: '',
+          type: ''
+        }, {
+          content: '已采购',
+          timestamp: '',
+          size: 'large',
+          type: ''
+        }]
+      if(row.state==1&&row.isBuy==1){
+        this.activities[1].content="审核通过";
+        this.activities[1].type="success";
+        this.activities[1].timestamp=parseTime(row.auditDate);
+        this.activities[2].type="success";
+        this.activities[3].type="success";
+        this.activities[3].timestamp=parseTime(row.buyDate);
+      }else if(row.state==1){
+        this.activities[1].content="审核通过";
+        this.activities[1].type="success";
+        this.activities[1].timestamp=parseTime(row.auditDate);
+        this.activities[2].type="success";
+      }else if(row.state==2){
+        this.activities[1].content="审核不通过";
+        this.activities[1].type="danger";
+        this.activities[1].timestamp=parseTime(row.auditDate);
+      }
+
     }
 
 

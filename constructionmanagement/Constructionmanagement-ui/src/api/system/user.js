@@ -9,7 +9,13 @@ export function listUser(query) {
     params: query
   })
 }
-
+// 查询用户列表
+export function listExceptSelf() {
+  return request({
+    url: '/system/user/listExceptId',
+    method: 'get',
+  })
+}
 // 查询用户详细
 export function getUser(userId) {
   return request({

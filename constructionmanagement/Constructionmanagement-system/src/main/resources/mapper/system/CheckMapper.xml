@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.CheckMapper">
+    <resultMap type="com.ConstructionManagement.system.domain.Check" id="CheckResult">
+        <result property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="checkDate" column="check_date" />
+        <result property="addDate" column="add_date" />
+        <result property="principal" column="principal" />
+        <result property="status" column="status" />
+    </resultMap>
+
+    <sql id="selectCheckVo">
+        select id, `name`, check_date, add_date, principal,status  from `check`
+    </sql>
+
+    <select id="selectCheckList" parameterType="com.ConstructionManagement.system.domain.Check" resultMap="CheckResult">
+        <include refid="selectCheckVo" />
+        <where>
+            <if test="name != null  and name != ''">and `name` like concat('%', #{name}, '%')</if>
+            <if test="checkDate != null ">and check_date = #{checkDate}</if>
+            <if test="addDate != null ">and add_date = #{addDate}</if>
+            <if test="principal != null  and principal != ''">and principal = #{principal}</if>
+        </where>
+    </select>
+
+    <select id="selectCheckById" parameterType="Long" resultMap="CheckResult">
+        <include refid="selectCheckVo" />
+        where id = #{id}
+    </select>
+
+    <insert id="insertCheck" parameterType="com.ConstructionManagement.system.domain.Check" useGeneratedKeys="true"
+       keyProperty="id">
+        insert into `check`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">`name`,</if>
+            <if test="checkDate != null">check_date,</if>
+            add_date,
+            <if test="principal != null">principal,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="checkDate != null">#{checkDate},</if>
+             now(),
+            <if test="principal != null">#{principal},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCheck" parameterType="com.ConstructionManagement.system.domain.Check">
+        update `check`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">`name` = #{name},</if>
+            <if test="checkDate != null">check_date = #{checkDate},</if>
+            <if test="addDate != null">add_date = #{addDate},</if>
+            <if test="principal != null">principal = #{principal},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCheckById" parameterType="Long">
+        delete
+        from `check`
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteCheckByIds" parameterType="String">
+        delete from `check` where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

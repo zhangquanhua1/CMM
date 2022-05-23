@@ -229,4 +229,16 @@ public class SysUserController extends BaseController
         userService.insertUserAuth(userId, roleIds);
         return success();
     }
+
+    /**
+     * 获取用户列表
+     */
+    @PreAuthorize("@ss.hasPermi('system:user:list')")
+    @GetMapping("/listExceptId")
+    public TableDataInfo listExceptId( )
+    {
+        startPage();
+        List<SysUser> list = userService.selectListExceptId(getUserId());
+        return getDataTable(list);
+    }
 }

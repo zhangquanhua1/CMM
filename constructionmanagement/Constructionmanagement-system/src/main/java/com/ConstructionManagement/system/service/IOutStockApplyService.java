@@ -19,5 +19,7 @@ public interface IOutStockApplyService {
 
     List<OutStockApply> selectBySelective(OutStockApply record);
 
+    int insertBatch(List<OutStockApply> lists);
+
     public String importData(ExcelImportResult<OutStockApply> result, Boolean isUpdateSupport, String operName);
 }

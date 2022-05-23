@@ -57,3 +57,11 @@ export function getCodeImg() {
     timeout: 20000
   })
 }
+
+// 获取离线消息
+export function getOffLine(id) {
+  return request({
+    url: '/chat/getOffLine/'+id,
+    method: 'get'
+  })
+}

@@ -134,31 +134,43 @@
           </el-row>
         </el-collapse-item>
       </el-collapse>
+      <div v-else style="margin-left: 50%">
+        <el-row>
+          <el-col :sm="12" :lg="6">
+            <el-result icon="info" title="信息提示" >
+              <template slot="extra">
+                <h2 >暂无更多详细信息</h2>
+              </template>
+            </el-result>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { treeselect } from '@/api/system/dept'
-import {listKitById} from '@/api/inventory/KitEntry'
+import { listKitById } from '@/api/inventory/KitEntry'
+
 export default {
   name: 'kitDetail',
   props: {
     id: {
       type: Number
-    },
+    }
   },
   data() {
     return {
       //折叠面板
       activeNames: ['1'],
-      Detail:undefined,
+      Detail: undefined,
       // 所属部门ID字典
-      depart_idOptions: [],
+      depart_idOptions: []
     }
   },
   created() {
-   this.getTreeselect()
+    this.getTreeselect()
     this.getKitInfo(this.id)
   },
   methods: {
@@ -172,8 +184,16 @@ export default {
       return this.getDeptNameByID(this.depart_idOptions, id)
     },
     getKitInfo(id) {
+      if(id==null||id==undefined||id=='')
+        return
       listKitById(id).then(response => {
-        this.Detail=response.data;
+        if (response.data == null) {
+          console.log('参数为空')
+          // this.$emit('success', false)
+          // return this.$message('暂无更详细的内容')
+        } else {
+          this.Detail = response.data
+        }
       })
     }
   }

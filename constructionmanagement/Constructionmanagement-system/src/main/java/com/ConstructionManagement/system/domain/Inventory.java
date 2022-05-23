@@ -116,4 +116,18 @@ public class Inventory implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public String toString() {
+        return "Inventory{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", model='" + model + '\'' +
+                ", amount=" + amount +
+                ", belongWarehouse='" + belongWarehouse + '\'' +
+                ", typeId=" + typeId +
+                ", pid=" + pid +
+                '}';
+    }
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.CheckInventoryMapper">
+    <resultMap id="BaseResultMap" type="com.ConstructionManagement.system.domain.CheckInventory">
+        <result column="check_id" jdbcType="BIGINT" property="checkId" />
+        <result column="inventory_id" jdbcType="BIGINT" property="inventoryId" />
+    </resultMap>
+    <insert id="insertBatch" parameterType="com.ConstructionManagement.system.domain.CheckInventory">
+        insert into check_inventory (check_id, inventory_id)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.checkId},#{item.inventoryId})
+        </foreach>
+    </insert>
+    <insert id="insertSelective" parameterType="com.ConstructionManagement.system.domain.CheckInventory">
+        insert into check_inventory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkId != null">
+                check_id,
+            </if>
+            <if test="inventoryId != null">
+                inventory_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkId != null">
+                #{checkId,jdbcType=BIGINT},
+            </if>
+            <if test="inventoryId != null">
+                #{inventoryId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <select id="selectByCheckId" resultMap="BaseResultMap">
+        select * from check_inventory where check_id=#{checkId}
+    </select>
+</mapper>

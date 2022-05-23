@@ -1,7 +1,7 @@
 <template>
   <div style="margin-left: 10px">
     <el-collapse v-model="activeNames" accordion>
-      <el-collapse-item v-if="this.Detail" title="设备信息" name="1">
+      <el-collapse-item v-if="this.Detail" title="设备采购信息" name="1">
         <el-row>
           <el-col :span="4" class="col_title">设备名称：</el-col>
           <el-col :span="4">{{ Detail.equipmentName != null ? Detail.equipmentName : '-' }}</el-col>
@@ -149,6 +149,17 @@
           <el-col :span="4">{{ Detail.updateDate != null ? parseTime(Detail.updateDate) : '-' }}</el-col>
         </el-row>
       </el-collapse-item>
+      <div v-else style="margin-left: 50%">
+        <el-row>
+          <el-col :sm="12" :lg="6">
+            <el-result icon="info" title="信息提示" >
+              <template slot="extra">
+                <h2 >暂无更多详细信息</h2>
+              </template>
+            </el-result>
+          </el-col>
+        </el-row>
+      </div>
       <el-collapse-item v-if="this.EquipmentDetail" title="设备参数" name="2">
         <div v-if="EquipmentDetail!=null&&EquipmentDetail!=undefined">
           <el-row>
@@ -255,7 +266,17 @@
             <el-col :span="20">{{ EquipmentDetail.remark != null ? EquipmentDetail.remark : '-' }}</el-col>
           </el-row>
         </div>
-        <div v-else>无该设备的参数信息</div>
+        <div v-else style="margin-left: 50%">
+          <el-row>
+            <el-col :sm="12" :lg="6">
+              <el-result icon="info" title="信息提示">
+                <template slot="extra">
+                  <h2>暂无更多详细信息</h2>
+                </template>
+              </el-result>
+            </el-col>
+          </el-row>
+        </div>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -263,8 +284,9 @@
 
 <script>
 import { getEquipmentParam } from '@/api/towerparam/equipmentrequire'
-import {SelectById} from '@/api/inventory/EquipmentEntry'
+import { SelectById } from '@/api/inventory/EquipmentEntry'
 import { treeselect } from '@/api/system/dept'
+
 export default {
   name: 'equipmentDetail',
   props: {
@@ -290,15 +312,22 @@ export default {
   },
   methods: {
     getEquipmentInfo(id) {
-       SelectById(id).then(response => {
-         this.Detail = response.data
-         this.getEquipmentDetail()
-       })
+      if(id==null||id==undefined||id=='')
+        return
+      SelectById(id).then(response => {
+        this.Detail = response.data
+        this.getEquipmentDetail()
+      })
     },
     getEquipmentDetail() {
-      getEquipmentParam(this.Detail.standardModel, this.Detail.equipmentType).then(response => {
-        this.EquipmentDetail = response.data
-      })
+      if (this.Detail==null||this.Detail==undefined||this.Detail.standardModel == null || this.Detail.standardModel == undefined
+        || this.Detail.equipmentType == null || this.Detail.equipmentType == undefined) {
+        this.EquipmentDetail = null
+      } else {
+        getEquipmentParam(this.Detail.standardModel, this.Detail.equipmentType).then(response => {
+          this.EquipmentDetail = response.data
+        })
+      }
     },
     getTreeselect() {
       treeselect().then(response => {
@@ -308,10 +337,11 @@ export default {
     //根据部门id 获取部门名
     getDeptName(id) {
       return this.getDeptNameByID(this.depart_idOptions, id)
-    },
+    }
+  },
 
 
-  }
+
 }
 </script>
 

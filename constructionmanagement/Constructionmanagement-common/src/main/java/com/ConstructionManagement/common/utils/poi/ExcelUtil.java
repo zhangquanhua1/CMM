@@ -618,14 +618,14 @@ public class ExcelUtil<T>
      */
     public void fillExcelData(int index, Row row)
     {
-        log.info("fillExcelData index"+index);
+        //log.info("fillExcelData index"+index);
         int startNo = index * sheetSize;
-        log.info("fillExcelData startNo"+startNo);
+        //log.info("fillExcelData startNo"+startNo);
         int endNo = Math.min(startNo + sheetSize, list.size());
-        log.info("fillExcelData endNo"+endNo);
+        //log.info("fillExcelData endNo"+endNo);
         for (int i = startNo; i < endNo; i++)
         {
-            log.info("i + 1 + rownum - startNo"+(i + 1 + rownum - startNo));
+           // log.info("i + 1 + rownum - startNo"+(i + 1 + rownum - startNo));
             row = sheet.createRow(i + 1 + rownum - startNo);
             // 得到导出对象.
             T vo = (T) list.get(i);

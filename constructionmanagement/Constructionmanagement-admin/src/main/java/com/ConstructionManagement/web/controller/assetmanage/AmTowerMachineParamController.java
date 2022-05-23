@@ -150,13 +150,13 @@ public class AmTowerMachineParamController extends BaseController {
     public void export(HttpServletResponse response, AmTowerMachineParam wwh) {
         List<AmTowerMachineParam> list = amTowerMachineParamService.selectBySelective(wwh);
         if (list != null && list.size() > 0 && !list.isEmpty()) {
-            for(AmTowerMachineParam atmp:list){
-                List<AmTowerMachineParamPart> parts=amTowerMachineParamPartService.selectByPid(atmp.getId());
-                List<AmTowerMachinePartExport> partsExport=new ArrayList<AmTowerMachinePartExport>();
+            for (AmTowerMachineParam atmp : list) {
+                List<AmTowerMachineParamPart> parts = amTowerMachineParamPartService.selectByPid(atmp.getId());
+                List<AmTowerMachinePartExport> partsExport = new ArrayList<AmTowerMachinePartExport>();
                 //把根据设备id选出的部件构造成要导出的AmTowerMachinePartExport
-                if(parts!=null&&parts.size() > 0 && !parts.isEmpty()) {
-                    for(AmTowerMachineParamPart part:parts){
-                        AmTowerMachinePartExport tmp=new AmTowerMachinePartExport();
+                if (parts != null && parts.size() > 0 && !parts.isEmpty()) {
+                    for (AmTowerMachineParamPart part : parts) {
+                        AmTowerMachinePartExport tmp = new AmTowerMachinePartExport();
                         tmp.setPartName(part.getAmPartParam().getPartName());
                         tmp.setApplicableDeviceType(part.getAmPartParam().getApplicableDeviceType());
                         tmp.setPartCode(part.getAmPartParam().getPartCode());
@@ -165,11 +165,11 @@ public class AmTowerMachineParamController extends BaseController {
                         tmp.setMeasurementUnit(part.getAmPartParam().getMeasurementUnit());
                         tmp.setPartCount(part.getPartCount());
 
-                        List<AmPartParamKit> kits=iamPartParamKitService.selectByPid(part.getAmPartParam().getId());
-                        List<AmTowerMachineKitExport> kitsExport=new ArrayList<AmTowerMachineKitExport>();
+                        List<AmPartParamKit> kits = iamPartParamKitService.selectByPid(part.getAmPartParam().getId());
+                        List<AmTowerMachineKitExport> kitsExport = new ArrayList<AmTowerMachineKitExport>();
                         //根据部件id查出该部件绑定的配件，把配件构造成要导出的AmTowerMachineKitExport
-                        if(kits!=null&&kits.size() > 0 && !kits.isEmpty()){
-                            for(AmPartParamKit kit:kits) {
+                        if (kits != null && kits.size() > 0 && !kits.isEmpty()) {
+                            for (AmPartParamKit kit : kits) {
                                 AmTowerMachineKitExport tmp2 = new AmTowerMachineKitExport();
                                 tmp2.setKitName(kit.getAmKitParam().getKitName());
                                 tmp2.setKitCode(kit.getAmKitParam().getKitCode());

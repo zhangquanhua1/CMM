@@ -11,6 +11,8 @@ public interface OutStockApplyMapper {
 
     int insertSelective(OutStockApply record);
 
+    int insertBatch( List<OutStockApply> list);
+
     OutStockApply selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(OutStockApply record);

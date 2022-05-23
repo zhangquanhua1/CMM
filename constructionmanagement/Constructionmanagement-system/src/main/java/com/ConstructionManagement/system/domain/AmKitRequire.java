@@ -209,6 +209,31 @@ public class AmKitRequire implements Serializable {
     @Excel(name = "是否已采购",readConverterExp = "0=待采购,1=已采购",type = Excel.Type.EXPORT)
     private Integer isBuy;
 
+    /**
+     * 审核时间
+     */
+    private Date auditDate;
+    /**
+     * 采购时间
+     */
+    private Date buyDate;
+
+    public Date getAuditDate() {
+        return auditDate;
+    }
+
+    public void setAuditDate(Date auditDate) {
+        this.auditDate = auditDate;
+    }
+
+    public Date getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
+    }
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {

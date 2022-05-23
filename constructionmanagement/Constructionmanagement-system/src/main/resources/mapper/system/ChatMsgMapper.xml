@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ConstructionManagement.system.mapper.ChatMsgMapper">
+  <resultMap id="BaseResultMap" type="com.ConstructionManagement.common.core.domain.ChatMsg">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="from" jdbcType="VARCHAR" property="from" />
+    <result column="to" jdbcType="VARCHAR" property="to" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="send_date" jdbcType="TIMESTAMP" property="date" />
+    <result column="from_nickname" jdbcType="VARCHAR" property="fromNickname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, `from`, `to`, content, send_date, from_nickname
+  </sql>
+  <select id="selectByPrimaryKey"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from chat_msg
+    where `to` = #{to}
+  </select>
+  <delete id="deleteByPrimaryKey" >
+    delete from chat_msg
+    where `to` = #{to}
+  </delete>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.ConstructionManagement.common.core.domain.ChatMsg" useGeneratedKeys="true">
+    insert into chat_msg
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="from != null">
+        `from`,
+      </if>
+      <if test="to != null">
+        `to`,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="date != null">
+        send_date,
+      </if>
+      <if test="fromNickname != null">
+        from_nickname,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="from != null">
+        #{from,jdbcType=VARCHAR},
+      </if>
+      <if test="to != null">
+        #{to,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="date != null">
+        #{date,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fromNickname != null">
+        #{fromNickname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.ConstructionManagement.common.core.domain.ChatMsg">
+    update chat_msg
+    <set>
+      <if test="from != null">
+        `from` = #{from,jdbcType=VARCHAR},
+      </if>
+      <if test="to != null">
+        `to` = #{to,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDate != null">
+        send_date = #{sendDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fromNickname != null">
+        from_nickname = #{fromNickname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

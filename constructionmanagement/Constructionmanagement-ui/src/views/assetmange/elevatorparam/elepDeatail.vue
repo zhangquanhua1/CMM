@@ -147,19 +147,23 @@ export default {
   name: 'elepDetail',
   props: {
     Detail: {},
-    kits: [],
-    parts:[],
+    kits: {
+      type :Array,
+      default:() =>[]
+    },
+    parts:{
+      type :Array,
+      default:() =>[]
+    },
   },
   created() {
     this.getTreeselect()
-    this.getEquipmentInfo(this.id)
 
   },
   data() {
     return {
       //折叠面板
       activeNames: ['1'],
-      Detail: undefined,
       // 所属部门ID字典
       depart_idOptions: [],
 

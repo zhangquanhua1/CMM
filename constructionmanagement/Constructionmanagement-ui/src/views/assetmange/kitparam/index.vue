@@ -115,7 +115,7 @@
       @pagination="getList"
     />
     <!-- 添加或修改对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" append-to-body>
+    <el-dialog :title="title" :visible.sync="open" width="30%"  class="spec-dialog" :close-on-click-modal="false" v-dialog-drag append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 
         <el-form-item label="零件名称" prop="kitName">
@@ -286,7 +286,7 @@ export default {
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset()
-      this.form = row
+      this.form = JSON.parse(JSON.stringify(row))
       this.open = true
       this.title = '修改'
     },

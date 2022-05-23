@@ -1,6 +1,8 @@
 package com.ConstructionManagement.web.controller.system;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,9 +47,12 @@ public class SysLoginController
     {
         AjaxResult ajax = AjaxResult.success();
         // 生成令牌
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
+        Map<String, String> result = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
                 loginBody.getUuid());
+        String token = result.get("token");
         ajax.put(Constants.TOKEN, token);
+        ajax.put("userId",result.get("userId"));
+        //System.out.println("userId:"+result.get("userId"));
         return ajax;
     }
 

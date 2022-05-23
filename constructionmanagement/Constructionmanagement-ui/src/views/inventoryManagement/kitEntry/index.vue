@@ -492,7 +492,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="附件" prop="enclosure">
-                  <el-button type="cyan" icon="el-icon-upload" size="mini" @click="handleImport">点击上传</el-button>
+                  <el-button type="cyan" icon="el-icon-upload" size="mini" @click="handleImport2">点击上传</el-button>
                   <el-button v-if="form.enclosure!=null" type="cyan" icon="el-icon-download" size="mini"
                              @click="handleDownload(form.enclosure)"
                   >点击下载
@@ -685,6 +685,29 @@
         <el-button @click="upload.open = false">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!--    附件导入对话框-->
+    <el-dialog :title="upload2.title" :visible.sync="upload2.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        :headers="upload2.headers"
+        :action="upload2.url"
+        :disabled="upload2.isUploading"
+        :on-progress="handleFileUploadProgress2"
+        :on-success="handleFileSuccess2"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm2">确 定</el-button>
+        <el-button @click="upload2.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 <style lang="scss">
@@ -777,6 +800,21 @@ export default {
         headers: { Authorization: "Bearer " + getToken() },
         // 上传的地址
         url: process.env.VUE_APP_BASE_API + "/inventory/kitEntry/importData"
+      },
+      // 附件导入参数
+      upload2: {
+        // 是否显示弹出层（用户导入）
+        open: false,
+        // 弹出层标题（用户导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 是否更新已经存在的用户数据
+        updateSupport: 0,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/common/upload"
       },
 
       // 表单校验
@@ -1065,6 +1103,40 @@ export default {
       } else {
         return true  //可勾选
       }
+    },
+
+    //上传附件
+    handleImport2() {
+      this.upload2.title = '上传附件'
+      this.upload2.open = true
+    },
+    //导出附件
+    handleDownload(url) {
+      window.open(process.env.VUE_APP_BASE_API+url)
+    },
+
+    // 提交上传文件
+    submitFileForm2() {
+      this.$refs.upload.submit();
+    },
+
+    // 文件上传中处理
+    handleFileUploadProgress2(event, file, fileList) {
+      this.upload2.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccess2(response, file, fileList) {
+      this.upload2.open = false;
+      this.upload2.isUploading = false;
+      this.$refs.upload.clearFiles();
+      console.log(response)
+      if(200===response.code){
+        this.form.enclosure=response.fileName
+        this.$alert('附件上传成功', "上传结果", {dangerouslyUseHTMLString: true});
+      }else {
+        this.$alert('附件上传失败', "上传结果", {dangerouslyUseHTMLString: true});
+      }
+      // this.getList();
     },
 
   }

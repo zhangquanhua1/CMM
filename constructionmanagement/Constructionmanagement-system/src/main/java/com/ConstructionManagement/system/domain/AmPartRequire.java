@@ -208,6 +208,30 @@ public class AmPartRequire implements Serializable, IExcelDataModel, IExcelModel
     @ExcelCollection(name = "配件清单")
     List<AmPartRequireKit> amPartRequireKits;
 
+    /**
+     * 审核时间
+     */
+    private Date auditDate;
+    /**
+     * 采购时间
+     */
+    private Date buyDate;
+
+    public Date getAuditDate() {
+        return auditDate;
+    }
+
+    public void setAuditDate(Date auditDate) {
+        this.auditDate = auditDate;
+    }
+
+    public Date getBuyDate() {
+        return buyDate;
+    }
+
+    public void setBuyDate(Date buyDate) {
+        this.buyDate = buyDate;
+    }
 
     private static final long serialVersionUID = 1L;
 

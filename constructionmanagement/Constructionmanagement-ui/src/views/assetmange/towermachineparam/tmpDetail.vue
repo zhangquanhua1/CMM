@@ -1,7 +1,7 @@
 <template>
   <div style="margin-left: 10px">
-    <el-collapse v-model="activeNames" accordion>
-      <el-collapse-item v-if="this.Detail" title="设备参数信息" name="1">
+    <el-collapse v-model="activeNames" >
+      <el-collapse-item v-show="this.Detail" title="设备参数信息" name="1">
         <el-row>
           <el-col :span="4" class="col_title">设备名称：</el-col>
           <el-col :span="4">{{ Detail.towerMachineName != null ? Detail.towerMachineName : '-' }}</el-col>
@@ -93,7 +93,7 @@
           <el-col :span="4">{{ Detail.updateDate != null ? parseTime(Detail.updateDate) : '-' }}</el-col>
         </el-row>
       </el-collapse-item>
-      <el-collapse-item v-if="this.kits" title="零件信息" name="2">
+      <el-collapse-item v-show="this.kits" title="零件信息" name="2">
         <el-table
           :data="kits"
           style="width: 100%"
@@ -118,7 +118,7 @@
           </el-table-column>
         </el-table>
       </el-collapse-item>
-      <el-collapse-item v-if="this.parts" title="部件信息" name="3">
+      <el-collapse-item v-show="this.parts" title="部件信息" name="3">
         <el-table
           :data="parts"
           style="width: 100%"
@@ -135,7 +135,7 @@
           </el-table-column>
           <el-table-column label="适用设备类型" align="center" prop="amPartParam.applicableDeviceType">
           </el-table-column>
-          <el-table-column label="数量" align="center" prop="kitCount">
+          <el-table-column label="数量" align="center" prop="partCount">
           </el-table-column>
           <el-table-column label="计量单位" align="center" prop="amPartParam.measurementUnit">
           </el-table-column>
@@ -153,19 +153,23 @@ export default {
   name: 'tmpDetail',
   props: {
     Detail: {},
-    kits: [],
-    parts:[],
+    kits: {
+      type :Array,
+      default:() =>[]
+    },
+    parts:{
+      type :Array,
+      default:() =>[]
+    },
   },
   created() {
     this.getTreeselect()
-    this.getEquipmentInfo(this.id)
 
   },
   data() {
     return {
       //折叠面板
       activeNames: ['1'],
-      Detail: undefined,
       // 所属部门ID字典
       depart_idOptions: [],
 
