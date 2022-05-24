@@ -130,7 +130,7 @@
           <el-input v-model="form.kitModel" placeholder="请输入零件型号"/>
         </el-form-item>
 
-        <el-form-item label="适用部件件类型" prop="applicableKitType">
+        <el-form-item label="适用部件类型" label-width="100px" prop="applicableKitType">
           <el-select v-model="form.applicableKitType" placeholder="请选择适用部件类型">
             <el-option
               v-for="dict in applicableKitTypeS"

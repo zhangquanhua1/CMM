@@ -668,7 +668,7 @@
       :with-header="true"
     >
       <div style="margin-left: 10px">
-        <el-collapse v-model="activeNames">
+        <el-collapse v-model="activeNames" >
           <el-collapse-item title="设备信息" name="1">
             <el-row>
               <el-col :span="4" class="col_title">设备名称：</el-col>
@@ -752,7 +752,7 @@
             </el-row>
           </el-collapse-item>
           <el-collapse-item title="设备参数" name="2">
-            <div v-if="EquipmentDetail!=null&&EquipmentDetail!=undefined">
+            <div v-if="EquipmentDetail">
               <el-row>
                 <el-col :span="4" class="col_title">设备名称：</el-col>
                 <el-col :span="4">
@@ -1294,7 +1294,7 @@ export default {
         this.DetailKits = res.data.amEquipmentRequireKits
         this.DetailParts = res.data.amEquipmentRequireParts
       })
-      if (row.standardModel == undefined && row.standardModel == null && row.equipmentType != undefined && row.equipmentType != null) {
+      if (row.standardModel != undefined && row.standardModel != null && row.equipmentType != undefined && row.equipmentType != null) {
         getEquipmentParam(row.standardModel, row.equipmentType).then(response => {
           this.EquipmentDetail = response.data
         })
